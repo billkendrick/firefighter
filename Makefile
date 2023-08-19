@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/
 #
-# 2023-08-13 - 2023-08-15
+# 2023-08-13 - 2023-08-18
 
 CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
@@ -36,6 +36,7 @@ clean:
 	-rm game.s
 	-rm segments.o
 	-rm firefite.map
+	-rm levels.dat
 
 firefite.xex:	firefite.o segments.o title.o game.o draw_text.o dli.o atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
@@ -74,6 +75,9 @@ dli.o:  dli.s
 dli.s:  dli.c shapes.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari dli.c -o dli.s
 
-segments.o:     segments.s fire1.fnt fire2.fnt
+segments.o:     segments.s fire1.fnt fire2.fnt levels.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari segments.s -o segments.o
+
+levels.dat:	levels/level1.txt
+	./level_to_dat.php levels/level1.txt
 

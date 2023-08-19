@@ -1,0 +1,17 @@
+TODO.txt for Firefighter
+2023-08-18 - 2023-08-18
+
+ * Level progression
+ * More levels
+ * Bonus points for rescuing civilians
+ * Countdown bonus (a la Donkey Kong)
+ * End level by reaching exit (w/ no civilians left)
+   - Need to track civilian count
+ * End of level bonus for putting out the fire
+ * End of level bonus for turning off gas valve
+ * Score deduction for destroyed crates & barrels?
+ * Bonus points for collecting ax
+ * End of level bonus talley could be mid-display-list GR.0 lines
+ * High score tracking
+ * README documentation
+

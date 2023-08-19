@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-15 - 2023-08-17
+  2023-08-15 - 2023-08-18
 */
 
 #include <atari.h>
@@ -14,8 +14,15 @@
 #include "draw_text.h"
 #include "dli.h"
 
+#define LEVEL_W 20
+#define LEVEL_H 11
+#define LEVEL_SPAN (LEVEL_W * LEVEL_H)
+#define LEVEL_TOT_SIZE (LEVEL_SPAN + 2)
+
 extern unsigned char font1_data[];
 // extern unsigned char font2_data[]; /* Not actually referenced */
+
+extern unsigned char levels_data[];
 
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
@@ -24,8 +31,8 @@ int dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
 int dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 
 void setup_game_screen(void);
-#define shape_at(x, y) (PEEK(scr_mem + 60 + ((y) * 20) + (x)))
-#define set_shape(x, y, s) POKE(scr_mem + 60 + ((y) * 20) + (x), (s))
+#define shape_at(x, y) (PEEK(scr_mem + 60 + ((y) * LEVEL_W) + (x)))
+#define set_shape(x, y, s) POKE(scr_mem + 60 + ((y) * LEVEL_W) + (x), (s))
 #define obstacle(s) ((s) != 0 && (s) != AX)
 void draw_level(void);
 void cellular_automata(void);
@@ -41,6 +48,7 @@ void set_sound(char p, char pch, char dist, char vol, char volch);
 #define DIR_RIGHT 1
 
 /* FIXME */
+char level, ply_start_x, ply_start_y;
 char exploding;
 char hit_pitch, hit_pitch_change, hit_volume, hit_distortion, hit_vol_decrease;
 char odd_even;
@@ -52,13 +60,17 @@ void start_game(void) {
   unsigned char ply_dir, want_x, want_y, push_x, push_y, stick, shape, shape2, have_ax;
 
   setup_game_screen();
+
+  level = 0;
   draw_level();
 
-  ply_x = 1;
-  ply_y = 9;
+  ply_x = ply_start_x;
+  ply_y = ply_start_y;
   ply_dir = DIR_RIGHT;
   have_ax = 0;
+
   exploding = 0;
+
   odd_even = 0;
 
   set_sound(0, 0, 0, 0, 0);
@@ -82,7 +94,7 @@ void start_game(void) {
       /* (Left stick, without trigger, to move) */
       if (stick & STK_BIT_RIGHT) {
         ply_dir = 1;
-        if (ply_x < 19) {
+        if (ply_x < (LEVEL_W - 1)) {
           want_x++;
           push_x += 2;
         }
@@ -95,7 +107,7 @@ void start_game(void) {
         }
       }
       if (stick & STK_BIT_DOWN) {
-        if (ply_y < 10) {
+        if (ply_y < (LEVEL_H - 1)) {
           want_y++;
           push_y += 2;
         }
@@ -393,59 +405,13 @@ void setup_game_screen(void) {
 
 /* FIXME */
 void draw_level(void) {
-  int i, x, y;
-
   draw_text("@ FIREFIGHTER! @", scr_mem + 0 + 2);
   draw_text("LEVEL: 00  SCORE: 000000", scr_mem + 20 + 0);
 
-  /* FIXME! */
-  for (i = 0; i < 20; i++) {
-    set_shape(i, 0, WALL);
-    set_shape(i, 10, WALL);
-  }
+  memcpy(scr_mem + 60, levels_data + (int) level * LEVEL_TOT_SIZE, LEVEL_SPAN);
 
-  for (i = 0; i < 10; i++) {
-    set_shape(0, i, WALL);
-    set_shape(19, i, WALL);
-  }
-
-  for (i = 0; i < 10; i++) {
-    do {
-      x = POKEY_READ.random % 20;
-      y = POKEY_READ.random % 10;
-    } while (PEEK(scr_mem + 60 + y * 20 + x) != 0);
-
-    set_shape(x, y, CRATE + (POKEY_READ.random % 2));
-  }
-
-  set_shape(1, 1, PIPE_DOWN_RIGHT);
-  for (i = 2; i < 5; i++) {
-    set_shape(i, 1, PIPE_LEFT_RIGHT);
-    set_shape(1, i, PIPE_UP_DOWN);
-  }
-  set_shape(1, 3, VALVE_OPEN);
-  set_shape(5, 1, PIPE_BROKEN_LEFT_RIGHT);
-
-  set_shape(18, 1, FIRE_SM);
-  set_shape(9, 4, AX);
-  set_shape(16, 2, OIL);
-  set_shape(15, 2, OIL);
-  set_shape(16, 3, OIL);
-  set_shape(15, 3, OIL);
-  set_shape(18, 5, OIL);
-
-  for (i = 0; i < 3; i++) {
-    do {
-      x = POKEY_READ.random % 20;
-      y = POKEY_READ.random % 10;
-    } while (PEEK(scr_mem + 60 + y * 20 + x) != 0);
-
-    set_shape(x, y, CIVILIAN);
-  }
-
-  set_shape(18, 0, EXIT1);
-  set_shape(19, 0, EXIT2);
-  set_shape(19, 1, DOOR);
+  ply_start_x = levels_data[(int) level * LEVEL_TOT_SIZE + LEVEL_SPAN];
+  ply_start_y = levels_data[(int) level * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
 }
 
 /* This routine analyzes the entire screen and
@@ -466,8 +432,8 @@ void cellular_automata(void) {
   odd_even = !odd_even;
   any_fire = 0;
 
-  for (y = 0; y < 10; y++) {
-    for (x = (y % 1) + odd_even; x < 20; x++) {
+  for (y = 0; y < LEVEL_H; y++) {
+    for (x = (y % 1) + odd_even; x < LEVEL_W; x++) {
       shape = shape_at(x, y);
       rand = POKEY_READ.random;
 

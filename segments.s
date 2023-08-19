@@ -15,3 +15,9 @@ _font1_data:
 _font2_data:
 	.incbin "fire2.fnt"
 	.code
+
+	.export		_levels_data
+.segment	"LEVELS"
+_levels_data:
+	.incbin "levels.dat"
+	.code
