@@ -119,10 +119,10 @@ void show_title(void) {
   POKE(scr_mem + 257, EXIT1);
   POKE(scr_mem + 258, EXIT2);
 
-  draw_text("LEFT STICK MOVES, FIRE CHANGES TOOL.", scr_mem + 260 + 2);
-  draw_text("RIGHT STICK USES TOOL IN THAT DIRECTION.", scr_mem + 300);
-  // draw_text("", scr_mem + 340);
-  draw_text("PRESS START OR FIRE TO BEGIN!!", scr_mem + 380 + 5);
+  draw_text("LEFT STICK MOVES, RIGHT STICK SPRAYS.", scr_mem + 260 + 1);
+  // draw_text("", scr_mem + 300);
+  draw_text("PRESS START OR FIRE TO BEGIN!!", scr_mem + 340 + 5);
+  // draw_text("", scr_mem + 380);
   draw_text("INSPIRED BY \"REAL HEROES: FIREFIGHTER\"", scr_mem + 420 + 1);
 
   OS.sdmctl = 34;

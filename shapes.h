@@ -42,6 +42,7 @@
 #define FIRE_SM 22
 #define FIRE_MD 23
 #define FIRE_LG 24
+#define FIRE_XLG 255 /* Special meaning; not an actual character */
 
 #define DOOR (26 + 192)
 
