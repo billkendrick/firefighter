@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-14
+  2023-08-13 - 2023-08-15
 */
 
 #include <atari.h>
@@ -18,10 +18,11 @@ extern unsigned char font1_data[];
 // extern unsigned char font2_data[]; /* Not actually referenced */
 
 extern unsigned char scr_mem[];
-unsigned char * dlist = (scr_mem + 512);
+extern unsigned char * dlist;
 
 void show_title(void) {
   int i;
+  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
 
   OS.sdmctl = 0;
 
@@ -126,10 +127,80 @@ void show_title(void) {
 
   OS.sdmctl = 34;
 
+  siren_ctr1 = 0;
+  siren_ctr2 = 0;
+  siren_pitch = 100;
+  siren_doppler = 23;
+  siren_doppler_dir = 1;
+  honk = 0;
+
+  POKEY_WRITE.audctl = 0;
+  POKEY_WRITE.skctl = 3;
+
+  do {
+  } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
+
   do {
     OS.color0 = OS.rtclok[2];
-  } while (OS.strig0 == 1 && CONSOL_START(GTIA_READ.consol) == 0);
+
+    siren_ctr1++;
+    if (siren_ctr1 == 0) {
+      siren_ctr2 = (siren_ctr2 + 1) & 0x0F;
+      if (siren_ctr2 == 0) {
+        siren_pitch = 210 - siren_pitch;
+
+        if (siren_doppler_dir == 0) {
+          siren_doppler++;
+          if (siren_doppler == 0x1F) {
+            siren_doppler_dir = 1;
+          }
+        } else {
+          siren_doppler--;
+          if (siren_doppler == 0x00) {
+            siren_doppler_dir = 0;
+          }
+        }
+      }
+    }
+
+    if (siren_doppler <= 15) {
+      POKEY_WRITE.audf1 = siren_pitch + (siren_doppler >> 2);
+      POKEY_WRITE.audc1 = 0xAF - siren_doppler;
+  
+      if (honk != 0) {
+        POKEY_WRITE.audf2 = 10;
+        POKEY_WRITE.audc2 = 0xCF - siren_doppler;
+        POKEY_WRITE.audf3 = 30;
+        POKEY_WRITE.audc3 = 0xCF - siren_doppler;
+        POKEY_WRITE.audf4 = 50;
+        POKEY_WRITE.audc4 = 0xCF - siren_doppler;
+  
+        if (siren_ctr1 == 0x00 || siren_ctr1 == 0x08)
+          honk--;
+      } else {
+        POKEY_WRITE.audc2 = 0;
+        POKEY_WRITE.audc3 = 0;
+        POKEY_WRITE.audc4 = 0;
+  
+        if (OS.stick0 != 15 || OS.stick1 != 15)
+          honk = (POKEY_READ.random % 0x0F) + 15;
+      }
+    }
+  } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0);
+
+  POKEY_WRITE.audc1 = 0;
+  POKEY_WRITE.audc2 = 0;
+  POKEY_WRITE.audc3 = 0;
+  POKEY_WRITE.audc4 = 0;
+  POKEY_WRITE.audf1 = 0;
+  POKEY_WRITE.audf2 = 0;
+  POKEY_WRITE.audf3 = 0;
+  POKEY_WRITE.audf4 = 0;
 
   OS.sdmctl = 0;
   ANTIC.nmien = NMIEN_VBI;
+
+  do {
+  } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
 }
+

@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/
 #
-# 2023-08-13 - 2023-08-13
+# 2023-08-13 - 2023-08-15
 
 CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
@@ -32,27 +32,35 @@ clean:
 	-rm draw_text.s
 	-rm title.o
 	-rm title.s
+	-rm game.o
+	-rm game.s
 	-rm segments.o
 	-rm firefite.map
 
-firefite.xex:	firefite.o segments.o title.o draw_text.o dli.o atari.cfg
+firefite.xex:	firefite.o segments.o title.o game.o draw_text.o dli.o atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o firefite.xex \
 		-t atari \
 		-m firefite.map \
-		firefite.o segments.o title.o draw_text.o dli.o atari.lib
+		firefite.o segments.o title.o game.o draw_text.o dli.o atari.lib
 
 firefite.o:  firefite.s
 	${CA65} -I "${CC65_ASMINC}" -t atari firefite.s -o firefite.o
 
-firefite.s:  firefite.c shapes.h
+firefite.s:  firefite.c title.h game.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari firefite.c -o firefite.s
 
 title.o:  title.s
 	${CA65} -I "${CC65_ASMINC}" -t atari title.s -o title.o
 
-title.s:  title.c shapes.h
+title.s:  title.c title.h shapes.h dli.h draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari title.c -o title.s
+
+game.o:  game.s
+	${CA65} -I "${CC65_ASMINC}" -t atari game.s -o game.o
+
+game.s:  game.c game.h shapes.h dli.h draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari game.c -o game.s
 
 draw_text.o:  draw_text.s
 	${CA65} -I "${CC65_ASMINC}" -t atari draw_text.s -o draw_text.o
