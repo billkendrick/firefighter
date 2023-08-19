@@ -48,7 +48,7 @@ $ascii_to_shape = array(
   "#" => (25 + 192), // WALL (25 + 192)
 );
 
-$OUTFILE = "levels.dat";
+$OUTFILE = "data/levels.dat";
 $fo = fopen($OUTFILE, "wb");
 if ($fo == NULL) {
   fprintf(STDERR, "Cannot open %s for write!\n", $OUTFILE);

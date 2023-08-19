@@ -18,6 +18,7 @@ CC65_CFG=${CC65_HOME}/cfg
 CC65_FLAGS=-Osir --add-source
 LEVEL_FILES=$(wildcard levels/level*.txt)
 OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/draw_text.o obj/dli.o
+# MAP_ARGS=-m firefite.map
 
 all:	firefite.xex
 
@@ -29,13 +30,13 @@ clean:
 	-rm obj/*.o
 	-rm asm/*.s
 	-rm firefite.map
-	-rm levels.dat
+	-rm data/levels.dat
 
 firefite.xex:	${OBJECTS} src/atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o firefite.xex \
 		-C src/atari.cfg \
-		-m firefite.map \
+		${MAP_ARGS} \
 		${OBJECTS} atari.lib
 
 obj/firefite.o:  asm/firefite.s
@@ -68,9 +69,9 @@ obj/dli.o:  asm/dli.s
 asm/dli.s:  src/dli.c src/dli.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/dli.c -o asm/dli.s
 
-obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt levels.dat
+obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt data/levels.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
 
-levels.dat:	tools/level_to_dat.php ${LEVEL_FILES}
+data/levels.dat:	tools/level_to_dat.php ${LEVEL_FILES}
 	./tools/level_to_dat.php ${LEVEL_FILES}
 

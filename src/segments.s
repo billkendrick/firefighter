@@ -19,5 +19,5 @@ _font2_data:
 	.export		_levels_data
 .segment	"LEVELS"
 _levels_data:
-	.incbin "levels.dat"
+	.incbin "data/levels.dat"
 	.code

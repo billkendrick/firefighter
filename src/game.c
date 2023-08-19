@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-15 - 2023-08-18
+  2023-08-15 - 2023-08-19
 */
 
 #include <atari.h>
@@ -61,7 +61,7 @@ void start_game(void) {
 
   setup_game_screen();
 
-  level = 1;
+  level = 0;
   draw_level();
 
   ply_x = ply_start_x;
