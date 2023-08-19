@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/
 #
-# 2023-08-13 - 2023-08-18
+# 2023-08-13 - 2023-08-19
 
 CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
@@ -45,35 +45,35 @@ firefite.xex:	${OBJECTS} atari.cfg
 obj/firefite.o:  firefite.s
 	${CA65} -I "${CC65_ASMINC}" -t atari firefite.s -o obj/firefite.o
 
-firefite.s:  firefite.c title.h game.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari firefite.c -o firefite.s
+firefite.s:  src/firefite.c src/title.h src/game.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/firefite.c -o firefite.s
 
 obj/title.o:  title.s
 	${CA65} -I "${CC65_ASMINC}" -t atari title.s -o obj/title.o
 
-title.s:  title.c title.h shapes.h dli.h draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari title.c -o title.s
+title.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/title.c -o title.s
 
 obj/game.o:  game.s
 	${CA65} -I "${CC65_ASMINC}" -t atari game.s -o obj/game.o
 
-game.s:  game.c game.h shapes.h dli.h draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari game.c -o game.s
+game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/game.c -o game.s
 
 obj/draw_text.o:  draw_text.s
 	${CA65} -I "${CC65_ASMINC}" -t atari draw_text.s -o obj/draw_text.o
 
-draw_text.s:  draw_text.c shapes.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari draw_text.c -o draw_text.s
+draw_text.s:  src/draw_text.c src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/draw_text.c -o draw_text.s
 
 obj/dli.o:  dli.s
 	${CA65} -I "${CC65_ASMINC}" -t atari dli.s -o obj/dli.o
 
-dli.s:  dli.c shapes.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari dli.c -o dli.s
+dli.s:  src/dli.c src/dli.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/dli.c -o dli.s
 
-obj/segments.o:     segments.s fonts/fire1.fnt fonts/fire2.fnt levels.dat
-	${CA65} -I "${CC65_ASMINC}" -t atari segments.s -o obj/segments.o
+obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt levels.dat
+	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
 
 levels.dat:	level_to_dat.php ${LEVEL_FILES}
 	./level_to_dat.php ${LEVEL_FILES}
