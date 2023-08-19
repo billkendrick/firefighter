@@ -35,10 +35,10 @@ clean:
 	-rm firefite.map
 	-rm levels.dat
 
-firefite.xex:	${OBJECTS} atari.cfg
+firefite.xex:	${OBJECTS} src/atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o firefite.xex \
-		-t atari \
+		-C src/atari.cfg \
 		-m firefite.map \
 		${OBJECTS} atari.lib
 
