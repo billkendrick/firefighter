@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-14
+  2023-08-13 - 2023-08-17
 */
 
 #ifndef _SHAPES_H
@@ -42,6 +42,7 @@
 #define FIRE_SM 22
 #define FIRE_MD 23
 #define FIRE_LG 24
+#define FIRE_INFLAM 254 /* Special meaning; not an actual character */
 #define FIRE_XLG 255 /* Special meaning; not an actual character */
 
 #define DOOR (26 + 192)

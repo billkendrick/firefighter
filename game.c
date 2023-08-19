@@ -20,6 +20,9 @@ extern unsigned char font1_data[];
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
 
+int dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
+int dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
+
 void setup_game_screen(void);
 #define shape_at(x, y) (PEEK(scr_mem + 60 + ((y) * 20) + (x)))
 #define set_shape(x, y, s) POKE(scr_mem + 60 + ((y) * 20) + (x), (s))
@@ -32,32 +35,33 @@ void explode(char x, char y);
 unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape);
 void leak_gas(char x, char y, char dir, char on_off);
 void follow_pipes(char x, char y, char on_off);
+void set_sound(char p, char pch, char dist, char vol, char volch);
 
 #define DIR_LEFT 0
 #define DIR_RIGHT 1
 
 /* FIXME */
 char exploding;
-char hit_pitch, hit_volume, hit_distortion, hit_vol_decrease;
+char hit_pitch, hit_pitch_change, hit_volume, hit_distortion, hit_vol_decrease;
 char odd_even;
+unsigned char ply_x, ply_y;
+
 
 /* The main game loop! */
 void start_game(void) {
-  unsigned char ply_x, ply_y, ply_dir, want_x, want_y, push_x, push_y, stick, shape, shape2, have_ax;
+  unsigned char ply_dir, want_x, want_y, push_x, push_y, stick, shape, shape2, have_ax;
 
   setup_game_screen();
   draw_level();
 
-  ply_x = 0;
+  ply_x = 1;
   ply_y = 9;
   ply_dir = DIR_RIGHT;
   have_ax = 0;
   exploding = 0;
   odd_even = 0;
-  hit_pitch = 0;
-  hit_volume = 0;
-  hit_distortion = 0;
-  hit_vol_decrease = 0;
+
+  set_sound(0, 0, 0, 0, 0);
 
   do {
     /* Control the player based on Joystick 1 input */
@@ -118,10 +122,7 @@ void start_game(void) {
         if (shape == AX) {
           have_ax = 1;
           draw_text("ax", scr_mem + 0 + 18);
-          hit_pitch = 20;
-          hit_distortion = 0xA0;
-          hit_volume = 15;
-          hit_vol_decrease = 2;
+          set_sound(20, 0, 0xA0, 14, 2);
         }
       } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL) {
         /* Hitting a crate or oil barrel */
@@ -131,10 +132,7 @@ void start_game(void) {
 
           set_shape(want_x, want_y, (shape == CRATE ? CRATE_BROKEN : 0));
 
-          hit_pitch = 200;
-          hit_distortion = 0x60;
-          hit_volume = 10;
-          hit_vol_decrease = 5;
+          set_sound(200, 0, 0x60, 10, 5);
         } else {
           /* No ax, or not a crate? See whether we can push it */
 
@@ -146,10 +144,7 @@ void start_game(void) {
             ply_x = want_x;
             ply_y = want_y;
 
-            hit_pitch = 200;
-            hit_distortion = 0xA0;
-            hit_volume = 10;
-            hit_vol_decrease = 10;
+            set_sound(200, 0, 0xA0, 10, 10);
           }
         }
       } else if (shape == VALVE_OPEN) {
@@ -158,28 +153,31 @@ void start_game(void) {
         set_shape(want_x, want_y, VALVE_CLOSED);
         follow_pipes(want_x, want_y, 0);
 
-        hit_pitch = 200;
-        hit_distortion = 0xA0;
-        hit_volume = 8;
-        hit_vol_decrease = 4;
+        set_sound(200, 0, 0xA0, 8, 4);
       } else if (shape == VALVE_CLOSED) {
         /* Open a closed valve */
 
         set_shape(want_x, want_y, VALVE_OPEN);
         /* (Cellular automata will cause leaks) */
 
-        hit_pitch = 100;
-        hit_distortion = 0xA0;
-        hit_volume = 8;
-        hit_vol_decrease = 4;
+        set_sound(100, 0, 0xA0, 8, 4);
       } else if ((shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) && have_ax) {
         /* Break a pipe with the ax (downside of having it!) */
         set_shape(want_x, want_y, shape + 1);
 
-        hit_pitch = 2;
-        hit_distortion = 0xA0;
-        hit_volume = 6;
-        hit_vol_decrease = 3;
+        set_sound(2, 0, 0xA0, 6, 3);
+      } else if (shape == DOOR || shape == EXIT1 || shape == EXIT2) {
+        char dir, x, y;
+
+        for (dir = 0; dir < 8; dir++) {
+          x = ply_x + dir_x[dir];
+          y = ply_y + dir_y[dir];
+          if (valid_dir(x, y, dir)) {
+            if (shape_at(x, y) == CIVILIAN) {
+              set_shape(x, y, 0);
+            }
+          }
+        }
       }
     }
 
@@ -266,6 +264,7 @@ void start_game(void) {
       }
     }
 
+    /* Play water spray sound effect */
     if (stick != 15) {
       POKEY_WRITE.audf3 = 0;
       POKEY_WRITE.audc3 = 0x06;
@@ -274,6 +273,7 @@ void start_game(void) {
       POKEY_WRITE.audc3 = 0;
     }
 
+    /* Explosion sound & visual effect */
     if (exploding) {
       POKE(0x601, exploding);
       exploding--;
@@ -285,14 +285,27 @@ void start_game(void) {
       POKEY_WRITE.audc4 = exploding;
     }
 
+    /* Action sound effects */
     POKEY_WRITE.audf2 = hit_pitch;
     POKEY_WRITE.audc2 = hit_distortion + hit_volume;
     if (hit_volume > 0) {
       hit_volume -= hit_vol_decrease;
+      hit_pitch += hit_pitch_change;
     }
 
     while (ANTIC.vcount < 124);
   } while (CONSOL_START(GTIA_READ.consol) == 0);
+
+  POKE(0x601, 0);
+
+  POKEY_WRITE.audf1 = 0;
+  POKEY_WRITE.audc1 = 0;
+  POKEY_WRITE.audf2 = 0;
+  POKEY_WRITE.audc2 = 0;
+  POKEY_WRITE.audf3 = 0;
+  POKEY_WRITE.audc3 = 0;
+  POKEY_WRITE.audf4 = 0;
+  POKEY_WRITE.audc4 = 0;
 
   OS.sdmctl = 0;
   ANTIC.nmien = NMIEN_VBI;
@@ -420,10 +433,20 @@ void draw_level(void) {
   set_shape(16, 3, OIL);
   set_shape(15, 3, OIL);
   set_shape(18, 5, OIL);
-}
 
-int dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
-int dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
+  for (i = 0; i < 3; i++) {
+    do {
+      x = POKEY_READ.random % 20;
+      y = POKEY_READ.random % 10;
+    } while (PEEK(scr_mem + 60 + y * 20 + x) != 0);
+
+    set_shape(x, y, CIVILIAN);
+  }
+
+  set_shape(18, 0, EXIT1);
+  set_shape(19, 0, EXIT2);
+  set_shape(19, 1, DOOR);
+}
 
 /* This routine analyzes the entire screen and
    causes fire to grow and spread, erases water
@@ -458,13 +481,13 @@ void cellular_automata(void) {
         any_fire++;
       } else if (shape == FIRE_LG && rand < 32) {
         /* Large fire tries to spread */
-        dir = POKEY_READ.random % 9;
+        dir = POKEY_READ.random % 8;
         if (valid_dir(x, y, dir)) {
           shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
           ignited_shape = flammable(shape2);
           if (ignited_shape == FIRE_XLG) {
             explode(x + dir_x[dir], y + dir_y[dir]);
-          } else if (ignited_shape != 0) {
+          } else if (ignited_shape != FIRE_INFLAM) {
             set_shape(x + dir_x[dir], y + dir_y[dir], ignited_shape);
           }
         }
@@ -475,6 +498,39 @@ void cellular_automata(void) {
       } else if (shape == VALVE_OPEN) {
         /* Find any leaky pipes and shoot gas out */
         follow_pipes(x, y, 1);
+      } else if (shape == CIVILIAN) { // && rand < 64) {
+        int want_dir, dist;
+
+        /* Civilian */
+
+        /* If we're near the player, walk towards him */
+        want_dir = -1;
+        for (dist = 3; dist >= 2; dist--) {
+          for (dir = 0; dir < 8; dir++) {
+            if ((x + dir_x[dir] == ply_x || x + dir_x[dir] * 2 == ply_x) &&
+                (y + dir_y[dir] == ply_y || y + dir_y[dir] * 2 == ply_y)) {
+              want_dir = dir;
+            }
+          }
+        }
+
+        /* If not near player (or occasionally), walk a random direction */
+        if (want_dir == -1 || rand < 2) {
+          if (rand < 32)
+            want_dir = POKEY_READ.random % 8;
+        }
+
+        if (want_dir != -1) {
+          dir = want_dir;
+
+          if (valid_dir(x, y, dir)) {
+            shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
+            if (shape2 == 0) {
+              set_shape(x, y, 0);
+              set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN);
+            }
+          }
+        }
       }
     }
   }
@@ -610,7 +666,7 @@ void explode(char x, char y) {
     /* Left */
     shape = shape_at(x - 1, y);
     flam = flammable(shape);
-    if (flam && flam != FIRE_XLG)
+    if (flam != FIRE_INFLAM && flam != FIRE_XLG)
       set_shape(x - 1, y, FIRE_LG);
   }
 
@@ -618,7 +674,7 @@ void explode(char x, char y) {
     /* Right */
     shape = shape_at(x + 1, y);
     flam = flammable(shape);
-    if (flam && flam != FIRE_XLG)
+    if (flam != FIRE_INFLAM && flam != FIRE_XLG)
       set_shape(x + 1, y, FIRE_LG);
   }
 
@@ -626,7 +682,7 @@ void explode(char x, char y) {
     /* Up */
     shape = shape_at(x, y - 1);
     flam = flammable(shape);
-    if (flam && flam != FIRE_XLG)
+    if (flam != FIRE_INFLAM && flam != FIRE_XLG)
       set_shape(x, y - 1, FIRE_LG);
   }
 
@@ -634,7 +690,7 @@ void explode(char x, char y) {
     /* Down */
     shape = shape_at(x, y + 1);
     flam = flammable(shape);
-    if (flam && flam != FIRE_XLG)
+    if (flam != FIRE_INFLAM && flam != FIRE_XLG)
       set_shape(x, y + 1, FIRE_LG);
   }
 
@@ -660,7 +716,12 @@ unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir) {
 unsigned char flammable(unsigned char c) {
   if (c == OIL || c == GASLEAK_RIGHT || c == GASLEAK_LEFT || c == GASLEAK_UP || c == GASLEAK_DOWN) {
     /* Oil barrel and gas leaks cause an explosion */
+    /* (Note: Unlike the others, this is not a shape drawn
+       on the screen, but indicates we want an explosion) */
     return FIRE_XLG;
+  } else if (c == CIVILIAN) {
+    set_sound(100, 2, 0xA0, 15, 1);
+    return 0;
   } else if (c == CRATE || c == CRATE_BROKEN || c == AX) {
     /* Crates and ax ignite fully */
     return FIRE_LG;
@@ -669,7 +730,17 @@ unsigned char flammable(unsigned char c) {
     return FIRE_SM;
   } else {
     /* Other things do not ignite */
-    return 0;
+    /* (Note: Unlike the others, this is not a shape drawn
+       on the screen, but indicates fire cannot spread this
+       direction) */
+    return FIRE_INFLAM;
   }
 }
 
+void set_sound(char p, char pch, char dist, char vol, char volch) {
+  hit_pitch = p;
+  hit_pitch_change = pch;
+  hit_distortion = dist;
+  hit_volume = vol;
+  hit_vol_decrease = volch;
+}
