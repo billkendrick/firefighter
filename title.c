@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-15
+  2023-08-13 - 2023-08-16
 */
 
 #include <atari.h>
@@ -63,6 +63,8 @@ void show_title(void) {
   POKE(0x600, OS.chbas + 2);
 
   OS.color0 = 0x52;
+  OS.color2 = 0x02;
+  OS.color4 = 0x02;
 
   ANTIC.nmien = NMIEN_VBI;
   while (ANTIC.vcount < 124);
@@ -119,10 +121,10 @@ void show_title(void) {
   POKE(scr_mem + 257, EXIT1);
   POKE(scr_mem + 258, EXIT2);
 
-  draw_text("LEFT STICK MOVES, RIGHT STICK SPRAYS.", scr_mem + 260 + 1);
-  // draw_text("", scr_mem + 300);
-  draw_text("PRESS START OR FIRE TO BEGIN!!", scr_mem + 340 + 5);
-  // draw_text("", scr_mem + 380);
+  draw_text("USE LEFT JOYSTICK TO MOVE.", scr_mem + 260 + 7);
+  draw_text("USE RIGHT STICK (OR LEFT STICK + FIRE)", scr_mem + 300 + 1);
+  draw_text("TO SPRAY.", scr_mem + 340 + 16);
+  draw_text("--PRESS START OR FIRE TO BEGIN!--", scr_mem + 380 + 3);
   draw_text("INSPIRED BY \"REAL HEROES: FIREFIGHTER\"", scr_mem + 420 + 1);
 
   OS.sdmctl = 34;
