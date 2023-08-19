@@ -61,7 +61,7 @@ void start_game(void) {
 
   setup_game_screen();
 
-  level = 0;
+  level = 1;
   draw_level();
 
   ply_x = ply_start_x;

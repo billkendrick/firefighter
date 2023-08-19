@@ -7,6 +7,7 @@ TODO.txt for Firefighter
  * Countdown bonus (a la Donkey Kong)
  * End level by reaching exit (w/ no civilians left)
    - Need to track civilian count
+   - Maybe "lean into" exit to avoid accidentally exiting before getting a chance to put out fire
  * End of level bonus for putting out the fire
  * End of level bonus for turning off gas valve
  * Score deduction for destroyed crates & barrels?
@@ -14,4 +15,6 @@ TODO.txt for Firefighter
  * End of level bonus talley could be mid-display-list GR.0 lines
  * High score tracking
  * README documentation
+ * Track which civilians moved this loop, to avoid possibly moving (diagonally right) every row!
+ * Open to flip sticks (left fire = left move, right spray; right fire = opposite)
 

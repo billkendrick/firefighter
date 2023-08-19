@@ -8,11 +8,21 @@ $ascii_to_shape = array(
   "-" => (3 + 64), // PIPE_LEFT_RIGHT (3 + 64)
   "=" => (4 + 64), // PIPE_BROKEN_LEFT_RIGHT (4 + 64)
 
-  // FIXME
-  "?" => (5 + 64), // PIPE_DOWN_RIGHT (5 + 64)
-  "?" => (6 + 64), // PIPE_DOWN_LEFT (6 + 64)
-  "?" => (7 + 64), // PIPE_UP_LEFT (7 + 64)
-  "?" => (8 + 64), // PIPE_UP_RIGHT (8 + 64)
+  "{" => (5 + 64), // PIPE_DOWN_RIGHT (5 + 64)
+  /* /- */
+  /* |  */
+
+  "}" => (6 + 64), // PIPE_DOWN_LEFT (6 + 64)
+  /* -\  */
+  /*  |  */
+
+  "]" => (7 + 64), // PIPE_UP_LEFT (7 + 64)
+  /*  |  */
+  /* -/  */
+
+  "[" => (8 + 64), // PIPE_UP_RIGHT (8 + 64)
+  /*  |  */
+  /*  \- */
 
   "+" => (9 + 64), // VALVE_OPEN (9 + 64)
   "X" => (10 + 64), // VALVE_CLOSED (10 + 64)
