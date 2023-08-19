@@ -26,24 +26,45 @@ clean:
 	-rm firefite.xex
 	-rm firefite.o
 	-rm firefite.s
+	-rm dli.o
+	-rm dli.s
+	-rm draw_text.o
+	-rm draw_text.s
+	-rm title.o
+	-rm title.s
 	-rm segments.o
 	-rm firefite.map
 
-firefite.xex:	firefite.o segments.o atari.cfg
+firefite.xex:	firefite.o segments.o title.o draw_text.o dli.o atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o firefite.xex \
 		-t atari \
 		-m firefite.map \
-		firefite.o segments.o atari.lib
+		firefite.o segments.o title.o draw_text.o dli.o atari.lib
 
 firefite.o:  firefite.s
 	${CA65} -I "${CC65_ASMINC}" -t atari firefite.s -o firefite.o
 
-firefite.s:  firefite.c
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" \
-		-t atari \
-		firefite.c \
-		-o firefite.s
+firefite.s:  firefite.c shapes.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari firefite.c -o firefite.s
+
+title.o:  title.s
+	${CA65} -I "${CC65_ASMINC}" -t atari title.s -o title.o
+
+title.s:  title.c shapes.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari title.c -o title.s
+
+draw_text.o:  draw_text.s
+	${CA65} -I "${CC65_ASMINC}" -t atari draw_text.s -o draw_text.o
+
+draw_text.s:  draw_text.c shapes.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari draw_text.c -o draw_text.s
+
+dli.o:  dli.s
+	${CA65} -I "${CC65_ASMINC}" -t atari dli.s -o dli.o
+
+dli.s:  dli.c shapes.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari dli.c -o dli.s
 
 segments.o:     segments.s fire1.fnt fire2.fnt
 	${CA65} -I "${CC65_ASMINC}" -t atari segments.s -o segments.o
