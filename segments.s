@@ -7,13 +7,13 @@ _scr_mem:
 	.export		_font1_data
 .segment	"FONT1"
 _font1_data:
-	.incbin "fire1.fnt"
+	.incbin "fonts/fire1.fnt"
 	.code
 
 	.export		_font2_data
 .segment	"FONT2"
 _font2_data:
-	.incbin "fire2.fnt"
+	.incbin "fonts/fire2.fnt"
 	.code
 
 	.export		_levels_data

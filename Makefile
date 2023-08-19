@@ -16,6 +16,7 @@ CC65_ASMINC=${CC65_HOME}/asminc
 CC65_LIB=${CC65_HOME}/lib
 CC65_CFG=${CC65_HOME}/cfg
 CC65_FLAGS=-Osir --add-source
+LEVEL_FILES=$(wildcard levels/level*.txt)
 
 all:	firefite.xex
 
@@ -78,6 +79,6 @@ dli.s:  dli.c shapes.h
 segments.o:     segments.s fire1.fnt fire2.fnt levels.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari segments.s -o segments.o
 
-levels.dat:	levels/level1.txt
-	./level_to_dat.php levels/level1.txt
+levels.dat:	level_to_dat.php ${LEVEL_FILES}
+	./level_to_dat.php ${LEVEL_FILES}
 
