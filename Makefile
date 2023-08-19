@@ -27,11 +27,7 @@ run:	firefite.xex
 clean:
 	-rm firefite.xex
 	-rm obj/*.o
-	-rm firefite.s
-	-rm dli.s
-	-rm draw_text.s
-	-rm title.s
-	-rm game.s
+	-rm asm/*.s
 	-rm firefite.map
 	-rm levels.dat
 
@@ -42,35 +38,35 @@ firefite.xex:	${OBJECTS} src/atari.cfg
 		-m firefite.map \
 		${OBJECTS} atari.lib
 
-obj/firefite.o:  firefite.s
-	${CA65} -I "${CC65_ASMINC}" -t atari firefite.s -o obj/firefite.o
+obj/firefite.o:  asm/firefite.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/firefite.s -o obj/firefite.o
 
-firefite.s:  src/firefite.c src/title.h src/game.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/firefite.c -o firefite.s
+asm/firefite.s:  src/firefite.c src/title.h src/game.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/firefite.c -o asm/firefite.s
 
-obj/title.o:  title.s
-	${CA65} -I "${CC65_ASMINC}" -t atari title.s -o obj/title.o
+obj/title.o:  asm/title.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/title.s -o obj/title.o
 
-title.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/title.c -o title.s
+asm/title.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/title.c -o asm/title.s
 
-obj/game.o:  game.s
-	${CA65} -I "${CC65_ASMINC}" -t atari game.s -o obj/game.o
+obj/game.o:  asm/game.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/game.s -o obj/game.o
 
-game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/game.c -o game.s
+asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/game.c -o asm/game.s
 
-obj/draw_text.o:  draw_text.s
-	${CA65} -I "${CC65_ASMINC}" -t atari draw_text.s -o obj/draw_text.o
+obj/draw_text.o:  asm/draw_text.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/draw_text.s -o obj/draw_text.o
 
-draw_text.s:  src/draw_text.c src/draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/draw_text.c -o draw_text.s
+asm/draw_text.s:  src/draw_text.c src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/draw_text.c -o asm/draw_text.s
 
-obj/dli.o:  dli.s
-	${CA65} -I "${CC65_ASMINC}" -t atari dli.s -o obj/dli.o
+obj/dli.o:  asm/dli.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/dli.s -o obj/dli.o
 
-dli.s:  src/dli.c src/dli.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/dli.c -o dli.s
+asm/dli.s:  src/dli.c src/dli.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/dli.c -o asm/dli.s
 
 obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt levels.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
