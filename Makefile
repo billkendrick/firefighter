@@ -71,6 +71,6 @@ asm/dli.s:  src/dli.c src/dli.h
 obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt levels.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
 
-levels.dat:	level_to_dat.php ${LEVEL_FILES}
-	./level_to_dat.php ${LEVEL_FILES}
+levels.dat:	tools/level_to_dat.php ${LEVEL_FILES}
+	./tools/level_to_dat.php ${LEVEL_FILES}
 
