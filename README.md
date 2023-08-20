@@ -5,11 +5,11 @@ Alpha
 ## Credits
 By Bill Kendrick <bill@newbreedsoftware.com>
 
-Inspired by _Real Heroes: Firefighter_ (Wii, Conspiracy Entertainment, 2012)
+Inspired by _Real Heroes: Firefighter_ (Wii, Conspiracy Entertainment, 2012),
 _Brave Firefighters_ (SEGA, arcade, 1999), and _Robotron: 2084_
 (Williams Electronics, arcade, 1982).
 
-Developed 2023-08-13 - 2023-08-19
+Developed 2023-08-13 - 2023-08-20
 
 ------------------------------------------------------------------------
 
@@ -34,15 +34,15 @@ about it too hard).  Spray the fire to quench it, but beware because it
 spreads quickly.
 
 Find the workers trapped in the room, and help them navigate to the exit.
-They are overcome by smoke and fear, so wander randomly unless you are
-close by to guide them.  They can perish if they end up too close to a
+They are overcome by smoke and fear, and will wander aimlessly unless you
+are close by to guide them.  They can perish if they end up too close to a
 large fire!
 
 Some rooms contain crates and/or barrels which you can push out of
 your way if they block your path.  Be careful how you move them, though;
 you can only push, you cannot pull them!
 
-Pipes pump gas through some rooms, and any cracks leak this flammable
+Pipes pump gas through some rooms, and any cracks will leak this flammable
 material into the air.  If you can reach the valve, you can turn off
 the flow.
 
@@ -62,15 +62,77 @@ cause an explosion, spreading even more fire.  Beware of chain reactions!
 This game is best played with a dual-stick set-up (a la the arcade games
 _Robotron: 2084_ or _Smash TV_).  One stick controls your firefighter's
 position in the room, the other causes you to spray; in both cases,
-in any one of eight directions.
+in any one of eight directions.  You may move and spray at the same time
+(walking backwards or strafing).
 
 If you prefer to play with only one joystick, you can hold the fire button
 and push a direction to spray that way.  However, you will stand still
 while you spray!
 
-## Items
+## Object and Item Descriptions
 
-[TBD] DESCRIBE EVERY ITEM.
+### The Room
+
+Neither you, nor the workers can move through these objects.
+Fire cannot spread into/through these objects.
+
+#### Brick walls
+
+The walls that make up the room(s) in each level.
+
+#### Exit Sign and Door
+
+Walk up to these and push into them, and any workers standing next to
+you will leave the room to safety.  (This is the goal of the game!)
+
+Once all civilians have left the room (or perished), you can push into
+a door or exit leave the room yourself, and thus end the level.
+(See "Completing a Level", below.)
+
+### Movable and Destroyable Objects
+
+There are some objects which you may be able to push around the room.
+Walk up and push into them any of eight directions and, if there is
+nothing in that direction -- it must be a blank space, there may not
+be fire, gas leaks, or workers -- it will move to that position
+(you will stay in the same spot for a moment).
+
+#### Crates and Broken Crates
+
+If you have picked up the ax during the current level, when you push
+into crates they will become broken crates.  And if you push into
+broken crates, they will be completely destroyed.
+
+When fire spreads to crates and broken crates, it starts out as
+a large fire immediately!
+
+#### Oil Barrels
+
+When fire spreads to oil barrels, they cause an explosion!
+Large fire will appear at the barrel's position, as well as
+directly above, below, to the left, and to the right, if possible.
+
+### Gas Pipes and Valves
+
+#### Gas Pipes
+
+Gas pipes which are broken will leak gas, which cause explosions.
+Large fire will appear at the gas leak's position, as well as
+directly above, below, to the left, and to the right, if possible.
+
+In some levels, gas pipes start out broken.  Beware -- if you have the
+ax and walk into a pipe, it will become broken!
+
+#### Valves
+
+Closing all valves connected to pipes will turn off the gas,
+which will stop any broken pipes from leaking gas.
+
+Walk up and push into a valve to toggle its state.
+Open valves have crossbars that go up and down ("+").
+Closed valves have crossbars that go diagonal ("X").
+
+[TBD] DESCRIBE REMAINING ITEMS.
 
 ## Completing a Level
 
