@@ -554,11 +554,12 @@ void draw_level(void) {
 
   set_shape(ply_start_x, ply_start_y, FIREMAN_RIGHT);
 
-  draw_text("  -- GET READY! --  ", scr_mem);
+  draw_text("LEVEL --  GET READY!", scr_mem);
+  draw_number(level, 2, scr_mem + 6);
   flash();
   pause();
 
-  draw_text("@ FIREFIGHTER! @", scr_mem + 0 + 2);
+  draw_text("  @ FIREFIGHTER! @  ", scr_mem + 0);
 
   memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE + 1, LEVEL_SPAN);
 }
