@@ -150,11 +150,19 @@ the door or sign.  A countdown will appear at the top left.  Once it
 reaches zero (0), you will exit the level.
 
 Prior to leaving a level, you should try and put out any remaining
-fire for a large bonus (see "Scoring", below).
+fire and ensure there are no gas leaks, to receive a "safety bonus".
+
+Each level begins with a "Bonus" score that counts down over time.
+These points are also added to your score when you complete a level.
 
 ## Scoring
 
-[TBD] DESCRIBE SCORING.
+* Picking up an ax: 15 points
+* Breaking or destroying a crate: -1 point
+* Breaking a pipe: -5 points
+* Saving a worker: 100 points
+* Ending a level with no fire or gas leaks remaining: 1,000 points
+* Time bonus: Scoring potental starts at 1,000 x Level # (max 10,000)
 
 ------------------------------------------------------------------------
 

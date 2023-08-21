@@ -18,7 +18,8 @@
 #define SCORE_AX_COLLECT 15
 #define SCORE_CIVILIAN_RESCUE 100
 #define SCORE_CRATE_BREAK_DEDUCTION 1
-#define SCORE_NO_FIRE_BONUS 500 /* FIXME: Not used yet! */
+#define SCORE_PIPE_BREAK_DEDUCTION 5
+#define SCORE_NO_FIRE_BONUS 1000
 
 /* Level size/shape constants */
 #define LEVEL_W 20
@@ -55,6 +56,10 @@ unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape);
 void leak_gas(char x, char y, char dir, char on_off);
 void follow_pipes(char x, char y, char on_off);
 void set_sound(char p, char pch, char dist, char vol, char volch);
+void level_end_bonus(void);
+void flash_and_pause(char flash);
+void bonus_tally(int x, int deduct);
+void quiet(void);
 
 /* High score (external b/c shared by title screen) */
 extern unsigned long int high_score;
@@ -67,6 +72,7 @@ char level, ply_start_x, ply_start_y;
 
 /* Current level's bonus countdown */
 unsigned long int bonus;
+unsigned char bonus_tick;
 
 /* Current level's civilian counter */
 unsigned char civilians_remaining;
@@ -90,7 +96,12 @@ void start_level(void) {
 
   draw_level();
 
-  bonus = 10000;
+  if (level < 10)
+    bonus = 1000 * level;
+  else
+    bonus = 10000;
+
+  bonus_tick = 0;
 
   ply_x = ply_start_x;
   ply_y = ply_start_y;
@@ -239,7 +250,8 @@ void start_game(void) {
       } else if ((shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) && have_ax) {
         /* Break a pipe with the ax (downside of having it!) */
         set_shape(want_x, want_y, shape + 1);
-
+        score = score - SCORE_PIPE_BREAK_DEDUCTION;
+        draw_score();
         set_sound(2, 0, 0xA0, 6, 3);
       } else if (shape == DOOR || shape == EXIT1 || shape == EXIT2) {
         /* Door or exit */
@@ -273,7 +285,7 @@ void start_game(void) {
 
     /* Show "Exiting" counter */
     if (exiting > 0) {
-      POKE(scr_mem, (9 - (exiting >> 2)) + 16 + 128);
+      POKE(scr_mem, (5 - (exiting >> 3)) + 16 + 128);
     } else if (civilians_remaining == 0) {
       POKE(scr_mem, 1 + 128);
     } else {
@@ -405,12 +417,27 @@ void start_game(void) {
       hit_pitch += hit_pitch_change;
     }
 
+    /* Tick down bonus points as time goes on */
+    bonus_tick++;
+    if (bonus_tick == 50 && bonus > 0) {
+      bonus_tick = 0;
+      bonus -= 100; 
+      draw_score();
+    }
+
     /* Wait for next vertical blank (throttle fps) */
     while (ANTIC.vcount < 124);
 
 
     /* End of level test */
-    if (exiting >= (9 << 2)) {
+    if (exiting >= (5 << 3)) {
+      /* Erase the player (they've left!) */
+      set_shape(ply_x, ply_y, 0);
+
+      /* Show level completion (and any end-of-level bonus) */
+      level_end_bonus();
+
+      /* Move on to the next level */
       level++; /* FIXME: Bounds check!!! */
       start_level();
     }
@@ -418,14 +445,7 @@ void start_game(void) {
 
   POKE(0x601, 0);
 
-  POKEY_WRITE.audf1 = 0;
-  POKEY_WRITE.audc1 = 0;
-  POKEY_WRITE.audf2 = 0;
-  POKEY_WRITE.audc2 = 0;
-  POKEY_WRITE.audf3 = 0;
-  POKEY_WRITE.audc3 = 0;
-  POKEY_WRITE.audf4 = 0;
-  POKEY_WRITE.audc4 = 0;
+  quiet();
 
   OS.sdmctl = 0;
   ANTIC.nmien = NMIEN_VBI;
@@ -519,16 +539,22 @@ void draw_level(void) {
 
   l = (int) (level - 1);
 
-  draw_text("@ FIREFIGHTER! @", scr_mem + 0 + 2);
   draw_text("LEVEL: --  SCORE: ------  BONUS: -----", scr_mem + 20 + 1);
 
   memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE, LEVEL_SPAN);
 
   ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN];
   ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
+
+  set_shape(ply_start_x, ply_start_y, FIREMAN_RIGHT);
+
+  draw_text("  -- GET READY! --  ", scr_mem);
+  flash_and_pause(1);
+
+  draw_text("@ FIREFIGHTER! @", scr_mem + 0 + 2);
 }
 
-
+/* FIXME */
 void draw_score(void) {
   draw_number(level, 2, scr_mem + 28);
   draw_number(score, 6, scr_mem + 39);
@@ -826,6 +852,7 @@ unsigned char flammable(unsigned char c) {
   }
 }
 
+/* FIXME */
 void set_sound(char p, char pch, char dist, char vol, char volch) {
   hit_pitch = p;
   hit_pitch_change = pch;
@@ -833,3 +860,99 @@ void set_sound(char p, char pch, char dist, char vol, char volch) {
   hit_volume = vol;
   hit_vol_decrease = volch;
 }
+
+/* FIXME */
+void level_end_bonus(void) {
+  int i;
+  char c, any_fire;
+
+  quiet();
+
+  draw_text("  LEVEL COMPLETE!!  ", scr_mem);
+  flash_and_pause(1);
+
+  if (bonus > 0) {
+    /* Show time bonus (tally effect) */
+    draw_text(" TIME BONUS: ------ ", scr_mem);
+
+    draw_number(bonus, 6, scr_mem + 13);
+    flash_and_pause(1);
+    bonus_tally(13, 50);
+    flash_and_pause(0);
+  } else {
+    /* No time bonus */
+    draw_text("   NO TIME BONUS.   ", scr_mem);
+    flash_and_pause(1);
+  }
+
+  /* Check whether any fire or gas leaks remained */
+  any_fire = 0;
+  for (i = 0; i < LEVEL_SPAN && !any_fire; i++) {
+    c = PEEK(scr_mem + 60 + i);
+    if (c == FIRE_SM || c == FIRE_MD || c == FIRE_LG ||
+        c == GASLEAK_RIGHT || c == GASLEAK_LEFT ||
+        c == GASLEAK_UP || c == GASLEAK_DOWN) {
+      any_fire = 1;
+    }
+  }
+
+  if (any_fire == 0) {
+    /* Show safety bonus (tally effect) */
+    draw_text("SAFETY BONUS: ------", scr_mem);
+    bonus = SCORE_NO_FIRE_BONUS;
+    draw_number(bonus, 6, scr_mem + 14);
+    flash_and_pause(1);
+    bonus_tally(14, 50);
+    flash_and_pause(0);
+  } else {
+    /* No time bonus */
+    draw_text("  NO SAFETY BONUS.  ", scr_mem);
+    flash_and_pause(1);
+  }
+}
+
+/* FIXME */
+void flash_and_pause(char flash) {
+  int i;
+
+  if (flash) {
+    for (i = 0; i < 32; i++) {
+      OS.color4 = 15 - (i >> 1);
+      POKE(0x601, 15 - (i >> 1));
+      while (ANTIC.vcount < 124);
+    }
+  }
+
+  for (i = 0; i < 800; i++) {
+    while (ANTIC.vcount < 124);
+  }
+}
+
+/* FIXME */
+void bonus_tally(int x, int deduct) {
+  while (bonus >= deduct) {
+    bonus = bonus - deduct;
+    score = score + deduct;
+    draw_score();
+    draw_number(bonus, 6, scr_mem + x);
+    while (ANTIC.vcount < 124);
+  }
+
+  score = score + bonus;
+  bonus = 0;
+  draw_score();
+  draw_text("000000", scr_mem + x);
+}
+
+/* Silence all sound channels: */
+void quiet(void) {
+  POKEY_WRITE.audf1 = 0;
+  POKEY_WRITE.audc1 = 0;
+  POKEY_WRITE.audf2 = 0;
+  POKEY_WRITE.audc2 = 0;
+  POKEY_WRITE.audf3 = 0;
+  POKEY_WRITE.audc3 = 0;
+  POKEY_WRITE.audf4 = 0;
+  POKEY_WRITE.audc4 = 0;
+}
+
