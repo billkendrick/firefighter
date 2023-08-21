@@ -286,7 +286,50 @@ the game area, based on events (e.g., flashing when an oil barrel explodes).
 
 ## Sound
 
-[TBD] Explain how sound works.
+### Title screen
+
+The title screen has a timer that increments each frame.  During some
+parts of its count, it will play an oscillating siren tone that
+increases in volume (and pitch), then decreases in volume (and pitch).
+(Yes, I made a vague attemt at a "firetruck speeding by" Doppler effect.)
+
+Easter egg: If you push either stick in any direction on the title
+screen, you can cause a firetruck horn blaring noise while the sirens
+are audible!
+
+### General Game Sounds
+
+Various game sounds are played on one of the Atari's four "voices",
+and is handled by a number of variables used to set the pitch,
+initial volume, pitch change (if any), and speed of volume decrease.
+The pitch (if applicable) and volume change once per game loop.
+
+This system is used for the majority of events, which are:
+
+ * Collecting the ax
+ * Pushing crates/oil barrels
+ * Breaking/destroying crates
+ * Damaging pipes
+ * Opening/closing gas pipeline valves
+ * Rescuing workers & workers perishing
+
+### Water Spray Sound
+
+This is a simple high-pitched hiss sound played on a dedicated
+"voice" whenever the joystick is being used to (attempt to) spray
+water in any direction.
+
+### Fire Crackling Sound
+
+The fire sound is a random, low-pitched sound played on its own dedicated
+"voice", and its volume is based on how much fire is on the screen.
+(A counter ticks up each time fire is observed during the cellular
+automaton routine.  That routine actually sets the sound registers.)
+
+### Explosion Sound
+
+This is a totally random noise sound played on its own dedicated
+"voice", controlled by a countdown timer that sets its volume.
 
 ## Gameplay
 
