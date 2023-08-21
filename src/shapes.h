@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-17
+  2023-08-13 - 2023-08-21
 */
 
 #ifndef _SHAPES_H
@@ -34,8 +34,8 @@
 #define CRATE (17 + 192)
 #define CRATE_BROKEN (18 + 192)
 
-#define FIREMAN_LEFT (19 + 128)
-#define FIREMAN_RIGHT (20 + 128)
+#define FIREFIGHTER_LEFT (19 + 128)
+#define FIREFIGHTER_RIGHT (20 + 128)
 
 #define AX (21 + 64)
 

@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-15 - 2023-08-20
+  2023-08-15 - 2023-08-21
 */
 
 #include <atari.h>
@@ -294,7 +294,7 @@ void start_game(void) {
     }
 
     /* Draw the player */
-    set_shape(ply_x, ply_y, FIREMAN_LEFT + ply_dir);
+    set_shape(ply_x, ply_y, FIREFIGHTER_LEFT + ply_dir);
 
     /* Cellular automata the screen */
     cellular_automata();
@@ -552,7 +552,7 @@ void draw_level(void) {
   ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
   ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 2];
 
-  set_shape(ply_start_x, ply_start_y, FIREMAN_RIGHT);
+  set_shape(ply_start_x, ply_start_y, FIREFIGHTER_RIGHT);
 
   draw_text("LEVEL --  GET READY!", scr_mem);
   draw_number(level, 2, scr_mem + 6);
@@ -915,6 +915,7 @@ void level_end_bonus(void) {
 
     draw_text("SAFETY BONUS: ------", scr_mem);
     draw_number(bonus, 6, scr_mem + 14);
+    draw_score();
     flash();
     pause();
 

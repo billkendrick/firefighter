@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-20
+  2023-08-13 - 2023-08-21
 */
 
 #include <atari.h>
@@ -126,11 +126,11 @@ void show_title(void) {
 
   POKE(scr_mem + 243, 'e' + 64);
   POKE(scr_mem + 244, 'g' + 64);
-  POKE(scr_mem + 245, FIREMAN_LEFT);
+  POKE(scr_mem + 245, FIREFIGHTER_LEFT);
 
   POKE(scr_mem + 248, CIVILIAN);
   POKE(scr_mem + 249, CIVILIAN);
-  POKE(scr_mem + 250, FIREMAN_RIGHT);
+  POKE(scr_mem + 250, FIREFIGHTER_RIGHT);
 
   POKE(scr_mem + 255, DOOR);
   POKE(scr_mem + 257, EXIT1);

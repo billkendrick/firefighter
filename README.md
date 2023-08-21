@@ -1,6 +1,8 @@
 # Firefighter
 
-Alpha
+### Version: Alpha
+
+A twin-stick firefighting action game for the Atari 8-bit.
 
 ## Credits
 By Bill Kendrick <bill@newbreedsoftware.com>
@@ -9,7 +11,7 @@ Inspired by _Real Heroes: Firefighter_ (Wii, Conspiracy Entertainment, 2012),
 _Brave Firefighters_ (SEGA, arcade, 1999), and _Robotron: 2084_
 (Williams Electronics, arcade, 1982).
 
-Developed 2023-08-13 - 2023-08-20
+Developed 2023-08-13 - 2023-08-21
 
 ------------------------------------------------------------------------
 
@@ -235,3 +237,4 @@ assembly language in this game.)
 
 [TBD] Explain how levels are designed.
 
+See the [levels documentation](levels/README.md) for details.
