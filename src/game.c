@@ -57,7 +57,8 @@ void leak_gas(char x, char y, char dir, char on_off);
 void follow_pipes(char x, char y, char on_off);
 void set_sound(char p, char pch, char dist, char vol, char volch);
 void level_end_bonus(void);
-void flash_and_pause(char flash);
+void flash(void);
+void pause(void);
 void bonus_tally(int x, int deduct);
 void quiet(void);
 
@@ -539,9 +540,9 @@ void draw_level(void) {
 
   l = (int) (level - 1);
 
-  draw_text("LEVEL: --  SCORE: ------  BONUS: -----", scr_mem + 20 + 1);
+  bzero(scr_mem + 60, LEVEL_SPAN);
 
-  memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE, LEVEL_SPAN);
+  draw_text("LEVEL: --  SCORE: ------  BONUS: -----", scr_mem + 20 + 1);
 
   ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN];
   ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
@@ -549,9 +550,12 @@ void draw_level(void) {
   set_shape(ply_start_x, ply_start_y, FIREMAN_RIGHT);
 
   draw_text("  -- GET READY! --  ", scr_mem);
-  flash_and_pause(1);
+  flash();
+  pause();
 
   draw_text("@ FIREFIGHTER! @", scr_mem + 0 + 2);
+
+  memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE, LEVEL_SPAN);
 }
 
 /* FIXME */
@@ -869,20 +873,23 @@ void level_end_bonus(void) {
   quiet();
 
   draw_text("  LEVEL COMPLETE!!  ", scr_mem);
-  flash_and_pause(1);
+  flash();
+  pause();
 
   if (bonus > 0) {
     /* Show time bonus (tally effect) */
     draw_text(" TIME BONUS: ------ ", scr_mem);
-
     draw_number(bonus, 6, scr_mem + 13);
-    flash_and_pause(1);
+    flash();
+    pause();
+
     bonus_tally(13, 50);
-    flash_and_pause(0);
+    pause();
   } else {
     /* No time bonus */
     draw_text("   NO TIME BONUS.   ", scr_mem);
-    flash_and_pause(1);
+    flash();
+    pause();
   }
 
   /* Check whether any fire or gas leaks remained */
@@ -898,30 +905,36 @@ void level_end_bonus(void) {
 
   if (any_fire == 0) {
     /* Show safety bonus (tally effect) */
-    draw_text("SAFETY BONUS: ------", scr_mem);
     bonus = SCORE_NO_FIRE_BONUS;
+
+    draw_text("SAFETY BONUS: ------", scr_mem);
     draw_number(bonus, 6, scr_mem + 14);
-    flash_and_pause(1);
+    flash();
+    pause();
+
     bonus_tally(14, 50);
-    flash_and_pause(0);
+    pause();
   } else {
     /* No time bonus */
     draw_text("  NO SAFETY BONUS.  ", scr_mem);
-    flash_and_pause(1);
+    flash();
+    pause();
   }
 }
 
 /* FIXME */
-void flash_and_pause(char flash) {
-  int i;
+void flash(void) {
+  char i;
 
-  if (flash) {
-    for (i = 0; i < 32; i++) {
-      OS.color4 = 15 - (i >> 1);
-      POKE(0x601, 15 - (i >> 1));
-      while (ANTIC.vcount < 124);
-    }
+  for (i = 0; i < 32; i++) {
+    OS.color4 = 15 - (i >> 1);
+    POKE(0x601, 15 - (i >> 1));
+    while (ANTIC.vcount < 124);
   }
+}
+
+void pause(void) {
+  int i;
 
   for (i = 0; i < 800; i++) {
     while (ANTIC.vcount < 124);
