@@ -16,10 +16,12 @@ extern unsigned char scr_mem[];
 unsigned char * dlist = (scr_mem + 512);
 unsigned long int high_score;
 char high_score_name[4];
+char main_stick;
 
 void main(void) {
   high_score = 123456;
   strcpy(high_score_name, "BJK");
+  main_stick = STICK_LEFT;
 
   do {
     show_title();

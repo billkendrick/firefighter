@@ -55,7 +55,12 @@ cause an explosion, spreading even more fire.  Beware of chain reactions!
 
 ## Starting the Game
 
-[TBD] DESCRIBE TITLE SCREEN CONTROLS AND STARTING THE GAME.
+The title screen shows some brief instructions and descriptions of
+objects.  Press the `Start` console key or firebutton on either
+joystick to begin a game.
+
+You can select which joystick moves the firefighter, and which sprays,
+by pressing the `Option` console key.
 
 ## Controls
 

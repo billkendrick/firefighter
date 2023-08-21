@@ -14,22 +14,34 @@
 #include "draw_text.h"
 #include "dli.h"
 
+/* FIXME: Shove in a "score.h" header? */
+#define SCORE_AX_COLLECT 15
+#define SCORE_CIVILIAN_RESCUE 100
+#define SCORE_CRATE_BREAK_DEDUCTION 1
+#define SCORE_NO_FIRE_BONUS 500 /* FIXME: Not used yet! */
+
+/* Level size/shape constants */
 #define LEVEL_W 20
 #define LEVEL_H 11
 #define LEVEL_SPAN (LEVEL_W * LEVEL_H)
 #define LEVEL_TOT_SIZE (LEVEL_SPAN + 2)
 
+/* External memory pointers we need */
 extern unsigned char font1_data[];
-// extern unsigned char font2_data[]; /* Not actually referenced */
-
 extern unsigned char levels_data[];
-
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
 
+/* Joystick input choice */
+extern char main_stick;
+
+/* The X & Y deltas for the 8 directions (clockwise, starting up / north) */
 int dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
 int dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 
+/* Local function prototypes (or macros): */
+void start_level(void);
+void draw_score(void);
 void setup_game_screen(void);
 #define shape_at(x, y) (PEEK(scr_mem + 60 + ((y) * LEVEL_W) + (x)))
 #define set_shape(x, y, s) POKE(scr_mem + 60 + ((y) * LEVEL_W) + (x), (s))
@@ -44,28 +56,34 @@ void leak_gas(char x, char y, char dir, char on_off);
 void follow_pipes(char x, char y, char on_off);
 void set_sound(char p, char pch, char dist, char vol, char volch);
 
+/* High score (external b/c shared by title screen) */
+extern unsigned long int high_score;
+
+/* Current level and player's starting position */
+char level, ply_start_x, ply_start_y;
+
+/* Current game score */
+unsigned long int score;
+
+/* Active level: Player's position, bonus countdown */
 #define DIR_LEFT 0
 #define DIR_RIGHT 1
+unsigned char ply_dir, ply_x, ply_y, have_ax;
+unsigned long int bonus;
 
-/* FIXME */
-char level, ply_start_x, ply_start_y;
-unsigned long int score, bonus;
-extern unsigned long int high_score;
+/* Visual & sound event effect counters */
 char exploding, dying;
 char hit_pitch, hit_pitch_change, hit_volume, hit_distortion, hit_vol_decrease;
+
+/* Cellular automata state */
 char odd_even;
-unsigned char ply_x, ply_y;
 
 
-/* The main game loop! */
-void start_game(void) {
-  unsigned char ply_dir, want_x, want_y, push_x, push_y, stick, shape, shape2, have_ax;
-
-  setup_game_screen();
-
-  level = 1;
-  score = 0;
+/* Draw the level and set initial state of the level */
+void start_level(void) {
   draw_level();
+
+  bonus = 10000;
 
   ply_x = ply_start_x;
   ply_y = ply_start_y;
@@ -77,6 +95,21 @@ void start_game(void) {
 
   odd_even = 0;
 
+  draw_score();
+}
+
+
+/* The main game loop! */
+void start_game(void) {
+  unsigned char want_x, want_y, push_x, push_y, stick, shape, shape2;
+
+  setup_game_screen();
+
+  level = 1;
+  score = 0;
+
+  start_level();
+
   set_sound(0, 0, 0, 0, 0);
 
   do {
@@ -87,7 +120,10 @@ void start_game(void) {
     push_x = ply_x;
     push_y = ply_y;
 
-    stick = (OS.stick0 ^ 0x0F);
+    if (main_stick == STICK_LEFT)
+      stick = (OS.stick0 ^ 0x0F);
+    else
+      stick = (OS.stick1 ^ 0x0F);
 
 #define STK_BIT_RIGHT 8
 #define STK_BIT_LEFT 4
@@ -139,6 +175,8 @@ void start_game(void) {
           have_ax = 1;
           draw_text("ax", scr_mem + 0 + 18);
           set_sound(20, 0, 0xA0, 14, 2);
+          score += SCORE_AX_COLLECT;
+          draw_score();
         }
       } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL) {
         /* Hitting a crate or oil barrel */
@@ -147,8 +185,13 @@ void start_game(void) {
           /* Have the ax? You can break crates! */
 
           set_shape(want_x, want_y, (shape == CRATE ? CRATE_BROKEN : 0));
-
           set_sound(200, 0, 0x60, 10, 5);
+          if (score >= SCORE_CRATE_BREAK_DEDUCTION) {
+            score -= SCORE_CRATE_BREAK_DEDUCTION;
+          } else {
+            score = 0;
+          }
+          draw_score();
         } else {
           /* No ax, or not a crate? See whether we can push it */
 
@@ -191,6 +234,8 @@ void start_game(void) {
           if (valid_dir(x, y, dir)) {
             if (shape_at(x, y) == CIVILIAN) {
               set_shape(x, y, 0);
+              score = score + SCORE_CIVILIAN_RESCUE;
+              draw_score();
             }
           }
         }
@@ -217,10 +262,17 @@ void start_game(void) {
 #define WATER_NE (56 + 128) 
 
     /* (Alternatively, left stick + trigger to spray) */
-    if (OS.strig0)
-      stick = OS.stick1;
-    else
-      stick = OS.stick0;
+    if (main_stick == STICK_LEFT) {
+      if (OS.strig0)
+        stick = OS.stick1;
+      else
+        stick = OS.stick0;
+    } else {
+      if (OS.strig1)
+        stick = OS.stick0;
+      else
+        stick = OS.stick1;
+    }
 
     if (stick == 7) {
       /* Right (East) */
@@ -427,8 +479,10 @@ void draw_level(void) {
 
   ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN];
   ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
-  bonus = 10000;
+}
 
+
+void draw_score(void) {
   draw_number(level, 2, scr_mem + 28);
   draw_number(score, 6, scr_mem + 39);
   draw_number(bonus, 6, scr_mem + 54);

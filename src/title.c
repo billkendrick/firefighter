@@ -13,6 +13,7 @@
 #include "shapes.h"
 #include "draw_text.h"
 #include "dli.h"
+#include "game.h"
 
 extern unsigned char font1_data[];
 // extern unsigned char font2_data[]; /* Not actually referenced */
@@ -22,10 +23,13 @@ extern unsigned char * dlist;
 
 extern unsigned long int high_score;
 extern char high_score_name[4];
+extern char main_stick;
+
+void show_controls(void);
 
 void show_title(void) {
   int i;
-  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
+  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk, select_down;
 
   OS.sdmctl = 0;
 
@@ -54,11 +58,17 @@ void show_title(void) {
   }
 
   POKE(dlist + 26, DL_BLK2);
-  for (i = 27; i < 32; i++)
+  for (i = 27; i < 30; i++)
     POKE(dlist + i, DL_GRAPHICS0);
+  POKE(dlist + 30, DL_BLK1);
 
-  POKE(dlist + 32, DL_JVB);
-  POKEW(dlist + 33, (unsigned int) dlist);
+  POKE(dlist + 31, DL_GRAPHICS0);
+
+  POKE(dlist + 32, DL_BLK4);
+  POKE(dlist + 33, DL_GRAPHICS0);
+
+  POKE(dlist + 34, DL_JVB);
+  POKEW(dlist + 35, (unsigned int) dlist);
 
   OS.sdlst = dlist;
   OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
@@ -124,11 +134,11 @@ void show_title(void) {
   POKE(scr_mem + 257, EXIT1);
   POKE(scr_mem + 258, EXIT2);
 
-  draw_text("USE LEFT JOYSTICK TO MOVE.", scr_mem + 260 + 7);
-  draw_text("USE RIGHT STICK (OR LEFT STICK + FIRE)", scr_mem + 300 + 1);
+  show_controls();
   draw_text("TO SPRAY.", scr_mem + 340 + 16);
-  draw_text("--PRESS START OR FIRE TO BEGIN!--", scr_mem + 380 + 3);
+  draw_text("START/FIRE: BEGIN - SELECT: SWAP STICKS", scr_mem + 380 + 0);
   draw_text("HIGH SCORE: ------ ---", scr_mem + 420 + 9);
+
   draw_number(high_score, 6, scr_mem + 441);
   draw_text(high_score_name, scr_mem + 448);
 
@@ -146,6 +156,8 @@ void show_title(void) {
 
   do {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
+
+  select_down = 0;
 
   do {
     OS.color0 = OS.rtclok[2];
@@ -193,6 +205,16 @@ void show_title(void) {
           honk = (POKEY_READ.random % 0x0F) + 15;
       }
     }
+
+    if (CONSOL_SELECT(GTIA_READ.consol) == 1) {
+      if (select_down == 0) {
+        main_stick = !main_stick; /* (choices are 0 & 1) */
+        show_controls();
+        select_down = 1;
+      }
+    } else {
+      select_down = 0;
+    }
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0);
 
   POKEY_WRITE.audc1 = 0;
@@ -209,5 +231,15 @@ void show_title(void) {
 
   do {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
+}
+
+void show_controls(void) {
+  if (main_stick == STICK_LEFT) {
+    draw_text("USE LEFT JOYSTICK TO MOVE. ", scr_mem + 260 + 7);
+    draw_text("USE RIGHT STICK (OR LEFT STICK + FIRE)", scr_mem + 300 + 1);
+  } else {
+    draw_text("USE RIGHT JOYSTICK TO MOVE.", scr_mem + 260 + 7);
+    draw_text("USE LEFT STICK (OR RIGHT STICK + FIRE)", scr_mem + 300 + 1);
+  }
 }
 
