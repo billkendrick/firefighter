@@ -102,6 +102,12 @@ for ($i = 1; $i < $argc; $i++) {
       $c = substr($line, $x, 1);
       if ($c == 'F') {
         $c = ' ';
+        if ($fireman_x != -1) {
+          fprintf(STDERR, "Line %d of %s contains another 'F' fireman at position %d; only one allowed per level!\n",
+            $y + 1, $argv[$i], $x + 1);
+          level_abort();
+        }
+
         $fireman_x = $x;
         $fireman_y = $y;
       }
@@ -116,14 +122,14 @@ for ($i = 1; $i < $argc; $i++) {
     }
   }
 
-  printf("Fireman @ (%d,%d)\n", $fireman_x, $fireman_y);
-  fputs($fo, chr($fireman_x), 1);
-  fputs($fo, chr($fireman_y), 1);
-
   if ($fireman_x == -1) {
     fprintf(STDERR, "%s did not have an 'F' fireman location!\n", $argv[$i]);
     level_abort();
   }
+
+  printf("Fireman @ (%d,%d)\n", $fireman_x, $fireman_y);
+  fputs($fo, chr($fireman_x), 1);
+  fputs($fo, chr($fireman_y), 1);
 
   echo "\n";
 }
