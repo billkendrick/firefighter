@@ -19,8 +19,10 @@ extern unsigned char font1_data[];
 // extern unsigned char font2_data[]; /* Not actually referenced */
 
 extern unsigned char scr_mem[];
+extern unsigned char levels_data[];
 extern unsigned char * dlist;
 
+extern char level;
 extern unsigned long int high_score;
 extern char high_score_name[4];
 extern char main_stick;
@@ -29,7 +31,9 @@ void show_controls(void);
 
 void show_title(void) {
   int i;
-  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk, select_down;
+  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
+  unsigned int select_down;
+  unsigned char option_down;
 
   OS.sdmctl = 0;
 
@@ -63,12 +67,13 @@ void show_title(void) {
   POKE(dlist + 30, DL_BLK1);
 
   POKE(dlist + 31, DL_GRAPHICS0);
+  POKE(dlist + 32, DL_GRAPHICS0);
 
-  POKE(dlist + 32, DL_BLK4);
-  POKE(dlist + 33, DL_GRAPHICS0);
+  POKE(dlist + 33, DL_BLK4);
+  POKE(dlist + 34, DL_GRAPHICS0);
 
-  POKE(dlist + 34, DL_JVB);
-  POKEW(dlist + 35, (unsigned int) dlist);
+  POKE(dlist + 35, DL_JVB);
+  POKEW(dlist + 36, (unsigned int) dlist);
 
   OS.sdlst = dlist;
   OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
@@ -138,11 +143,15 @@ void show_title(void) {
 
   show_controls();
   draw_text("TO SPRAY.", scr_mem + 340 + 16);
-  draw_text("START/FIRE: BEGIN - SELECT: SWAP STICKS", scr_mem + 380 + 0);
-  draw_text("HIGH SCORE: ------ ---", scr_mem + 420 + 9);
 
-  draw_number(high_score, 6, scr_mem + 441);
-  draw_text(high_score_name, scr_mem + 448);
+  draw_text("START/FIRE: BEGIN - OPTION: SWAP STICKS", scr_mem + 380 + 0);
+  draw_text("SELECT: STARTING LEVEL --", scr_mem + 420 + 7);
+  draw_number(level, 2, scr_mem + 450);
+
+  draw_text("HIGH SCORE: ------ ---", scr_mem + 460 + 9);
+
+  draw_number(high_score, 6, scr_mem + 481);
+  draw_text(high_score_name, scr_mem + 488);
 
   OS.sdmctl = 34;
 
@@ -160,6 +169,7 @@ void show_title(void) {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
 
   select_down = 0;
+  option_down = 0;
 
   do {
     OS.color0 = OS.rtclok[2];
@@ -208,14 +218,32 @@ void show_title(void) {
       }
     }
 
+    /* Select: Change starting level */
     if (CONSOL_SELECT(GTIA_READ.consol) == 1) {
       if (select_down == 0) {
-        main_stick = !main_stick; /* (choices are 0 & 1) */
-        show_controls();
-        select_down = 1;
+        if (level < levels_data[0])
+          level++;
+        else
+          level = 1;
+
+        draw_number(level, 2, scr_mem + 450);
+        select_down = 32;
+      } else {
+        select_down += 32;
       }
     } else {
       select_down = 0;
+    }
+
+    /* Option: Toggle controls */
+    if (CONSOL_OPTION(GTIA_READ.consol) == 1) {
+      if (option_down == 0) {
+        main_stick = !main_stick; /* (choices are 0 & 1) */
+        show_controls();
+        option_down = 1;
+      }
+    } else {
+      option_down = 0;
     }
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0);
 

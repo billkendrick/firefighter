@@ -69,7 +69,8 @@ extern unsigned long int high_score;
 unsigned long int score;
 
 /* Current level number and player's starting position */
-char level, ply_start_x, ply_start_y;
+extern char level;
+char ply_start_x, ply_start_y;
 
 /* Current level's bonus countdown */
 unsigned long int bonus;
@@ -134,7 +135,6 @@ void start_game(void) {
 
   setup_game_screen();
 
-  level = 1;
   score = 0;
 
   start_level();

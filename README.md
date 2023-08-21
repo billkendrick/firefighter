@@ -64,6 +64,8 @@ joystick to begin a game.
 You can select which joystick moves the firefighter, and which sprays,
 by pressing the `Option` console key.
 
+You can choose a starting level by using the `Select` console key.
+
 ## Controls
 
 This game is best played with a dual-stick set-up (a la the arcade games
