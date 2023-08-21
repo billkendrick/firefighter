@@ -59,17 +59,22 @@ void set_sound(char p, char pch, char dist, char vol, char volch);
 /* High score (external b/c shared by title screen) */
 extern unsigned long int high_score;
 
-/* Current level and player's starting position */
-char level, ply_start_x, ply_start_y;
-
 /* Current game score */
 unsigned long int score;
 
-/* Active level: Player's position, bonus countdown */
+/* Current level number and player's starting position */
+char level, ply_start_x, ply_start_y;
+
+/* Current level's bonus countdown */
+unsigned long int bonus;
+
+/* Current level's civilian counter */
+unsigned char civilians_remaining;
+
+/* Player's directon, position, and state */
 #define DIR_LEFT 0
 #define DIR_RIGHT 1
-unsigned char ply_dir, ply_x, ply_y, have_ax;
-unsigned long int bonus;
+unsigned char ply_dir, ply_x, ply_y, have_ax, exiting;
 
 /* Visual & sound event effect counters */
 char exploding, dying;
@@ -81,6 +86,8 @@ char odd_even;
 
 /* Draw the level and set initial state of the level */
 void start_level(void) {
+  int i;
+
   draw_level();
 
   bonus = 10000;
@@ -89,6 +96,7 @@ void start_level(void) {
   ply_y = ply_start_y;
   ply_dir = DIR_RIGHT;
   have_ax = 0;
+  exiting = 0;
 
   exploding = 0;
   dying = 0;
@@ -96,6 +104,15 @@ void start_level(void) {
   odd_even = 0;
 
   draw_score();
+
+  civilians_remaining = 0;
+  for (i = 0; i < LEVEL_SPAN; i++) {
+    if (PEEK(scr_mem + 60 + i) == CIVILIAN) {
+      civilians_remaining++;
+    }
+  }
+
+  set_sound(0, 0, 0, 0, 0);
 }
 
 
@@ -110,7 +127,6 @@ void start_game(void) {
 
   start_level();
 
-  set_sound(0, 0, 0, 0, 0);
 
   do {
     /* Control the player based on Joystick 1 input */
@@ -226,8 +242,10 @@ void start_game(void) {
 
         set_sound(2, 0, 0xA0, 6, 3);
       } else if (shape == DOOR || shape == EXIT1 || shape == EXIT2) {
+        /* Door or exit */
         char dir, x, y;
 
+        /* If any civilians are adjacent to player, save them! */
         for (dir = 0; dir < 8; dir++) {
           x = ply_x + dir_x[dir];
           y = ply_y + dir_y[dir];
@@ -236,15 +254,34 @@ void start_game(void) {
               set_shape(x, y, 0);
               score = score + SCORE_CIVILIAN_RESCUE;
               draw_score();
+              civilians_remaining--;
             }
           }
         }
+
+        /* No more civilians remain; push a few seconds to exit
+           (avoids immediately exiting level after saving final
+           civilian, in case player wants to go back and put out
+           remaining fire) */
+        if (civilians_remaining == 0) {
+          exiting++;
+        }
       }
+    } else {
+      exiting = 0;
+    }
+
+    /* Show "Exiting" counter */
+    if (exiting > 0) {
+      POKE(scr_mem, (9 - (exiting >> 2)) + 16 + 128);
+    } else if (civilians_remaining == 0) {
+      POKE(scr_mem, 1 + 128);
+    } else {
+      POKE(scr_mem, 0);
     }
 
     /* Draw the player */
     set_shape(ply_x, ply_y, FIREMAN_LEFT + ply_dir);
-
 
     /* Cellular automata the screen */
     cellular_automata();
@@ -368,7 +405,15 @@ void start_game(void) {
       hit_pitch += hit_pitch_change;
     }
 
+    /* Wait for next vertical blank (throttle fps) */
     while (ANTIC.vcount < 124);
+
+
+    /* End of level test */
+    if (exiting >= (9 << 2)) {
+      level++; /* FIXME: Bounds check!!! */
+      start_level();
+    }
   } while (CONSOL_START(GTIA_READ.consol) == 0);
 
   POKE(0x601, 0);
@@ -457,6 +502,8 @@ void setup_game_screen(void) {
   POKE(0x600, OS.chbas + 2);
 
   OS.color0 = 0x52;
+  OS.color1 = 0x02;
+  OS.color2 = 0xA8;
 
   ANTIC.nmien = NMIEN_VBI;
   while (ANTIC.vcount < 124);
@@ -760,6 +807,7 @@ unsigned char flammable(unsigned char c) {
        on the screen, but indicates we want an explosion) */
     return FIRE_XLG;
   } else if (c == CIVILIAN) {
+    civilians_remaining--;
     set_sound(100, 2, 0xA0, 15, 1);
     dying = 14;
     return 0;

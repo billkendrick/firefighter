@@ -141,7 +141,16 @@ Closed valves have crossbars that go diagonal ("X").
 
 ## Completing a Level
 
-[TBD] HOW TO END THE LEVEL.
+When no more workers remain on the screen -- either by being rescued,
+or perishing -- you may exit the level.  This is indicated by a blue
+exclamation point appearing at the top left of the screen.
+
+Walk to a door or "Exit" sign and hold the stick in the direction of
+the door or sign.  A countdown will appear at the top left.  Once it
+reaches zero (0), you will exit the level.
+
+Prior to leaving a level, you should try and put out any remaining
+fire for a large bonus (see "Scoring", below).
 
 ## Scoring
 
