@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/
 #
-# 2023-08-13 - 2023-08-19
+# 2023-08-13 - 2023-08-21
 
 CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
@@ -25,8 +25,10 @@ all:	firefite.xex
 run:	firefite.xex
 	atari800 -nobasic -run firefite.xex
 
-clean:
+clean:	clean-intermediate
 	-rm firefite.xex
+
+clean-intermediate:
 	-rm obj/*.o
 	-rm asm/*.s
 	-rm firefite.map
