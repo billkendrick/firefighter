@@ -147,7 +147,49 @@ When fire spreads to oil barrels, they cause an explosion!
 Large fire will appear at the barrel's position, as well as
 directly above, below, to the left, and to the right, if possible.
 
-[TBD] DESCRIBE REMAINING ITEMS.
+#### Workers
+
+Workers are the green, flailing people running around the room.
+They normally move randomly, but if you are nearby, they will
+tend to move towards you.  Use this behavior to lead them to the
+exit.  Stand next to the exit and push your joystick towards a
+door or exit sign, and any adjacent workers will be rescued:
+they disappear from the room, you'll hear a chime sound, and
+you'll receive points.
+
+If a large fire ends up spreading onto a worker, they'll
+perish: they disappear from the room, you'll hear a sad tone,
+and the screen will flash red.
+
+#### Ax
+
+The ax is a collectible object that appear on some levels.
+(You start each level without the ax.)  When you touch it, it
+will disappear from the room, you'll hear a chime, you'll
+receive some points, and the word "AX" will appear at the top right.
+(Note: You cannot "unequip" yourself of the ax.)
+
+As described above, the ax can be used to break and destroy crates,
+but can also break pipes if you're not careful -- and that can lead
+to gas leaks, which lead to explosions, which leads to even more
+fire to contend with!
+
+The ax can be destroyed by fire!  When fire spreads onto the ax,
+it starts out as a large fire immediately!
+
+#### Fire
+
+Each level begins with, at the very least, a small fire somewhere
+on the screen.  As the game goes on, small fires will grow into
+medium fires, medium fires will grow into large fires, and large
+fires will spread into adjacent positions in the room.
+
+Normally, when fire spreads, the new fire will start out small.
+However, as described above, when fire spreads onto some objects,
+the new fire will start out large.  In some cases, there'll be
+an explosion (the screen will flash and an explosion sound will
+play), which can cause more large fire to appear adjacent to
+whatever caused the explosion!
 
 ## Completing a Level
 
