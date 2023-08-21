@@ -76,7 +76,9 @@ void show_title(void) {
   POKE(0x600, OS.chbas + 2);
 
   OS.color0 = 0x52;
+  OS.color1 = 0xCA;
   OS.color2 = 0x02;
+  OS.color3 = 0x46;
   OS.color4 = 0x02;
 
   ANTIC.nmien = NMIEN_VBI;
