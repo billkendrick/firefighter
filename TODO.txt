@@ -2,7 +2,8 @@ TODO.txt for Firefighter
 2023-08-18 - 2023-08-20
 
  * More levels
- * High score tracking
+ * Bonus tally sound effects
  * Finish README documentation
  * Track which civilians moved this loop, to avoid possibly moving (diagonally right) every row!
+ * High score tracking
 
