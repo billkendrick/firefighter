@@ -4,5 +4,6 @@ TODO.txt for Firefighter
  * More levels
  * Finish README documentation
  * Track which civilians moved this loop, to avoid possibly moving (diagonally right) every row!
+ * Reconsider how leaky gas pipes work
  * High score tracking
 

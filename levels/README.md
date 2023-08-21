@@ -4,7 +4,8 @@ Creating levels for "Firefighter", a twin-stick firefighting action game
 for the Atari 8-bit.
 
 ## Credits
-By Bill Kendrick <bill@newbreedsoftware.com>
+By Bill Kendrick <bill@newbreedsoftware.com>  
+http://www.newbreedsoftware.com/firefighter/
 
 Documented 2023.08.18 - 2023.08.21
 
