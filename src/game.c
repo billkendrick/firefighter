@@ -268,6 +268,7 @@ void start_game(void) {
               score = score + SCORE_CIVILIAN_RESCUE;
               draw_score();
               civilians_remaining--;
+              set_sound(50, -2, 0xA0, 15, 3);
             }
           }
         }
@@ -931,11 +932,16 @@ void level_end_bonus(void) {
 
 /* FIXME */
 void flash(void) {
-  char i;
+  char i, j;
 
   for (i = 0; i < 32; i++) {
-    OS.color4 = 15 - (i >> 1);
-    POKE(0x601, 15 - (i >> 1));
+    j = 15 - (i >> 1);
+    OS.color4 = j;
+    POKE(0x601, j);
+
+    POKEY_WRITE.audf1 = 10;
+    POKEY_WRITE.audc1 = j;
+
     while (ANTIC.vcount < 124);
   }
 }
@@ -955,8 +961,15 @@ void bonus_tally(int x, int deduct) {
     score = score + deduct;
     draw_score();
     draw_number(bonus, 6, scr_mem + x);
+
+    POKEY_WRITE.audf1 = bonus >> 4;
+    POKEY_WRITE.audc1 = 0xA0 + (OS.rtclok[3] & 0x0F);
+    POKEY_WRITE.audf2 = (bonus >> 4) + 1;
+    POKEY_WRITE.audc2 = 0xA0 + ((OS.rtclok[3] & 0x0F) >> 1);
+
     while (ANTIC.vcount < 124);
   }
+  quiet();
 
   score = score + bonus;
   bonus = 0;
