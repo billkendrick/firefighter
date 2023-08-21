@@ -1,5 +1,14 @@
 #!/usr/bin/php
 <?php
+/*
+  Creates levels for Firefighter
+
+  Firefighting game for the Atari 8-bit
+  Bill Kendrick <bill@newbreedsoftware.com>
+  http://www.newbreedsoftware.com/
+
+  2023-08-18 - 2023-08-20
+*/
 
 $ascii_to_shape = array(
   " " => (0), // blank (floor)
@@ -55,9 +64,13 @@ if ($fo == NULL) {
   exit(1);
 }
 
+/* How many levels will there be? */
+fputs($fo, chr($argc - 1), 1);
+
 $LEVEL_W = 20;
 $LEVEL_H = 11;
 
+/* Process each level file */
 for ($i = 1; $i < $argc; $i++) {
   $fireman_x = -1;
   $fireman_y = -1;

@@ -439,7 +439,11 @@ void start_game(void) {
       level_end_bonus();
 
       /* Move on to the next level */
-      level++; /* FIXME: Bounds check!!! */
+      if (level < levels_data[0])
+        level++;
+      else
+        level = 1;
+
       start_level();
     }
   } while (CONSOL_START(GTIA_READ.consol) == 0);
@@ -543,9 +547,10 @@ void draw_level(void) {
   bzero(scr_mem + 60, LEVEL_SPAN);
 
   draw_text("LEVEL: --  SCORE: ------  BONUS: -----", scr_mem + 20 + 1);
+  draw_score();
 
-  ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN];
-  ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
+  ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
+  ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 2];
 
   set_shape(ply_start_x, ply_start_y, FIREMAN_RIGHT);
 
@@ -555,7 +560,7 @@ void draw_level(void) {
 
   draw_text("@ FIREFIGHTER! @", scr_mem + 0 + 2);
 
-  memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE, LEVEL_SPAN);
+  memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE + 1, LEVEL_SPAN);
 }
 
 /* FIXME */
