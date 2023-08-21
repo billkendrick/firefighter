@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-14
+  2023-08-13 - 2023-08-20
 */
 
 #include <peekpoke.h>
@@ -28,5 +28,13 @@ void draw_text(char * str, unsigned char * dest) {
 
     POKE((unsigned int) (dest + i), ch);
   }
+}
+
+void draw_number(unsigned long int n, int digits, unsigned char * dest) {
+  do {
+    POKE(dest + digits - 1, (n % 10) + 16);
+    n = n / 10;
+    digits--;
+  } while (digits > 0);
 }
 

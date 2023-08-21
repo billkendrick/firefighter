@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-15 - 2023-08-19
+  2023-08-15 - 2023-08-20
 */
 
 #include <atari.h>
@@ -49,7 +49,9 @@ void set_sound(char p, char pch, char dist, char vol, char volch);
 
 /* FIXME */
 char level, ply_start_x, ply_start_y;
-char exploding;
+unsigned long int score, bonus;
+extern unsigned long int high_score;
+char exploding, dying;
 char hit_pitch, hit_pitch_change, hit_volume, hit_distortion, hit_vol_decrease;
 char odd_even;
 unsigned char ply_x, ply_y;
@@ -61,7 +63,8 @@ void start_game(void) {
 
   setup_game_screen();
 
-  level = 0;
+  level = 1;
+  score = 0;
   draw_level();
 
   ply_x = ply_start_x;
@@ -70,6 +73,7 @@ void start_game(void) {
   have_ax = 0;
 
   exploding = 0;
+  dying = 0;
 
   odd_even = 0;
 
@@ -285,8 +289,8 @@ void start_game(void) {
       POKEY_WRITE.audc3 = 0;
     }
 
-    /* Explosion sound & visual effect */
     if (exploding) {
+      /* Explosion sound & visual effect */
       POKE(0x601, exploding);
       exploding--;
       if (exploding == 0)
@@ -295,6 +299,13 @@ void start_game(void) {
         POKE(dlist + 6, 16 + (16 << (POKEY_READ.random % 3)));
       POKEY_WRITE.audf4 = POKEY_READ.random;
       POKEY_WRITE.audc4 = exploding;
+    } else if (dying) {
+      /* Dying visual effect (sfx handled by `set_sound()`) */
+      POKE(0x601, 0x40 + dying);
+      dying -= 2;
+    } else {
+      /* Nothing else happening */
+      POKE(0x601, 0x00);
     }
 
     /* Action sound effects */
@@ -405,13 +416,22 @@ void setup_game_screen(void) {
 
 /* FIXME */
 void draw_level(void) {
+  int l;
+
+  l = (int) (level - 1);
+
   draw_text("@ FIREFIGHTER! @", scr_mem + 0 + 2);
-  draw_text("LEVEL: 00  SCORE: 000000", scr_mem + 20 + 0);
+  draw_text("LEVEL: --  SCORE: ------  BONUS: -----", scr_mem + 20 + 1);
 
-  memcpy(scr_mem + 60, levels_data + (int) level * LEVEL_TOT_SIZE, LEVEL_SPAN);
+  memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE, LEVEL_SPAN);
 
-  ply_start_x = levels_data[(int) level * LEVEL_TOT_SIZE + LEVEL_SPAN];
-  ply_start_y = levels_data[(int) level * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
+  ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN];
+  ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
+  bonus = 10000;
+
+  draw_number(level, 2, scr_mem + 28);
+  draw_number(score, 6, scr_mem + 39);
+  draw_number(bonus, 6, scr_mem + 54);
 }
 
 /* This routine analyzes the entire screen and
@@ -687,6 +707,7 @@ unsigned char flammable(unsigned char c) {
     return FIRE_XLG;
   } else if (c == CIVILIAN) {
     set_sound(100, 2, 0xA0, 15, 1);
+    dying = 14;
     return 0;
   } else if (c == CRATE || c == CRATE_BROKEN || c == AX) {
     /* Crates and ax ignite fully */

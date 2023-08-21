@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-16
+  2023-08-13 - 2023-08-20
 */
 
 #include <atari.h>
@@ -19,6 +19,9 @@ extern unsigned char font1_data[];
 
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
+
+extern unsigned long int high_score;
+extern char high_score_name[4];
 
 void show_title(void) {
   int i;
@@ -125,7 +128,9 @@ void show_title(void) {
   draw_text("USE RIGHT STICK (OR LEFT STICK + FIRE)", scr_mem + 300 + 1);
   draw_text("TO SPRAY.", scr_mem + 340 + 16);
   draw_text("--PRESS START OR FIRE TO BEGIN!--", scr_mem + 380 + 3);
-  draw_text("INSPIRED BY \"REAL HEROES: FIREFIGHTER\"", scr_mem + 420 + 1);
+  draw_text("HIGH SCORE: ------ ---", scr_mem + 420 + 9);
+  draw_number(high_score, 6, scr_mem + 441);
+  draw_text(high_score_name, scr_mem + 448);
 
   OS.sdmctl = 34;
 
