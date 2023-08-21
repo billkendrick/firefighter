@@ -147,7 +147,7 @@ When fire spreads to oil barrels, they cause an explosion!
 Large fire will appear at the barrel's position, as well as
 directly above, below, to the left, and to the right, if possible.
 
-#### Workers
+### Workers
 
 Workers are the green, flailing people running around the room.
 They normally move randomly, but if you are nearby, they will
@@ -161,7 +161,7 @@ If a large fire ends up spreading onto a worker, they'll
 perish: they disappear from the room, you'll hear a sad tone,
 and the screen will flash red.
 
-#### Ax
+### Ax
 
 The ax is a collectible object that appear on some levels.
 (You start each level without the ax.)  When you touch it, it
@@ -177,7 +177,7 @@ fire to contend with!
 The ax can be destroyed by fire!  When fire spreads onto the ax,
 it starts out as a large fire immediately!
 
-#### Fire
+### Fire
 
 Each level begins with, at the very least, a small fire somewhere
 on the screen.  As the game goes on, small fires will grow into
