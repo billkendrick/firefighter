@@ -16,6 +16,7 @@ Inspired by [_Real Heroes: Firefighter_](https://en.wikipedia.org/wiki/Real_Hero
 (Atari 8-bit and other platforms, First Star Software, 1985),
 and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
 (Williams Electronics, arcade, 1982).
+See the [development docs](DEVELOPMENT.md).
 
 Developed 2023-08-13 - 2023-08-22
 
@@ -28,9 +29,7 @@ and save the workers trapped inside, and put out fires along the way.
 
 ------------------------------------------------------------------------
 
-# Gameplay
-
-## Overview
+# Gameplay Overview
 
 Each level of the game is made of a single screen containing one or more
 rooms to navigate, occupied by crates, barrels of explosive material,
@@ -62,7 +61,9 @@ pipes once you have the ax, as you will damage them!
 When fire spreads to oil barrels or gas leaking from pipes it will
 cause an explosion, spreading even more fire.  Beware of chain reactions!
 
-## Starting the Game
+------------------------------------------------------------------------
+
+# Starting the Game
 
 The title screen shows some brief instructions and descriptions of
 objects.  Press the `Start` console key or firebutton on either
@@ -73,7 +74,9 @@ by pressing the `Option` console key.
 
 You can choose a starting level by using the `Select` console key.
 
-## Controls
+------------------------------------------------------------------------
+
+# Controls
 
 This game is best played with a dual-stick set-up (a la the arcade games
 _Robotron: 2084_ or _Smash TV_).  One stick controls your firefighter's
@@ -85,18 +88,20 @@ If you prefer to play with only one joystick, you can hold the fire button
 and push a direction to spray that way.  However, you will stand still
 while you spray!
 
-## Object and Item Descriptions
+------------------------------------------------------------------------
 
-### The Room
+# Object and Item Descriptions
+
+## The Room
 
 Neither you, nor the workers can move through these objects.
 Fire cannot spread into or through these objects.
 
-#### Brick walls
+### Brick walls
 
 The walls that make up the room(s) in each level.
 
-#### Exit Sign and Door
+### Exit Sign and Door
 
 Walk up to these and push into them, and any workers standing next to
 you will leave the room to safety.  (This is the goal of the game!)
@@ -105,9 +110,9 @@ Once all workers have left the room (or perished), you can push into
 a door or exit leave the room yourself, and thus end the level.
 (See "Completing a Level", below.)
 
-#### Gas Pipes and Valves
+### Gas Pipes and Valves
 
-##### Gas Pipes
+#### Gas Pipes
 
 Gas pipes which are broken will leak gas, which cause explosions.
 Large fire will appear at the gas leak's position, as well as
@@ -116,7 +121,7 @@ directly above, below, to the left, and to the right, if possible.
 In some levels, gas pipes start out broken.  Beware -- if you have the
 ax and walk into a pipe, it will become broken!
 
-##### Valves
+#### Valves
 
 Closing all valves connected to pipes will turn off the gas,
 which will stop any broken pipes from leaking gas.
@@ -125,7 +130,7 @@ Walk up and push into a valve to toggle its state.
 Open valves have crossbars that go up and down ("+").
 Closed valves have crossbars that go diagonal ("X").
 
-### Movable and Destroyable Objects
+## Movable and Destroyable Objects
 
 There are some objects which you may be able to push around the room.
 Walk up and push into them any of eight directions and, if there is
@@ -133,7 +138,7 @@ nothing in that direction -- it must be a blank space, there may not
 be fire, gas leaks, or workers -- it will move to that position
 (you will stay in the same spot for a moment).
 
-#### Crates and Broken Crates
+### Crates and Broken Crates
 
 If you have picked up the ax during the current level, when you push
 into crates they will become broken crates.  And if you push into
@@ -142,13 +147,13 @@ broken crates, they will be completely destroyed.
 When fire spreads to crates and broken crates, it starts out as
 a large fire immediately!
 
-#### Oil Barrels
+### Oil Barrels
 
 When fire spreads to oil barrels, they cause an explosion!
 Large fire will appear at the barrel's position, as well as
 directly above, below, to the left, and to the right, if possible.
 
-### Workers
+## Workers
 
 Workers are the green, flailing people running around the room.
 They normally move randomly, but if you are nearby, they will
@@ -162,7 +167,7 @@ If a large fire ends up spreading onto a worker, they'll
 perish: they disappear from the room, you'll hear a sad tone,
 and the screen will flash red.
 
-### Ax
+## Ax
 
 The ax is a collectible object that appear on some levels.
 (You start each level without the ax.)  When you touch it, it
@@ -178,7 +183,7 @@ fire to contend with!
 The ax can be destroyed by fire!  When fire spreads onto the ax,
 it starts out as a large fire immediately!
 
-### Fire
+## Fire
 
 Each level begins with, at the very least, a small fire somewhere
 on the screen.  As the game goes on, small fires will grow into
@@ -192,7 +197,9 @@ an explosion (the screen will flash and an explosion sound will
 play), which can cause more large fire to appear adjacent to
 whatever caused the explosion!
 
-## Completing a Level
+------------------------------------------------------------------------
+
+# Completing a Level
 
 When no more workers remain on the screen -- either by being rescued,
 or perishing -- you may exit the level.  This is indicated by a blue
@@ -208,7 +215,9 @@ fire and ensure there are no gas leaks, to receive a "safety bonus".
 Each level begins with a "Bonus" score that counts down over time.
 These points are also added to your score when you complete a level.
 
-## Scoring
+------------------------------------------------------------------------
+
+# Scoring
 
 * Picking up an ax: 15 points
 * Breaking or destroying a crate: -1 point
@@ -217,195 +226,3 @@ These points are also added to your score when you complete a level.
 * Ending a level with no fire or gas leaks remaining: 1,000 points
 * Time bonus: Scoring potental starts at 1,000 x Level # (max 10,000)
 
-------------------------------------------------------------------------
-
-# Development
-
-This game is written (almost) entirely in the C programming language,
-and cross-compiled using the [CC65](https://cc65.github.io/)
-cross development package for 6502-based systems, such as the Atari 8-bit.
-
-## Inspiration
-
-In 2019 my children were playing a lot of _Real Heroes: Firefighter_ on
-the Wii.  In the game you navigate (in a 3D first-person perspective), equip
-yourself with tools (ax, hose, etc.), put out fires, and save civilians.
-It inspired me to design a game with similar concepts, but as a top-down
-twin-stick "shooter", like _Robotron: 2084_.  I have a very nice arcade-style
-controller (from Edladdin Controllers) that I use for the Atari 8-bit port
-of that game, and needed an excuse to write a twin-stick game.
-(Also, this isn't my fire firefighting game; as a kid back in the 1980s I wrote
-a game in Atari BASIC where you use a helicopter to put out a fire on a skyscraper.)
-
-Four years later I happened across my copious notes (including some hand-drawn
-pixel art) and decided to finally take a stab at it.  I fired up _Envision_
-font editor on Linux, and immediately spent too much time designing the shape of
-the text characters used in the game, based on the fonts seen on the sides of
-firetrucks in the US.  I finally also began adding the in-game objects.
-
-## Graphics
-
-I opted to use ANTIC mode 7 (aka `GRAPHICS 2`), the mode with very large text
-(20 characters tall by 12 characters wide), where each character is a single
-color, with one of our colors possible, depending on the two high-bits of the
-screen data.  This means only 64 shapes are available.  No inverse-video
-(inverted pixels) are possible, either.  (Compare to regular 40 by 24 text mode
-(aka `GRAHICS 0`), which allows for 128 shapes, plus inverse-video versions.)
-
-However, when setting the `CHBASE` register (or the OS's `CHBAS` shadow) to
-tell the Atari where in memory to look for character graphics (the "font"),
-it is possible to offset the character set page by two, which causes the
-ANTIC 7 parts of the screen to use the *latter* half of the character set.
-The small text, ANTIC mode 2 (aka `GRAPHICS 0`) continues to use the full set.
-Therefore, while I'm limited to only uppercase characters the small mode 2 text,
-and no text at all (only game tile shapes) in the large mode 7 text, this means
-I can get away with only a *single* 1KB character set for all of my needs!
-
-In reality, I have two character sets, and flip between them every few frames
-(screen refreshes) to get some animation -- fire burning, gas leaks and
-water spraying, and workers flailng their limbs.  So in the end, 2KB of space
-is used for all of the character data.  (See the `fire1.fnt` and `fire2.fnt`
-files in the [`fonts/`](fonts/) subdirectory.)
-
-You'll notice large mode 7 text used to display the "FIREFIGHTER" title at the
-top (and other messages between levels during the game).  This is acheived by
-_not_ offsetting the character set at first.  Instead, it happens during a
-Display List Interrupt (DLI), which also changes some colors in the
-palette, including handling the fire and gas leak color cycling.
-The font animation happens here, as well -- so any game loop slowdown that may
-happen has no effect on these things.
-
-One byte in Page 6 is used to tell the DLI where the font's base is (there may
-be a better way of handling this?), and it uses the `RTCLOK` timer register,
-updated by the OS each Vertical Blank Interrupt (VBI) to animate.
-(Note: I don't use any of my own VBIs in this game.)
-
-Another byte in Page 6 is used to let the DLI change the background color of
-the game area, based on events (e.g., flashing when an oil barrel explodes).
-(See [`dli.c`](src/dli.c).  Note: This is the only hand-coded
-6502 assembly language in this game.  Everything else is in C.)
-
-## Sound
-
-### Title screen
-
-The title screen has a timer that increments each frame.  During some
-parts of its count, it will play an oscillating siren tone that
-increases in volume (and pitch), then decreases in volume (and pitch).
-(Yes, I made a vague attemt at a "firetruck speeding by" Doppler effect.)
-
-Easter egg: If you push either stick in any direction on the title
-screen, you can cause a firetruck horn blaring noise while the sirens
-are audible!
-
-### General Game Sounds
-
-Various game sounds are played on one of the Atari's four "voices",
-and is handled by a number of variables used to set the pitch,
-initial volume, pitch change (if any), and speed of volume decrease.
-The pitch (if applicable) and volume change once per game loop.
-
-This system is used for the majority of events, which are:
-
- * Collecting the ax
- * Pushing crates/oil barrels
- * Breaking/destroying crates
- * Damaging pipes
- * Opening/closing gas pipeline valves
- * Rescuing workers & workers perishing
-
-### Water Spray Sound
-
-This is a simple high-pitched hiss sound played on a dedicated
-"voice" whenever the joystick is being used to (attempt to) spray
-water in any direction.
-
-### Fire Crackling Sound
-
-The fire sound is a random, low-pitched sound played on its own dedicated
-"voice", and its volume is based on how much fire is on the screen.
-(A counter ticks up each time fire is observed during the cellular
-automaton routine.  That routine actually sets the sound registers.)
-
-### Explosion Sound
-
-This is a totally random noise sound played on its own dedicated
-"voice", controlled by a countdown timer that sets its volume.
-
-## Gameplay
-
-### Cellular Automaton
-
-The game is driven by a
-[cellular Automaton](https://en.wikipedia.org/wiki/Cellular_automaton)
-routine.  The screen memory of the game area is treated as individual
-cells.  Certain kinds of cells have behaviors which can affect their
-cell and/or the cells next to them.
-
-#### Fire
-
-For example, a cell that contains a small fire has a random chance
-of growing into a medium fire.  Similarly, a medium fire has a chance
-to become a large fire.  A cell containing a large fire has a random
-chance of spreading in a random direction.
-
-#### Workers
-
-The workers are also treated as cells.  They "move" by placing a blank
-shape in their current cell, and a worker in an adjacent cell.
-They first observe nearby adjacent cells to see whether the firefighter
-is nearby.  If so, they will go that direction; otherwise, they will
-pick a random direction.
-
-#### Gas Leaks
-
-Whenever broken pipes are observed, a counter is checked that
-keeps track of how many valves are open on the screen.  If one or
-more is open, then gas will leak in any blank spots adjacent to
-broken pipes.  If no valves are open, any gas leaks will be removed.
-
-#### Water
-
-During the cellular automaton phase, any water on the level is
-erased.  This means the main loop only needs to worry about
-drawing it while the joystick is being pushed.
-
-### Water Spray
-
-The player may spray water in any of eight directions.
-Each direction is made up of four different tile shapes in the
-character set (so we're using half of the game tile portion of
-our character set just for water spray!  It *is* an important
-aspect of the game, however!)
-
-The sprays consists of a narrow point placed directly adjacent
-to the firefighter, plus three more that represent the wide end
-of the spray.  For the four cardinal directions, the wide spray
-is drawn as three vertical or three horizontal shapes in a row.
-For the four diagonal directions, the middle of the wide part
-continues in the direction of spray, and the two ends appear
-perpendicular to it (forming a 2x2 square of shapes).
-
-Examples:
-
-```
-.....  .....  .....
-.../.  .\-/.  ..|\.
-.F<|.  ..V..  ..L-.
-...\.  ..F..  .F...
-.....  .....  .....
-```
-
-If the initial (narrow, adjacent) shape hits an obstacle, or
-fire, the other three shapes will not be drawn (and, hence, not
-have any affect on fire beyond the position adjacent to the player).
-
-## Levels
-
-Levels are created as plain ASCII text files containing special
-(human-readable) characters that represent the handful of various
-shapes possible in the game.  (While we have 64 shapes in our character
-set to work with, in up to 4 colors each, in reality many shapes are
-not part of the map.
-
-See the [levels documentation](levels/README.md) for details.
