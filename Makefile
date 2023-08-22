@@ -12,6 +12,9 @@ CC65=${CC65BIN}/cc65
 CA65=${CC65BIN}/ca65
 LD65=${CC65BIN}/ld65
 DIR2ATR=/usr/local/bin/dir2atr
+MARKDOWN2HTML=/usr/bin/markdown
+HTML2TXT=/usr/bin/w3m -dump -no-graph -cols 40
+TXT2ATASCII=/usr/bin/tr "\n" "\233"
 
 ## Include and Library Paths
 CC65_HOME=/usr/share/cc65
@@ -27,6 +30,9 @@ CC65_FLAGS=-Osir --add-source
 LEVEL_FILES=$(wildcard levels/level*.txt)
 OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/draw_text.o obj/dli.o
 
+TMP=tmp-README.html
+
+
 ## Main Targets:
 all:	firefite.atr firefite.xex
 
@@ -40,6 +46,8 @@ clean:	clean-intermediate
 	-rm firefite.xex
 	-rm firefths.xex
 	-rm firefite.atr
+	-rm disk/FIREFITE.AR0
+	-rm disk/README.txt
 
 clean-intermediate:
 	-rm obj/*.o
@@ -50,8 +58,10 @@ clean-intermediate:
 
 ## Files to generate:
 
-firefite.atr:	firefths.xex
+firefite.atr:	firefths.xex README.md
 	cp firefths.xex disk/FIREFITE.AR0
+	${MARKDOWN2HTML} README.md > ${TMP}; ${HTML2TXT} ${TMP} | ${TXT2ATASCII} > disk/README.txt
+	rm ${TMP}
 	${DIR2ATR} -b MyDos4534 firefite.atr disk
 
 firefite.xex:	${OBJECTS} src/atari.cfg
