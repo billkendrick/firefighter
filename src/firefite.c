@@ -12,6 +12,10 @@
 #include "title.h"
 #include "game.h"
 
+#ifdef DISK
+#include "help.h"
+#endif
+
 extern unsigned char scr_mem[];
 unsigned char * dlist = (scr_mem + 512);
 unsigned long int high_score;
@@ -20,13 +24,22 @@ char main_stick;
 char level;
 
 void main(void) {
+  char want_help;
+
   high_score = 1031;
   strcpy(high_score_name, "BJK");
   main_stick = STICK_LEFT;
   level = 1;
 
   do {
-    show_title();
+    do {
+      want_help = show_title();
+#ifdef DISK
+      if (want_help) {
+        show_help();
+      }
+#endif
+    } while (want_help);
     start_game();
   } while(1);
 }

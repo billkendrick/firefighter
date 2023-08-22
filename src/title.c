@@ -29,11 +29,12 @@ extern char main_stick;
 
 void show_controls(void);
 
-void show_title(void) {
+/* FIXME */
+char show_title(void) {
   int i;
   unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
-  unsigned int select_down;
-  unsigned char option_down;
+  unsigned int select_down, level_pos;
+  unsigned char option_down, want_help;
 
   OS.sdmctl = 0;
 
@@ -145,8 +146,14 @@ void show_title(void) {
   draw_text("TO SPRAY.", scr_mem + 340 + 16);
 
   draw_text("START/FIRE: BEGIN - OPTION: SWAP STICKS", scr_mem + 380 + 0);
+#ifdef DISK
+  draw_text("SELECT: STARTING LEVEL -- - HELP/?: INFO", scr_mem + 420);
+  level_pos = 443;
+#else
   draw_text("SELECT: STARTING LEVEL --", scr_mem + 420 + 7);
-  draw_number(level, 2, scr_mem + 450);
+  level_pos = 450;
+#endif
+  draw_number(level, 2, scr_mem + level_pos);
 
   draw_text("HIGH SCORE: ------ ---", scr_mem + 460 + 9);
 
@@ -170,6 +177,7 @@ void show_title(void) {
 
   select_down = 0;
   option_down = 0;
+  want_help = 0;
 
   do {
     OS.color0 = OS.rtclok[2];
@@ -226,7 +234,7 @@ void show_title(void) {
         else
           level = 1;
 
-        draw_number(level, 2, scr_mem + 450);
+        draw_number(level, 2, scr_mem + level_pos);
         select_down = 32;
       } else {
         select_down += 32;
@@ -245,6 +253,10 @@ void show_title(void) {
     } else {
       option_down = 0;
     }
+
+#ifdef DISK
+    /* FIXME: Check for [?] or [HELP] and display README.txt */
+#endif
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0);
 
   POKEY_WRITE.audc1 = 0;
@@ -261,6 +273,8 @@ void show_title(void) {
 
   do {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
+
+  return want_help;
 }
 
 void show_controls(void) {

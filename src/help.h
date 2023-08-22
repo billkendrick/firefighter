@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-22
+  2023-08-22 - 2023-08-22
 */
 
-char show_title(void);
+void show_help(void);
