@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-15 - 2023-08-21
+  2023-08-15 - 2023-08-22
 */
 
 #include <atari.h>
@@ -471,6 +471,7 @@ unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) 
   unsigned char shape;
 
   shape = shape_at(x, y);
+
   if (shape == FIRE_LG) {
     /* Turn large fire into medium fire */
     set_shape(x, y, FIRE_MD);
@@ -479,8 +480,10 @@ unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) 
     /* Turn medium fire into small fire */
     set_shape(x, y, FIRE_SM);
     return 0;
-  } else if (shape == FIRE_SM) {
-    /* Extinguish small fire */
+  } else if (shape == FIRE_SM ||
+             shape == GASLEAK_UP || shape == GASLEAK_DOWN ||
+             shape == GASLEAK_LEFT || shape == GASLEAK_RIGHT) {
+    /* Extinguish small fire and gas leaks */
     set_shape(x, y, 0);
     return 0;
   } else if (shape != 0) {
