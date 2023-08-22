@@ -17,7 +17,7 @@
 #endif
 
 extern unsigned char scr_mem[];
-unsigned char * dlist = (scr_mem + 512);
+unsigned char * dlist = (scr_mem + 960);
 unsigned long int high_score;
 char high_score_name[4];
 char main_stick;

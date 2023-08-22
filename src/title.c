@@ -160,7 +160,7 @@ char show_title(void) {
   draw_number(high_score, 6, scr_mem + 481);
   draw_text(high_score_name, scr_mem + 488);
 
-  OS.sdmctl = 34;
+  OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 
   siren_ctr1 = 0;
   siren_ctr2 = 0;
@@ -172,12 +172,14 @@ char show_title(void) {
   POKEY_WRITE.audctl = 0;
   POKEY_WRITE.skctl = 3;
 
-  do {
-  } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
 
   select_down = 0;
   option_down = 0;
   want_help = 0;
+
+  do {
+  } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
+  OS.ch = KEY_NONE;
 
   do {
     OS.color0 = OS.rtclok[2];
@@ -255,9 +257,14 @@ char show_title(void) {
     }
 
 #ifdef DISK
+    if (OS.ch == KEY_QUESTIONMARK) {
+      want_help = 1;
+    }
     /* FIXME: Check for [?] or [HELP] and display README.txt */
 #endif
-  } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0);
+  } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && !want_help);
+
+  OS.ch = KEY_NONE;
 
   POKEY_WRITE.audc1 = 0;
   POKEY_WRITE.audc2 = 0;

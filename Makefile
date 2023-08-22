@@ -114,7 +114,7 @@ asm/title_disk.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.
 obj/help.o:  asm/help.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/help.s -o obj/help.o
 
-asm/help.s:  src/help.c src/help.h src/shapes.h src/dli.h src/draw_text.h
+asm/help.s:  src/help.c src/help.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/help.c -o asm/help.s
 
 # Game loop:

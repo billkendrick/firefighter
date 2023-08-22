@@ -542,7 +542,7 @@ void setup_game_screen(void) {
   OS.vdslst = (void *) dli;
   ANTIC.nmien = NMIEN_VBI | NMIEN_DLI;
 
-  OS.sdmctl = 34;
+  OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 }
 
 /* FIXME */
