@@ -114,7 +114,7 @@ obj/title_disk.o:  asm/title_disk.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/title_disk.s -o obj/title_disk.o
 
 asm/title_disk.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h Makefile
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK -D VERSION=\"${VERSION}-d\" -D DATE=\"${DATE}\" src/title.c -o asm/title_disk.s
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK -D VERSION=\"${VERSION}-DISK\" -D DATE=\"${DATE}\" src/title.c -o asm/title_disk.s
 
 obj/help.o:  asm/help.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/help.s -o obj/help.o

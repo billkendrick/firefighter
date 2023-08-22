@@ -95,14 +95,17 @@ char show_title(void) {
   OS.vdslst = (void *) dli;
   ANTIC.nmien = NMIEN_VBI | NMIEN_DLI;
 
+  /* Title & Credits */
   draw_text("NEW BREED SOFTWARE PRESENTS:", scr_mem + 6);
   draw_text("@ FIREFIGHTER! @", scr_mem + 40 + 2);
   draw_text("bill kendrick", scr_mem + 60 + 1);
+  /* "2023" */
   POKE(scr_mem + 75, 2 + 16 + 64);
   POKE(scr_mem + 76, 0 + 16 + 64);
   POKE(scr_mem + 77, 2 + 16 + 64);
   POKE(scr_mem + 78, 3 + 16 + 64);
 
+  /* Help section 1 */
   draw_text("GAS PIPE  LEAKING GAS  TURN VALVE", scr_mem + 80 + 3);
   POKE(scr_mem + 122, PIPE_DOWN_RIGHT);
   POKE(scr_mem + 123, PIPE_LEFT_RIGHT);
@@ -115,6 +118,7 @@ char show_title(void) {
   POKE(scr_mem + 135, VALVE_OPEN);
   POKE(scr_mem + 136, PIPE_LEFT_RIGHT);
 
+  /* Help section 2 */
   draw_text("GET AX  BREAK CRATES   OIL    WALLS", scr_mem + 140 + 2);
   POKE(scr_mem + 182, AX);
 
@@ -127,7 +131,7 @@ char show_title(void) {
   POKE(scr_mem + 197, WALL);
   POKE(scr_mem + 198, WALL);
 
-
+  /* Help section 3 */
   draw_text("PUT OUT FIRE, LEAD CIVILIANS TO EXIT", scr_mem + 200 + 2);
   POKE(scr_mem + 240, FIRE_LG);
   POKE(scr_mem + 241, FIRE_MD);
@@ -145,9 +149,11 @@ char show_title(void) {
   POKE(scr_mem + 257, EXIT1);
   POKE(scr_mem + 258, EXIT2);
 
+  /* Control instructions */
   show_controls();
   draw_text("TO SPRAY.", scr_mem + 340 + 16);
 
+  /* Title screen control instructions */
   draw_text("START/FIRE: BEGIN - OPTION: SWAP STICKS", scr_mem + 380 + 0);
 #ifdef DISK
   draw_text("SELECT: STARTING LEVEL -- - HELP/?: INFO", scr_mem + 420);
@@ -158,17 +164,22 @@ char show_title(void) {
 #endif
   draw_number(level, 2, scr_mem + level_pos);
 
+#if 0
+  /* High score */
   draw_text("HIGH SCORE: ------ ---", scr_mem + 460 + 9);
 
+  draw_number(high_score, 6, scr_mem + 481);
+  draw_text(high_score_name, scr_mem + 488);
+#endif
+
+  /* Version & Date: */
   draw_text("VERSION: ", scr_mem + 500);
   draw_text(VERSION, scr_mem + 500 + 9);
   draw_text(DATE, scr_mem + 500 + 40 - strlen(DATE));
 
-  draw_number(high_score, 6, scr_mem + 481);
-  draw_text(high_score_name, scr_mem + 488);
-
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 
+  /* Init sound effects */
   siren_ctr1 = 0;
   siren_ctr2 = 0;
   siren_pitch = 100;
@@ -188,9 +199,11 @@ char show_title(void) {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
   OS.ch = KEY_NONE;
 
+  /* Title screen main loop: */
   do {
     OS.color0 = OS.rtclok[2];
 
+    /* Handle siren sound effect */
     siren_ctr1++;
     if (siren_ctr1 == 0) {
       siren_ctr2 = (siren_ctr2 + 1) & 0x0F;
@@ -264,15 +277,16 @@ char show_title(void) {
     }
 
 #ifdef DISK
-    if (OS.ch == KEY_QUESTIONMARK) {
+    /* ? or Help: Show help screen */
+    if (OS.ch == KEY_QUESTIONMARK || POKEY_READ.kbcode == KEY_HELP) {
       want_help = 1;
     }
-    /* FIXME: Check for [?] or [HELP] and display README.txt */
 #endif
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && !want_help);
 
   OS.ch = KEY_NONE;
 
+  /* FIXME: quiet() */
   POKEY_WRITE.audc1 = 0;
   POKEY_WRITE.audc2 = 0;
   POKEY_WRITE.audc3 = 0;
@@ -291,6 +305,7 @@ char show_title(void) {
   return want_help;
 }
 
+/* FIXME */
 void show_controls(void) {
   if (main_stick == STICK_LEFT) {
     draw_text("USE LEFT JOYSTICK TO MOVE. ", scr_mem + 260 + 7);
