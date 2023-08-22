@@ -9,7 +9,14 @@
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
 VERSION=0.1-BETA1
+
+## Run "tools/release.sh" to generate a release ZIP file
+## (it will be named based on VERSION above,
+## and the date (not from below)).
+
+## Version date:
 DATE=${shell /usr/bin/date +"%Y-%m-%d"}
+
 
 ## Binaries:
 CC65BIN=/usr/bin
@@ -51,8 +58,6 @@ run-disk:	firefite.atr
 clean:	clean-intermediate
 	-rm firefite.xex
 	-rm firefite.atr
-	-rm disk/FIREFITE.AR0
-	-rm disk/README.txt
 
 clean-intermediate:
 	-rm obj/*.o
@@ -60,6 +65,8 @@ clean-intermediate:
 	-rm firefite.map
 	-rm data/levels.dat
 	-rm firefths.xex
+	-rm disk/FIREFITE.AR0
+	-rm disk/README.txt
 
 
 ## Files to generate:
