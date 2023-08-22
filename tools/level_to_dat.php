@@ -5,9 +5,9 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/
+  http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-18 - 2023-08-21
+  2023-08-18 - 2023-08-22
 */
 
 $ascii_to_shape = array(
@@ -49,12 +49,12 @@ $ascii_to_shape = array(
   ";" => (23), // FIRE_MD 23
   "*" => (24), // FIRE_LG 24
 
+  "#" => (25 + 192), // WALL (25 + 192)
+
   "D" => (26 + 192), // DOOR (26 + 192)
 
   "E" => (27 + 192), // EXIT1 (27 + 192)
   "e" => (28 + 192), // EXIT2 (28 + 192)
-
-  "#" => (25 + 192), // WALL (25 + 192)
 );
 
 $OUTFILE = "data/levels.dat";
