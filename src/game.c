@@ -534,7 +534,7 @@ void setup_game_screen(void) {
   POKE(0x600, OS.chbas + 2);
 
   OS.color0 = 0x52;
-  OS.color1 = 0x02;
+  OS.color1 = 0x14;
   OS.color2 = 0xA8;
 
   ANTIC.nmien = NMIEN_VBI;
