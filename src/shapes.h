@@ -3,7 +3,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/
 
-  2023-08-13 - 2023-08-21
+  2023-08-13 - 2023-08-22
 */
 
 #ifndef _SHAPES_H
@@ -23,6 +23,7 @@
 #define VALVE_CLOSED (10 + 64)
 
 #define CIVILIAN (11 + 64)
+#define CIVILIAN_MOVED (0 + 64)
 
 #define GASLEAK_RIGHT 12
 #define GASLEAK_LEFT 13

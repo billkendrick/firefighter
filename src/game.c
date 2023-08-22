@@ -307,13 +307,13 @@ void start_game(void) {
     /* Spray water based on Joystick 2 input */
 
 #define WATER_N  (35 + 128)
-#define WATER_NW (60 + 128) 
+#define WATER_NW (60 + 128)
 #define WATER_W  (39 + 128)
-#define WATER_SW (52 + 128) 
+#define WATER_SW (52 + 128)
 #define WATER_S  (40 + 128)
-#define WATER_SE (48 + 128) 
+#define WATER_SE (48 + 128)
 #define WATER_E  (44 + 128)
-#define WATER_NE (56 + 128) 
+#define WATER_NE (56 + 128)
 
     /* (Alternatively, left stick + trigger to spray) */
     if (main_stick == STICK_LEFT) {
@@ -426,7 +426,7 @@ void start_game(void) {
     bonus_tick++;
     if (bonus_tick == 50 && bonus > 0) {
       bonus_tick = 0;
-      bonus -= 100; 
+      bonus -= 100;
       draw_score();
     }
 
@@ -597,86 +597,112 @@ void cellular_automata(void) {
   any_fire = 0;
 
   for (y = 0; y < LEVEL_H; y++) {
-    for (x = (y % 1) + odd_even; x < LEVEL_W; x++) {
-      shape = shape_at(x, y);
-      rand = POKEY_READ.random;
+    for (x = 0; x < LEVEL_W; x++) {
+#ifdef CHECKER
+      if (((y % 2) == (x % 2)) == odd_even) {
+#endif
+        shape = shape_at(x, y);
+        rand = POKEY_READ.random;
 
-      if (shape == FIRE_SM && rand < 16) {
-        /* Grow small fire to medium */
-        set_shape(x, y, FIRE_MD);
-        any_fire++;
-      } else if (shape == FIRE_MD && rand < 16) {
-        /* Grow medium fire to large */
-        set_shape(x, y, FIRE_LG);
-        any_fire++;
-      } else if (shape == FIRE_LG && rand < 32) {
-        /* Large fire tries to spread */
-        dir = POKEY_READ.random % 8;
-        if (valid_dir(x, y, dir)) {
-          shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
-          ignited_shape = flammable(shape2);
-          if (ignited_shape == FIRE_XLG) {
-            explode(x + dir_x[dir], y + dir_y[dir]);
-          } else if (ignited_shape != FIRE_INFLAM) {
-            set_shape(x + dir_x[dir], y + dir_y[dir], ignited_shape);
-          }
-        }
-        any_fire++;
-      } else if (shape >= 32 + 128 && shape < 64 + 128) {
-        /* Erase water */
-        set_shape(x, y, 0);
-      } else if (shape == CIVILIAN) {
-        int want_dir, dist;
-
-        /* Civilian */
-
-        /* If we're near the player, walk towards him */
-        want_dir = -1;
-        for (dist = 3; dist >= 2; dist--) {
-          for (dir = 0; dir < 8; dir++) {
-            if ((x + dir_x[dir] == ply_x || x + dir_x[dir] * 2 == ply_x) &&
-                (y + dir_y[dir] == ply_y || y + dir_y[dir] * 2 == ply_y)) {
-              want_dir = dir;
+        if (shape == FIRE_SM && rand < 16) {
+          /* Grow small fire to medium */
+          set_shape(x, y, FIRE_MD);
+          any_fire++;
+        } else if (shape == FIRE_MD && rand < 16) {
+          /* Grow medium fire to large */
+          set_shape(x, y, FIRE_LG);
+          any_fire++;
+        } else if (shape == FIRE_LG && rand < 32) {
+          /* Large fire tries to spread */
+          dir = POKEY_READ.random % 8;
+          if (valid_dir(x, y, dir)) {
+            shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
+            ignited_shape = flammable(shape2);
+            if (ignited_shape == FIRE_XLG) {
+              explode(x + dir_x[dir], y + dir_y[dir]);
+            } else if (ignited_shape != FIRE_INFLAM) {
+              set_shape(x + dir_x[dir], y + dir_y[dir], ignited_shape);
             }
           }
-        }
+          any_fire++;
+        } else if (shape >= 32 + 128 && shape < 64 + 128) {
+          /* Erase water */
+          set_shape(x, y, 0);
+        } else if (shape == CIVILIAN) {
+          int want_dir, dist;
 
-        /* If not near player (or occasionally), walk a random direction */
-        if (want_dir == -1 || rand < 2) {
-          if (rand < 32)
-            want_dir = POKEY_READ.random % 8;
-        }
+          /* Civilian */
 
-        /* Try to move in the chosen direction */
-        if (want_dir != -1) {
-          dir = want_dir;
-
-          if (valid_dir(x, y, dir) &&
-              shape_at(x + dir_x[dir], y + dir_y[dir]) == 0) {
-            set_shape(x, y, 0);
-            set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN);
+          /* If we're near the player, walk towards him */
+          want_dir = -1;
+          for (dist = 3; dist >= 2; dist--) {
+            for (dir = 0; dir < 8; dir++) {
+              if ((x + dir_x[dir] == ply_x || x + dir_x[dir] * 2 == ply_x) &&
+                  (y + dir_y[dir] == ply_y || y + dir_y[dir] * 2 == ply_y)) {
+                want_dir = dir;
+              }
+            }
           }
+
+          /* If not near player (or occasionally), walk a random direction */
+          if (want_dir == -1 || rand < 2) {
+            if (rand < 32)
+              want_dir = POKEY_READ.random % 8;
+          }
+
+          /* Try to move in the chosen direction */
+          if (want_dir != -1) {
+            dir = want_dir;
+
+            if (valid_dir(x, y, dir) &&
+                shape_at(x + dir_x[dir], y + dir_y[dir]) == 0) {
+              set_shape(x, y, 0);
+              if ((dir_x[dir] == 1 && dir_y[dir] >= 0) || dir_y[dir] == 1) {
+                set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN_MOVED);
+              } else {
+                set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN);
+              }
+            }
+          }
+        } else if (shape == CIVILIAN_MOVED) {
+          /* FIXME */
+          set_shape(x, y, CIVILIAN);
+        } else if (shape == PIPE_BROKEN_UP_DOWN) {
+          /* Draw (or erase) gas leak on left/right of a broken vertical pipe */
+          broken_pipe(x - 1, y, GASLEAK_LEFT);
+          broken_pipe(x + 1, y, GASLEAK_RIGHT);
+        } else if (shape == PIPE_BROKEN_LEFT_RIGHT) {
+          /* Draw (or erase) gas leak above/below a broken horizontal pipe */
+          broken_pipe(x, y - 1, GASLEAK_UP);
+          broken_pipe(x, y + 1, GASLEAK_DOWN);
         }
-      } else if (shape == PIPE_BROKEN_UP_DOWN) {
-        /* Draw (or erase) gas leak on left/right of a broken vertical pipe */
-        broken_pipe(x - 1, y, GASLEAK_LEFT);
-        broken_pipe(x + 1, y, GASLEAK_RIGHT);
-      } else if (shape == PIPE_BROKEN_LEFT_RIGHT) {
-        /* Draw (or erase) gas leak above/below a broken horizontal pipe */
-        broken_pipe(x, y - 1, GASLEAK_UP);
-        broken_pipe(x, y + 1, GASLEAK_DOWN);
+#ifdef CHECKER
       }
+#endif
     }
   }
 
+  /* FIXME */
+/*
+  for (y = 0; y < LEVEL_H; y++) {
+    for (x = 0; x < LEVEL_W; x++) {
+      shape = shape_at(x, y);
+      if (shape == CIVILIAN_MOVED) {
+        set_shape(x, y, CIVILIAN);
+      } else if (shape == FIRE_SM || shape == FIRE_MD || shape == FIRE_LG) {
+        any_fire++;
+      }
+    }
+  }
+*/
+
+  /* FIXME */
   if (any_fire) {
     POKEY_WRITE.audf1 = ((POKEY_READ.random) >> 4) + 128;
     POKEY_WRITE.audc1 = (any_fire >> 4) + 1;
   } else {
     POKEY_WRITE.audc1 = 0x00;
   }
-
-  POKE(scr_mem + 1, open_valves); // FIXME
 }
 
 /* FIXME */
