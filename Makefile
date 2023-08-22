@@ -45,7 +45,6 @@ run-disk:	firefite.atr
 
 clean:	clean-intermediate
 	-rm firefite.xex
-	-rm firefths.xex
 	-rm firefite.atr
 	-rm disk/FIREFITE.AR0
 	-rm disk/README.txt
@@ -55,6 +54,7 @@ clean-intermediate:
 	-rm asm/*.s
 	-rm firefite.map
 	-rm data/levels.dat
+	-rm firefths.xex
 
 
 ## Files to generate:
