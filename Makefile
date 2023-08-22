@@ -2,31 +2,42 @@
 #
 # Firefighting game for the Atari 8-bit
 # Bill Kendrick <bill@newbreedsoftware.com>
-# http://www.newbreedsoftware.com/
+# http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-08-21
+# 2023-08-13 - 2023-08-22
 
+## Binaries:
 CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
 CA65=${CC65BIN}/ca65
 LD65=${CC65BIN}/ld65
+
+## Include and Library Paths
 CC65_HOME=/usr/share/cc65
 CC65_INC=${CC65_HOME}/include
 CC65_ASMINC=${CC65_HOME}/asminc
 CC65_LIB=${CC65_HOME}/lib
-CC65_CFG=${CC65_HOME}/cfg
+
+## Flags
 CC65_FLAGS=-Osir --add-source
-LEVEL_FILES=$(wildcard levels/level*.txt)
-OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/draw_text.o obj/dli.o
 # MAP_ARGS=-m firefite.map
 
+## Sources
+LEVEL_FILES=$(wildcard levels/level*.txt)
+OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/draw_text.o obj/dli.o
+
+## Main Targets:
 all:	firefite.xex
 
 run:	firefite.xex
 	atari800 -nobasic -run firefite.xex
 
+run-disk:	firefite.atr
+	atari800 -nobasic firefite.atr
+
 clean:	clean-intermediate
 	-rm firefite.xex
+	-rm firefite.atr
 
 clean-intermediate:
 	-rm obj/*.o
@@ -34,12 +45,21 @@ clean-intermediate:
 	-rm firefite.map
 	-rm data/levels.dat
 
+
+## Files to generate:
+
+firefite.atr:	firefite.xex
+	echo dir2atr
+
 firefite.xex:	${OBJECTS} src/atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o firefite.xex \
 		-C src/atari.cfg \
 		${MAP_ARGS} \
 		${OBJECTS} atari.lib
+
+
+## Source code to compile and/or assemble:
 
 obj/firefite.o:  asm/firefite.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/firefite.s -o obj/firefite.o
@@ -73,6 +93,9 @@ asm/dli.s:  src/dli.c src/dli.h
 
 obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt data/levels.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
+
+
+## Data files to build:
 
 data/levels.dat:	tools/level_to_dat.php ${LEVEL_FILES}
 	./tools/level_to_dat.php ${LEVEL_FILES}
