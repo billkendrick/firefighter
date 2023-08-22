@@ -48,7 +48,8 @@ large fire!
 
 Some rooms contain crates and/or barrels which you can push out of
 your way if they block your path.  Be careful how you move them, though;
-you can only push, you cannot pull them!
+you can only push, you cannot pull them!  (You can also push workers if
+they get in your way.)
 
 Pipes pump gas through some rooms, and any cracks will leak this flammable
 material into the air.  If you can reach the valve, you can turn off

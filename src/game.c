@@ -213,8 +213,8 @@ void start_game(void) {
           score += SCORE_AX_COLLECT;
           draw_score();
         }
-      } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL) {
-        /* Hitting a crate or oil barrel */
+      } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL || shape == CIVILIAN) {
+        /* Hitting a crate, oil barrel, or civilian */
 
         if (have_ax && shape != OIL) {
           /* Have the ax? You can break crates! */
