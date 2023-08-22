@@ -2,7 +2,7 @@
 #        OCCc*#,  O#
 #    x   OCCCc#    #
 ######        #   O#
-#CCCCC  ####       #
+#CCCCC  #######    #
 #       #Ee#    x O#
 #       # F#       #
 # x #   # ##  ######
