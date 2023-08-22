@@ -43,7 +43,7 @@ char show_title(void) {
   /* Generate a display list... */
   POKE(dlist, DL_BLK8);
   POKE(dlist + 1, DL_BLK8);
-  POKE(dlist + 2, DL_BLK8);
+  POKE(dlist + 2, DL_BLK1);
 
   POKE(dlist + 3, DL_LMS(DL_GRAPHICS0));
   POKEW(dlist + 4, (unsigned int) scr_mem);
@@ -73,8 +73,11 @@ char show_title(void) {
   POKE(dlist + 33, DL_BLK4);
   POKE(dlist + 34, DL_GRAPHICS0);
 
-  POKE(dlist + 35, DL_JVB);
-  POKEW(dlist + 36, (unsigned int) dlist);
+  POKE(dlist + 35, DL_BLK1);
+  POKE(dlist + 36, DL_GRAPHICS0);
+
+  POKE(dlist + 37, DL_JVB);
+  POKEW(dlist + 38, (unsigned int) dlist);
 
   OS.sdlst = dlist;
   OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
@@ -156,6 +159,10 @@ char show_title(void) {
   draw_number(level, 2, scr_mem + level_pos);
 
   draw_text("HIGH SCORE: ------ ---", scr_mem + 460 + 9);
+
+  draw_text("VERSION: ", scr_mem + 500);
+  draw_text(VERSION, scr_mem + 500 + 9);
+  draw_text(DATE, scr_mem + 500 + 40 - strlen(DATE));
 
   draw_number(high_score, 6, scr_mem + 481);
   draw_text(high_score_name, scr_mem + 488);

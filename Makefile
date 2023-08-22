@@ -6,6 +6,11 @@
 #
 # 2023-08-13 - 2023-08-22
 
+## Version number:
+## (Note: Any alphabetic chars should be uppercase!)
+VERSION=0.1-BETA1
+DATE=${shell /usr/bin/date +"%Y-%m-%d"}
+
 ## Binaries:
 CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
@@ -102,14 +107,14 @@ asm/firefite_disk.s:  src/firefite.c src/title.h src/game.h
 obj/title.o:  asm/title.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/title.s -o obj/title.o
 
-asm/title.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/title.c -o asm/title.s
+asm/title.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h Makefile
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D VERSION=\"${VERSION}\" -D DATE=\"${DATE}\" src/title.c -o asm/title.s
 
 obj/title_disk.o:  asm/title_disk.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/title_disk.s -o obj/title_disk.o
 
-asm/title_disk.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/title.c -o asm/title_disk.s
+asm/title_disk.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h Makefile
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK -D VERSION=\"${VERSION}-d\" -D DATE=\"${DATE}\" src/title.c -o asm/title_disk.s
 
 obj/help.o:  asm/help.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/help.s -o obj/help.o

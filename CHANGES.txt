@@ -1,0 +1,12 @@
+CHANGES.txt for Firefighter
+
+Firefighting game for the Atari 8-bit
+Bill Kendrick <bill@newbreedsoftware.com>
+http://www.newbreedsoftware.com/firefighter/
+
+0.1-beta-1 (2023-08-22):
+ * First public beta release
+   + Four levels
+   + Stand-alone XED and disk-based ATR version
+   + ATR version includes help text
+
