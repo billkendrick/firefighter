@@ -216,7 +216,7 @@ void start_game(void) {
       } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL || shape == CIVILIAN) {
         /* Hitting a crate, oil barrel, or civilian */
 
-        if (have_ax && shape != OIL) {
+        if (have_ax && shape != OIL && shape != CIVILIAN) {
           /* Have the ax? You can break crates! */
 
           set_shape(want_x, want_y, (shape == CRATE ? CRATE_BROKEN : 0));
