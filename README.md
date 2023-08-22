@@ -17,7 +17,7 @@ Inspired by [_Real Heroes: Firefighter_](https://en.wikipedia.org/wiki/Real_Hero
 and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
 (Williams Electronics, arcade, 1982).
 
-Developed 2023-08-13 - 2023-08-21
+Developed 2023-08-13 - 2023-08-22
 
 ------------------------------------------------------------------------
 
@@ -358,20 +358,10 @@ pick a random direction.
 
 #### Gas Leaks
 
-Gas leaks are handled as a special case.  If a cell contains the
-"open valve" shape, a small routine will attempt to follow any
-adjacent pipes (including bending at corners) until no more pipe can
-be found.  Any cells containing broken pipes will have gas leak shapes
-placed in any blank spots adjacent to them.  Similarly, if a cell
-contains the "closed valve" shape, pipes will be followed and any
-gas leaks next to broken pipes will be removed.
-
-(Note: This means a single open- or closed-valve shape can take
-a much longer time to process.  Another method I'm considering
-involves checking the entire game board for any open valves and,
-depending on the state of the board, all broken pipes will leak,
-or not leak.  That is, the cellular automaton would check broken pipes,
-rather than valves.)
+Whenever broken pipes are observed, a counter is checked that
+keeps track of how many valves are open on the screen.  If one or
+more is open, then gas will leak in any blank spots adjacent to
+broken pipes.  If no valves are open, any gas leaks will be removed.
 
 #### Water
 

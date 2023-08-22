@@ -49,12 +49,11 @@ void setup_game_screen(void);
 #define obstacle(s) ((s) != 0 && (s) != AX)
 void draw_level(void);
 void cellular_automata(void);
+void broken_pipe(int x, int y, char shape);
 unsigned char flammable(unsigned char c);
 unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir);
 void explode(char x, char y);
 unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape);
-void leak_gas(char x, char y, char dir, char on_off);
-void follow_pipes(char x, char y, char on_off);
 void set_sound(char p, char pch, char dist, char vol, char volch);
 void level_end_bonus(void);
 void flash(void);
@@ -79,6 +78,9 @@ unsigned char bonus_tick;
 /* Current level's civilian counter */
 unsigned char civilians_remaining;
 
+/* Current level's open valve counter */
+unsigned char open_valves;
+
 /* Player's directon, position, and state */
 #define DIR_LEFT 0
 #define DIR_RIGHT 1
@@ -95,6 +97,7 @@ char odd_even;
 /* Draw the level and set initial state of the level */
 void start_level(void) {
   int i;
+  char c;
 
   draw_level();
 
@@ -104,6 +107,8 @@ void start_level(void) {
     bonus = 10000;
 
   bonus_tick = 0;
+
+  draw_score();
 
   ply_x = ply_start_x;
   ply_y = ply_start_y;
@@ -116,12 +121,14 @@ void start_level(void) {
 
   odd_even = 0;
 
-  draw_score();
-
+  open_valves = 0;
   civilians_remaining = 0;
   for (i = 0; i < LEVEL_SPAN; i++) {
-    if (PEEK(scr_mem + 60 + i) == CIVILIAN) {
+    c = PEEK(scr_mem + 60 + i);
+    if (c == CIVILIAN) {
       civilians_remaining++;
+    } else if (c == VALVE_OPEN) {
+      open_valves++;
     }
   }
 
@@ -236,18 +243,14 @@ void start_game(void) {
         }
       } else if (shape == VALVE_OPEN) {
         /* Close an opened valve (and disable leaks) */
-
         set_shape(want_x, want_y, VALVE_CLOSED);
-        follow_pipes(want_x, want_y, 0);
-
         set_sound(200, 0, 0xA0, 8, 4);
+        open_valves--;
       } else if (shape == VALVE_CLOSED) {
         /* Open a closed valve */
-
         set_shape(want_x, want_y, VALVE_OPEN);
-        /* (Cellular automata will cause leaks) */
-
         set_sound(100, 0, 0xA0, 8, 4);
+        open_valves++;
       } else if ((shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) && have_ax) {
         /* Break a pipe with the ax (downside of having it!) */
         set_shape(want_x, want_y, shape + 1);
@@ -622,10 +625,7 @@ void cellular_automata(void) {
       } else if (shape >= 32 + 128 && shape < 64 + 128) {
         /* Erase water */
         set_shape(x, y, 0);
-      } else if (shape == VALVE_OPEN) {
-        /* Find any leaky pipes and shoot gas out */
-        follow_pipes(x, y, 1);
-      } else if (shape == CIVILIAN) { // && rand < 64) {
+      } else if (shape == CIVILIAN) {
         int want_dir, dist;
 
         /* Civilian */
@@ -647,17 +647,24 @@ void cellular_automata(void) {
             want_dir = POKEY_READ.random % 8;
         }
 
+        /* Try to move in the chosen direction */
         if (want_dir != -1) {
           dir = want_dir;
 
-          if (valid_dir(x, y, dir)) {
-            shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
-            if (shape2 == 0) {
-              set_shape(x, y, 0);
-              set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN);
-            }
+          if (valid_dir(x, y, dir) &&
+              shape_at(x + dir_x[dir], y + dir_y[dir]) == 0) {
+            set_shape(x, y, 0);
+            set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN);
           }
         }
+      } else if (shape == PIPE_BROKEN_UP_DOWN) {
+        /* Draw (or erase) gas leak on left/right of a broken vertical pipe */
+        broken_pipe(x - 1, y, GASLEAK_LEFT);
+        broken_pipe(x + 1, y, GASLEAK_RIGHT);
+      } else if (shape == PIPE_BROKEN_LEFT_RIGHT) {
+        /* Draw (or erase) gas leak above/below a broken horizontal pipe */
+        broken_pipe(x, y - 1, GASLEAK_UP);
+        broken_pipe(x, y + 1, GASLEAK_DOWN);
       }
     }
   }
@@ -668,21 +675,24 @@ void cellular_automata(void) {
   } else {
     POKEY_WRITE.audc1 = 0x00;
   }
+
+  POKE(scr_mem + 1, open_valves); // FIXME
 }
 
-/* Starting at a position (it'll be a valve),
-   begin traversing any attached pipes in the four
-   cardinal directions */
-void follow_pipes(char x, char y, char on_off) {
-  char dir, shape2;
+/* FIXME */
+void broken_pipe(int x, int y, char shape) {
+  char c;
 
-  for (dir = 0; dir < 8; dir += 2) {
-    if (valid_dir(x, y, dir)) {
-      shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
-      if ((shape2 == PIPE_UP_DOWN || shape2 == PIPE_BROKEN_UP_DOWN) && dir_x[dir] == 0) {
-        leak_gas(x, y + dir_y[dir], dir, on_off);
-      } else if ((shape2 == PIPE_LEFT_RIGHT || shape2 == PIPE_BROKEN_UP_DOWN) && dir_y[dir] == 0) {
-        leak_gas(x + dir_x[dir], y, dir, on_off);
+  if (x > 0 && y > 0 && x < LEVEL_W && y < LEVEL_H) {
+    c = shape_at(x, y);
+    if (open_valves > 0) {
+      if (c == 0) {
+        set_shape(x, y, shape);
+      }
+    } else {
+      if (c == GASLEAK_LEFT || c == GASLEAK_RIGHT ||
+          c == GASLEAK_UP || c == GASLEAK_DOWN) {
+        set_shape(x, y, 0);
       }
     }
   }
@@ -713,67 +723,6 @@ char pipe_corner[16] = {
   /* Up+Right */
   NA, NA, 2, 0,
 };
-
-/* Starting a given direction, follow a chain of pipes
-   until we can follow them no more, and create or erase
-   gas leaks at any broken pipes (will depend on the
-   valve state) */
-void leak_gas(char x, char y, char dir, char on_off) {
-  char shape, move, check, set;
-
-  do {
-    move = 0;
-
-    shape = shape_at(x, y);
-
-    if (shape == PIPE_BROKEN_UP_DOWN) {
-      /* Broken vertical (up/down) pipe;
-         try to add (or remove) gas leak on left/rght */
-      check = (on_off ? 0 : GASLEAK_LEFT);
-      set = (on_off ? GASLEAK_LEFT : 0);
-      if (x > 0 && shape_at(x - 1, y) == check)
-        set_shape(x - 1, y, set);
-
-      check = (on_off ? 0 : GASLEAK_RIGHT);
-      set = (on_off ? GASLEAK_RIGHT : 0);
-      if (x < 19 && shape_at(x + 1, y) == check)
-        set_shape(x + 1, y, set);
-
-      move = 1;
-    } else if (shape == PIPE_BROKEN_LEFT_RIGHT) {
-      /* Broken horizontal (left/right) pipe;
-         try to add (or remove) gas leak above/below */
-      check = (on_off ? 0 : GASLEAK_UP);
-      set = (on_off ? GASLEAK_UP : 0);
-      if (y > 0 && shape_at(x, y - 1) == check)
-        set_shape(x, y - 1, set);
-
-      check = (on_off ? 0 : GASLEAK_DOWN);
-      set = (on_off ? GASLEAK_DOWN : 0);
-      if (y < 10 && shape_at(x, y + 1) == check)
-        set_shape(x, y + 1, set);
-
-      move = 1;
-    } else if (shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) {
-      /* Non-broken up/down or left/right;
-         keep going the same direction */
-      move = 1;
-    } else if (shape == PIPE_DOWN_RIGHT || shape == PIPE_DOWN_LEFT ||
-               shape == PIPE_UP_RIGHT || shape == PIPE_UP_LEFT) {
-      /* Corner pipe; turn a new direction, based on
-         the direction we were going when we hit it */
-      dir = pipe_corner[(shape - PIPE_DOWN_RIGHT) * 4 + (dir / 2)];
-
-      move = 1;
-    }
-
-    /* Valid pipe? Move into it. Otherwise, all done */
-    if (move) {
-      x = x + dir_x[dir];
-      y = y + dir_y[dir];
-    }
-  } while (move);
-}
 
 
 /* Create an explosion of fire at the given position
