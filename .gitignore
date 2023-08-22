@@ -1,5 +1,7 @@
 *.s
 *.o
 *.xex
+*.atr
+*.AR0
 *.map
 levels.dat

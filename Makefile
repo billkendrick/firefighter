@@ -11,6 +11,7 @@ CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
 CA65=${CC65BIN}/ca65
 LD65=${CC65BIN}/ld65
+DIR2ATR=/usr/local/bin/dir2atr
 
 ## Include and Library Paths
 CC65_HOME=/usr/share/cc65
@@ -27,7 +28,7 @@ LEVEL_FILES=$(wildcard levels/level*.txt)
 OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/draw_text.o obj/dli.o
 
 ## Main Targets:
-all:	firefite.xex
+all:	firefite.atr firefite.xex
 
 run:	firefite.xex
 	atari800 -nobasic -run firefite.xex
@@ -37,6 +38,7 @@ run-disk:	firefite.atr
 
 clean:	clean-intermediate
 	-rm firefite.xex
+	-rm firefths.xex
 	-rm firefite.atr
 
 clean-intermediate:
@@ -48,12 +50,21 @@ clean-intermediate:
 
 ## Files to generate:
 
-firefite.atr:	firefite.xex
-	echo dir2atr
+firefite.atr:	firefths.xex
+	cp firefths.xex disk/FIREFITE.AR0
+	${DIR2ATR} -b MyDos4534 firefite.atr disk
 
 firefite.xex:	${OBJECTS} src/atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o firefite.xex \
+		-C src/atari.cfg \
+		${MAP_ARGS} \
+		${OBJECTS} atari.lib
+
+# FIXME: High score version
+firefths.xex:	${OBJECTS} src/atari.cfg
+	${LD65} --lib-path "${CC65_LIB}" \
+		-o firefths.xex \
 		-C src/atari.cfg \
 		${MAP_ARGS} \
 		${OBJECTS} atari.lib
