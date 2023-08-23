@@ -41,7 +41,7 @@ CC65_FLAGS=-Osir --add-source
 ## Sources
 LEVEL_FILES=$(wildcard levels/level*.txt)
 OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/draw_text.o obj/dli.o
-OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/draw_text.o obj/dli.o obj/help.o
+OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/draw_text.o obj/dli.o obj/help.o obj/config.o
 
 TMP=tmp-README.html
 
@@ -128,6 +128,12 @@ obj/help.o:  asm/help.s
 
 asm/help.s:  src/help.c src/help.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/help.c -o asm/help.s
+
+obj/config.o:  asm/config.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/config.s -o obj/config.o
+
+asm/config.s:  src/config.c src/config.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/config.c -o asm/config.s
 
 # Game loop:
 # ----------

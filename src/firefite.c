@@ -14,6 +14,7 @@
 
 #ifdef DISK
 #include "help.h"
+#include "config.h"
 #endif
 
 extern unsigned char scr_mem[];
@@ -30,6 +31,10 @@ void main(void) {
   strcpy(high_score_name, "BJK");
   main_stick = STICK_LEFT;
   level = 1;
+
+#ifdef DISK
+  load_config();
+#endif
 
   do {
     do {

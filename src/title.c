@@ -15,6 +15,10 @@
 #include "dli.h"
 #include "game.h"
 
+#ifdef DISK
+#include "config.h"
+#endif
+
 extern unsigned char font1_data[];
 // extern unsigned char font2_data[]; /* Not actually referenced */
 
@@ -23,9 +27,9 @@ extern unsigned char levels_data[];
 extern unsigned char * dlist;
 
 extern char level;
+extern char main_stick;
 extern unsigned long int high_score;
 extern char high_score_name[4];
-extern char main_stick;
 
 void show_controls(void);
 
@@ -283,6 +287,10 @@ char show_title(void) {
     }
 #endif
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && !want_help);
+
+#ifdef DISK
+  save_config();
+#endif
 
   OS.ch = KEY_NONE;
 
