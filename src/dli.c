@@ -1,4 +1,6 @@
 /*
+  Firefighter Display List Interrupt routines
+
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
@@ -9,7 +11,6 @@
 #include "dli.h"
 
 extern unsigned char font1_data[];
-// extern unsigned char font2_data[]; /* Not actually referenced */
 
 void dli(void) {
   asm("pha");

@@ -1,4 +1,6 @@
 /*
+  Firefighter game loop and its helper functions.
+
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
@@ -14,7 +16,7 @@
 #include "draw_text.h"
 #include "dli.h"
 
-/* FIXME: Shove in a "score.h" header? */
+/* FIXME: Shove in a "score.h" header? -bjk 2023.08.22 */
 #define SCORE_AX_COLLECT 15
 #define SCORE_CIVILIAN_RESCUE 100
 #define SCORE_CRATE_BREAK_DEDUCTION 1
@@ -469,7 +471,13 @@ void start_game(void) {
    tip shape near the player, and three other shapes
    beyond that; we'll avoid drawing those other three
    if the first part failed to draw, to avoid being
-   able to spray through solid objects! */
+   able to spray through solid objects!i
+
+   @param unsigned char x - X position to [attempt to] draw
+   @param unsigned char y - Y position to [attempt to] draw
+   @param unsigned char want_shape - water shape to [attempt to] draw
+   @return boolean 1 if it was drawn, 0 otherwise (e.g., obstacle, fire, etc.)
+*/
 unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) {
   unsigned char shape;
 
@@ -545,7 +553,9 @@ void setup_game_screen(void) {
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 }
 
-/* FIXME */
+/* Draw the current level, including drawing the
+   level/score/bonus status bar at the top.
+   Flashes a "GET READY!" message, before proceeding. */
 void draw_level(void) {
   int l;
 
@@ -571,7 +581,7 @@ void draw_level(void) {
   memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE + 1, LEVEL_SPAN);
 }
 
-/* FIXME */
+/* Draws the level/score/bonus in the status bar */
 void draw_score(void) {
   draw_number(level, 2, scr_mem + 28);
   draw_number(score, 6, scr_mem + 39);
@@ -657,6 +667,7 @@ void cellular_automata(void) {
             if (valid_dir(x, y, dir) &&
                 shape_at(x + dir_x[dir], y + dir_y[dir]) == 0) {
               set_shape(x, y, 0);
+
               if ((dir_x[dir] == 1 && dir_y[dir] >= 0) || dir_y[dir] == 1) {
                 set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN_MOVED);
               } else {
@@ -665,7 +676,12 @@ void cellular_automata(void) {
             }
           }
         } else if (shape == CIVILIAN_MOVED) {
-          /* FIXME */
+          /* Turn a previously-moved worker back into a regular worker.
+
+             (Since cellular automaton goes from top-to-bottom, left-to-right,
+             we use an interim 'shape' to avoid processing the same worker
+             multiple times per frame (causing them to 'fly' across or down
+             the screen) if they move down or right) */
           set_shape(x, y, CIVILIAN);
         } else if (shape == PIPE_BROKEN_UP_DOWN && rand < 128) {
           /* Draw (or erase) gas leak on left/right of a broken vertical pipe */
@@ -682,21 +698,8 @@ void cellular_automata(void) {
     }
   }
 
-  /* FIXME */
-/*
-  for (y = 0; y < LEVEL_H; y++) {
-    for (x = 0; x < LEVEL_W; x++) {
-      shape = shape_at(x, y);
-      if (shape == CIVILIAN_MOVED) {
-        set_shape(x, y, CIVILIAN);
-      } else if (shape == FIRE_SM || shape == FIRE_MD || shape == FIRE_LG) {
-        any_fire++;
-      }
-    }
-  }
-*/
-
-  /* FIXME */
+  /* Play crackling fire sound effect
+     (the more fire, the higher the volume) */
   if (any_fire) {
     POKEY_WRITE.audf1 = ((POKEY_READ.random) >> 4) + 128;
     POKEY_WRITE.audc1 = (any_fire >> 4) + 1;
@@ -705,7 +708,14 @@ void cellular_automata(void) {
   }
 }
 
-/* FIXME */
+/* Given a broken pipe at a position on the screen,
+   [attempt to] draw a gas leak shape, or a blank,
+   depending on the state of all valves on the screen.
+
+   @param int x - X position to [attempt to] draw/erase gas leak
+   @param int y - Y position to [attempt to] draw/erase gas leak
+   @param char shape - gas leak shape to [attempt to] draw there
+*/
 void broken_pipe(int x, int y, char shape) {
   char c;
 
@@ -752,7 +762,11 @@ char pipe_corner[16] = {
 
 
 /* Create an explosion of fire at the given position
-   (occurs when fire touches oil barrels or gas leaks) */
+   (occurs when fire touches oil barrels or gas leaks)
+
+   @param char x - X position for explosion
+   @param char y - Y position for explosion
+*/
 void explode(char x, char y) {
   char shape, flam;
 
@@ -801,7 +815,13 @@ void explode(char x, char y) {
 }
 
 /* Determines whether moving a given direction from
-   a particular position is still in-bounds */
+   a particular position is still in-bounds
+
+   @param unsigned char x - X position from which to test
+   @param unsigned char y - Y position from which to test
+   @param unsigned char dir - direction (0-7; see dir_x[] & dir_y[]) to test
+   @return unsigned char boolean whether the new position is in bounds
+*/
 unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir) {
   int dx, dy;
 
@@ -814,7 +834,14 @@ unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir) {
 };
 
 /* Return the flammability of an object; used to determine
-   how (and if) fire spreads */
+   how (and if) fire spreads
+
+   @param unsigned char c - Object shape to test for flammability
+   @param unsigned char - Fire shape to draw on the screen
+     (FIRE_SM, FIRE_MD, or FIRE_LG),
+     or FIRE_INFLAM if the shape is not flammable (don't spread fire),
+     or FIRE_XLG if the shape is explosive
+*/
 unsigned char flammable(unsigned char c) {
   if (c == OIL || c == GASLEAK_RIGHT || c == GASLEAK_LEFT || c == GASLEAK_UP || c == GASLEAK_DOWN) {
     /* Oil barrel and gas leaks cause an explosion */
@@ -841,7 +868,16 @@ unsigned char flammable(unsigned char c) {
   }
 }
 
-/* FIXME */
+/* Set sound parameters
+   @param char p - Starting pitch (0-255)
+   @param char pch - Pitch delta
+     (negative for higher, positive for lower, zero for no change)
+   @param char dist - Distortion (as high nybble)
+     (e.g., (10<<4) aka 160 aka 0xA0 for 'pure' tone (square wave)
+   @param char vol - Starting volume (0-15)
+   @param char volch - Volume change; how fast to decrease volume
+     (note: always _positive_)
+*/
 void set_sound(char p, char pch, char dist, char vol, char volch) {
   hit_pitch = p;
   hit_pitch_change = pch;
@@ -850,7 +886,11 @@ void set_sound(char p, char pch, char dist, char vol, char volch) {
   hit_vol_decrease = volch;
 }
 
-/* FIXME */
+/* End-of-level bonus sequence:
+   + Show "Level Complete!"
+   + Show and tally Time Bonus
+   + Show and tally Safety Bonus
+*/
 void level_end_bonus(void) {
   int i;
   char c, any_fire;
@@ -908,7 +948,7 @@ void level_end_bonus(void) {
   }
 }
 
-/* FIXME */
+/* Briefly flash the background color (of the entire screen) */
 void flash(void) {
   char i, j;
 
@@ -924,6 +964,7 @@ void flash(void) {
   }
 }
 
+/* Pause for a few seconds */
 void pause(void) {
   int i;
 
@@ -932,7 +973,10 @@ void pause(void) {
   }
 }
 
-/* FIXME */
+/* Bonus score tally sequence (used by end-of-level bonus sequence)
+   @param int x - X position to draw bonus score for countdown
+   @param int deduct - How quickly to deduct points from bonus during tally
+*/
 void bonus_tally(int x, int deduct) {
   while (bonus >= deduct) {
     bonus = bonus - deduct;
@@ -966,4 +1010,3 @@ void quiet(void) {
   POKEY_WRITE.audf4 = 0;
   POKEY_WRITE.audc4 = 0;
 }
-

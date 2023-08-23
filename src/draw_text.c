@@ -1,4 +1,6 @@
 /*
+  Firefighter text drawing routines
+
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
@@ -13,6 +15,12 @@
 
 extern unsigned char scr_mem[];
 
+/* Draw some text on the screen.
+
+   @param char * str - The NUL-terminated ('\0') string to write
+   @unsigned char * dest - The destination in memory
+     (expected to within src_mem[]!!!)
+*/
 void draw_text(char * str, unsigned char * dest) {
   unsigned char ch;
   unsigned int i;
@@ -30,6 +38,13 @@ void draw_text(char * str, unsigned char * dest) {
   }
 }
 
+/* Draw a zero-padded decimal number on the screen.
+
+   @param unsigned long int n - The number to draw
+   @param int digits - How many digits to show (will be zero-padded)
+   @unsigned char * dest - The destination in memory
+     (expected to within src_mem[]!!!)
+*/
 void draw_number(unsigned long int n, int digits, unsigned char * dest) {
   do {
     POKE(dest + digits - 1, (n % 10) + 16);

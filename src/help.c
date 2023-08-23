@@ -1,4 +1,6 @@
 /*
+  Firefighter Help Text display
+
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
@@ -16,7 +18,7 @@
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
 
-/* FIXME */
+/* Routine to load and show help text on a fullscreen text display */
 void show_help(void) {
   int i;
   unsigned char y, last;
@@ -88,3 +90,4 @@ void show_help(void) {
   do {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
 }
+

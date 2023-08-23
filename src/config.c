@@ -1,4 +1,6 @@
 /*
+  Firefighter Config File (disk version) routines
+
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
@@ -14,7 +16,7 @@
 extern char level;
 extern char main_stick;
 
-/* FIXME */
+/* (Attempt to) load config from disk */
 void load_config() {
   FILE * fi;
 
@@ -26,7 +28,7 @@ void load_config() {
   }
 }
 
-/* FIXME */
+/* (Attempt to) save config to disk */
 void save_config() {
   FILE * fi;
 

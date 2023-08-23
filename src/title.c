@@ -1,4 +1,6 @@
 /*
+  Firefighter title screen
+
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
@@ -20,8 +22,6 @@
 #endif
 
 extern unsigned char font1_data[];
-// extern unsigned char font2_data[]; /* Not actually referenced */
-
 extern unsigned char scr_mem[];
 extern unsigned char levels_data[];
 extern unsigned char * dlist;
@@ -33,12 +33,14 @@ extern char high_score_name[4];
 
 void show_controls(void);
 
-/* FIXME */
+/* Set up and display title screen; title screen loop */
 char show_title(void) {
   int i;
   unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
   unsigned int select_down, level_pos;
   unsigned char option_down, want_help;
+
+  /* FIXME: Screen setup could be moved to a function -bjk 2023.08.22 */
 
   OS.sdmctl = 0;
 
@@ -84,16 +86,19 @@ char show_title(void) {
   POKEW(dlist + 38, (unsigned int) dlist);
 
   OS.sdlst = dlist;
-  OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
 
+  /* Set character set */
+  OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
   POKE(0x600, OS.chbas + 2);
 
+  /* Set color palette */
   OS.color0 = 0x52;
   OS.color1 = 0xCA;
   OS.color2 = 0x02;
   OS.color3 = 0x46;
   OS.color4 = 0x02;
 
+  /* Enable DLI rotuine */
   ANTIC.nmien = NMIEN_VBI;
   while (ANTIC.vcount < 124);
   OS.vdslst = (void *) dli;
@@ -195,10 +200,12 @@ char show_title(void) {
   POKEY_WRITE.skctl = 3;
 
 
+  /* Clear title screen loop input state */
   select_down = 0;
   option_down = 0;
   want_help = 0;
 
+  /* (Eat any input) */
   do {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
   OS.ch = KEY_NONE;
@@ -289,10 +296,10 @@ char show_title(void) {
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && !want_help);
 
 #ifdef DISK
+  /* Save current config */
   save_config();
 #endif
 
-  OS.ch = KEY_NONE;
 
   /* FIXME: quiet() */
   POKEY_WRITE.audc1 = 0;
@@ -304,16 +311,19 @@ char show_title(void) {
   POKEY_WRITE.audf3 = 0;
   POKEY_WRITE.audf4 = 0;
 
+  /* Disable DLI */
   OS.sdmctl = 0;
   ANTIC.nmien = NMIEN_VBI;
 
+  /* (Eat any input) */
   do {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
+  OS.ch = KEY_NONE;
 
   return want_help;
 }
 
-/* FIXME */
+/* Show controls (based on the setting choice) */
 void show_controls(void) {
   if (main_stick == STICK_LEFT) {
     draw_text("USE LEFT JOYSTICK TO MOVE. ", scr_mem + 260 + 7);

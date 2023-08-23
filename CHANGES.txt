@@ -9,6 +9,7 @@ http://www.newbreedsoftware.com/firefighter/
    them if using one joystick (where you cannot walk while spraying).
    (h/t phigan & JLsoft on AtariAge forums for reporting)
  * Stick setting & latest level saved as config file on disk (ATR) version
+ * Finished doc'ing functions & routines with source code comments
 
 0.1-beta-1 (2023-08-22):
  * First public beta release

@@ -1,4 +1,6 @@
 /*
+  Firefighter shape table
+
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
@@ -8,6 +10,10 @@
 
 #ifndef _SHAPES_H
 #define _SHAPES_H
+
+/* These correspond to the shapes found in the font
+   (with highest first and/or second bits set, to
+   specify the color) */
 
 #define PIPE_UP_DOWN (1 + 64)
 #define PIPE_BROKEN_UP_DOWN (2 + 64)
@@ -46,11 +52,10 @@
 #define FIRE_INFLAM 254 /* Special meaning; not an actual character */
 #define FIRE_XLG 255 /* Special meaning; not an actual character */
 
-#define DOOR (26 + 192)
+#define WALL (25 + 192)
 
+#define DOOR (26 + 192)
 #define EXIT1 (27 + 192)
 #define EXIT2 (28 + 192)
-
-#define WALL (25 + 192)
 
 #endif
