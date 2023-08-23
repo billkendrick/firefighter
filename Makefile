@@ -8,7 +8,7 @@
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA1
+VERSION=0.1-BETA2
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,

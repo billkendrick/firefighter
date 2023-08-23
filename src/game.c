@@ -667,11 +667,11 @@ void cellular_automata(void) {
         } else if (shape == CIVILIAN_MOVED) {
           /* FIXME */
           set_shape(x, y, CIVILIAN);
-        } else if (shape == PIPE_BROKEN_UP_DOWN) {
+        } else if (shape == PIPE_BROKEN_UP_DOWN && rand < 128) {
           /* Draw (or erase) gas leak on left/right of a broken vertical pipe */
           broken_pipe(x - 1, y, GASLEAK_LEFT);
           broken_pipe(x + 1, y, GASLEAK_RIGHT);
-        } else if (shape == PIPE_BROKEN_LEFT_RIGHT) {
+        } else if (shape == PIPE_BROKEN_LEFT_RIGHT && rand < 128) {
           /* Draw (or erase) gas leak above/below a broken horizontal pipe */
           broken_pipe(x, y - 1, GASLEAK_UP);
           broken_pipe(x, y + 1, GASLEAK_DOWN);

@@ -1,6 +1,6 @@
 # Firefighter
 
-### Version: Alpha
+### Version: 0.1-BETA2
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
