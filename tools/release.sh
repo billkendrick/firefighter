@@ -23,10 +23,11 @@ echo
 
 if [ "$VERSION" != "$TAG" ]; then
   if [ "$1" != "-f" ]; then
+    VERSION_LOWER=`echo "$VERSION" | sed -e "s/[A-Z]/\L&/g"`
     echo "Mismatch!  Use '-f' to ignore. Will use Makefile version # ($VERSION)"
     echo "Or, if you're ready, run:"
-    echo "  git tag $VERSION"
-    echo "  git push origin $VERSION"
+    echo "  git tag $VERSION_LOWER"
+    echo "  git push origin $VERSION_LOWER"
     echo
     echo "Here is the current 'git status':"
     echo "------------------------------------------------------------------------"
