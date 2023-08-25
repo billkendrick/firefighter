@@ -204,7 +204,7 @@ void start_game(void) {
       if (!obstacle(shape) || (shape >= 32 + 128 && shape < 64 + 128) /* Water */) {
         /* We can! Move there! */
 
-        set_shape(ply_x, ply_y, 0);
+        set_shape(ply_x, ply_y, BLANK);
         ply_x = want_x;
         ply_y = want_y;
 
@@ -233,10 +233,11 @@ void start_game(void) {
           /* No ax, or not a crate? See whether we can push it */
 
           shape2 = shape_at(push_x, push_y);
-          if (shape2 == 0) {
-            set_shape(want_x, want_y, 0);
+          if (shape2 == BLANK) {
+            set_shape(want_x, want_y, BLANK);
             set_shape(push_x, push_y, shape);
-            set_shape(ply_x, ply_y, 0);
+
+            set_shape(ply_x, ply_y, BLANK);
             ply_x = want_x;
             ply_y = want_y;
 
@@ -269,7 +270,7 @@ void start_game(void) {
           y = ply_y + dir_y[dir];
           if (valid_dir(x, y, dir)) {
             if (shape_at(x, y) == CIVILIAN) {
-              set_shape(x, y, 0);
+              set_shape(x, y, BLANK);
               score = score + SCORE_CIVILIAN_RESCUE;
               draw_score();
               civilians_remaining--;
@@ -441,7 +442,7 @@ void start_game(void) {
     /* End of level test */
     if (exiting >= (5 << 3)) {
       /* Erase the player (they've left!) */
-      set_shape(ply_x, ply_y, 0);
+      set_shape(ply_x, ply_y, BLANK);
 
       /* Show level completion (and any end-of-level bonus) */
       level_end_bonus();
@@ -497,7 +498,7 @@ unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) 
              shape == GASLEAK_UP || shape == GASLEAK_DOWN ||
              shape == GASLEAK_LEFT || shape == GASLEAK_RIGHT) {
     /* Extinguish small fire and gas leaks */
-    set_shape(x, y, 0);
+    set_shape(x, y, BLANK);
     return 0;
   } else if (shape != 0) {
     /* Hit any other kind of obstacle! */
@@ -639,7 +640,7 @@ void cellular_automata(void) {
           any_fire++;
         } else if (shape >= 32 + 128 && shape < 64 + 128) {
           /* Erase water */
-          set_shape(x, y, 0);
+          set_shape(x, y, BLANK);
         } else if (shape == CIVILIAN) {
           int want_dir, dist;
 
@@ -667,8 +668,8 @@ void cellular_automata(void) {
             dir = want_dir;
 
             if (valid_dir(x, y, dir) &&
-                shape_at(x + dir_x[dir], y + dir_y[dir]) == 0) {
-              set_shape(x, y, 0);
+                shape_at(x + dir_x[dir], y + dir_y[dir]) == BLANK) {
+              set_shape(x, y, BLANK);
 
               if ((dir_x[dir] == 1 && dir_y[dir] >= 0) || dir_y[dir] == 1) {
                 set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN_MOVED);
@@ -724,13 +725,13 @@ void broken_pipe(int x, int y, char shape) {
   if (x > 0 && y > 0 && x < LEVEL_W && y < LEVEL_H) {
     c = shape_at(x, y);
     if (open_valves > 0) {
-      if (c == 0) {
+      if (c == BLANK) {
         set_shape(x, y, shape);
       }
     } else {
       if (c == GASLEAK_LEFT || c == GASLEAK_RIGHT ||
           c == GASLEAK_UP || c == GASLEAK_DOWN) {
-        set_shape(x, y, 0);
+        set_shape(x, y, BLANK);
       }
     }
   }
@@ -851,14 +852,19 @@ unsigned char flammable(unsigned char c) {
        on the screen, but indicates we want an explosion) */
     return FIRE_XLG;
   } else if (c == CIVILIAN) {
+    /* Civilians die! ;-( */
     civilians_remaining--;
     set_sound(100, 2, 0xA0, 15, 1);
     dying = 14;
     return 0;
-  } else if (c == CRATE || c == CRATE_BROKEN || c == AX) {
-    /* Crates and ax ignite fully */
+  } else if (c == CRATE || c == CRATE_BROKEN) {
+    /* Crates ignite fully (lose points!) */
+    score -= SCORE_CRATE_BREAK_DEDUCTION;
     return FIRE_LG;
-  } else if (c == 0) {
+  } else if (c == AX) {
+    /* Ax ignites fully */
+    return FIRE_LG;
+  } else if (c == BLANK) {
     /* Empty spaces ignite smally */
     return FIRE_SM;
   } else {

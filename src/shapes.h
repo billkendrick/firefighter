@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-22
+  2023-08-13 - 2023-08-25
 */
 
 #ifndef _SHAPES_H
@@ -14,6 +14,8 @@
 /* These correspond to the shapes found in the font
    (with highest first and/or second bits set, to
    specify the color) */
+
+#define BLANK 0
 
 #define PIPE_UP_DOWN (1 + 64)
 #define PIPE_BROKEN_UP_DOWN (2 + 64)
