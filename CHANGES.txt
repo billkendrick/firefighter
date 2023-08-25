@@ -10,6 +10,9 @@ http://www.newbreedsoftware.com/firefighter/
  * Added an explicit "BLANK" shape const, to avoid hard-coded zeros (0).
  * Reorganized/updated instructions on title screen.
    (h/t rdefabri & Beeblebrox @ AtariAge forums)
+ * Character set (font) improvements:
+   + Stylized "&" and "!"
+   + Better large fire
 
 0.1-beta-2 (2023-08-23):
  * Gas leaks don't appear instantly, giving you a chance to walk through
