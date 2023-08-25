@@ -15,6 +15,8 @@ http://www.newbreedsoftware.com/firefighter/
    + Better large fire; avoid touching sides
    + Nudged valves & brick walls
    + Smaller door & crates (avoid touching sides)
+ * "tools/release.sh" checks Makefile version vs 'git tag',
+   echos a bunch of info about the release process
 
 0.1-beta-2 (2023-08-23):
  * Gas leaks don't appear instantly, giving you a chance to walk through
