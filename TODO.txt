@@ -4,8 +4,13 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-2023-08-18 - 2023-08-22
+2023-08-18 - 2023-08-24
 
+ * Explain exit sequence (push, countdown) on the title screen too
+   (h/t rdefabri & Beeblebrox @ AtariAge forums)
  * More levels
  * High score tracking
-
+ * High score table on disk version
+   (best way to ensure it's easy for FujiNet high score sharing!?)
+ * Ability to page backwards on help screen
+   (had difficulty using ftell()/fseek() or fgetpos()/fsetpos())

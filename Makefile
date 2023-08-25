@@ -4,11 +4,11 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-08-22
+# 2023-08-13 - 2023-08-24
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA2
+VERSION=0.1-BETA3
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,
@@ -84,7 +84,6 @@ firefite.xex:	${OBJECTS} src/atari.cfg
 		${MAP_ARGS} \
 		${OBJECTS} atari.lib
 
-# FIXME: High score version
 firefths.xex:	${OBJECTS_DISK} src/atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o firefths.xex \
