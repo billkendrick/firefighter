@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-22
+  2023-08-13 - 2023-08-25
 */
 
 #include <atari.h>
@@ -254,13 +254,18 @@ char show_title(void) {
         POKEY_WRITE.audc3 = 0;
         POKEY_WRITE.audc4 = 0;
   
-        if (OS.stick0 != 15 || OS.stick1 != 15)
+        if (OS.stick0 != 15 || OS.stick1 != 15) {
+          OS.atract = 0;
+
           honk = (POKEY_READ.random % 0x0F) + 15;
+        }
       }
     }
 
     /* Select: Change starting level */
     if (CONSOL_SELECT(GTIA_READ.consol) == 1) {
+      OS.atract = 0;
+
       if (select_down == 0) {
         if (level < levels_data[0])
           level++;
@@ -278,6 +283,8 @@ char show_title(void) {
 
     /* Option: Toggle controls */
     if (CONSOL_OPTION(GTIA_READ.consol) == 1) {
+      OS.atract = 0;
+
       if (option_down == 0) {
         main_stick = !main_stick; /* (choices are 0 & 1) */
         show_controls();
@@ -290,6 +297,8 @@ char show_title(void) {
 #ifdef DISK
     /* ? or Help: Show help screen */
     if (OS.ch == KEY_QUESTIONMARK || POKEY_READ.kbcode == KEY_HELP) {
+      OS.atract = 0;
+
       want_help = 1;
     }
 #endif

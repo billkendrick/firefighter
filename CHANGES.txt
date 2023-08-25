@@ -4,6 +4,9 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
+0.1-beta-3 (2023-08-25):
+ * Disable attract mode.
+
 0.1-beta-2 (2023-08-23):
  * Gas leaks don't appear instantly, giving you a chance to walk through
    them if using one joystick (where you cannot walk while spraying).

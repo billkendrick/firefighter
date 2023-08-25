@@ -14,6 +14,5 @@ http://www.newbreedsoftware.com/firefighter/
    (best way to ensure it's easy for FujiNet high score sharing!?)
  * Ability to page backwards on help screen
    (had difficulty using ftell()/fseek() or fgetpos()/fsetpos())
- * Avoid attract mode
  * Lose points when crates get burned
 

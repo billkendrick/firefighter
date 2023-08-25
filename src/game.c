@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-08-22
+  2023-08-15 - 2023-08-25
 */
 
 #include <atari.h>
@@ -434,6 +434,8 @@ void start_game(void) {
 
     /* Wait for next vertical blank (throttle fps) */
     while (ANTIC.vcount < 124);
+
+    OS.atract = 0;
 
 
     /* End of level test */
