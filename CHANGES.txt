@@ -14,7 +14,7 @@ http://www.newbreedsoftware.com/firefighter/
    + Stylized "&" and "!"
    + Better large fire; avoid touching sides
    + Nudged valves & brick walls
-   + Smaller door (avoid touching sides)
+   + Smaller door & crates (avoid touching sides)
 
 0.1-beta-2 (2023-08-23):
  * Gas leaks don't appear instantly, giving you a chance to walk through
