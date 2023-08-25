@@ -6,8 +6,6 @@ http://www.newbreedsoftware.com/firefighter/
 
 2023-08-18 - 2023-08-25
 
- * Explain exit sequence (push, countdown) on the title screen too
-   (h/t rdefabri & Beeblebrox @ AtariAge forums)
  * More levels
  * High score tracking
  * High score table on disk version

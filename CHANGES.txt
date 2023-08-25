@@ -8,6 +8,8 @@ http://www.newbreedsoftware.com/firefighter/
  * Disable attract mode.
  * Score deduction when crates are destroyed by fire, too (not just ax).
  * Added an explicit "BLANK" shape const, to avoid hard-coded zeros (0).
+ * Reorganized/updated instructions on title screen.
+   (h/t rdefabri & Beeblebrox @ AtariAge forums)
 
 0.1-beta-2 (2023-08-23):
  * Gas leaks don't appear instantly, giving you a chance to walk through

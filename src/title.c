@@ -115,48 +115,61 @@ char show_title(void) {
   POKE(scr_mem + 78, 3 + 16 + 64);
 
   /* Help section 1 */
-  draw_text("GAS PIPE  LEAKING GAS  TURN VALVE", scr_mem + 80 + 3);
-  POKE(scr_mem + (80 + 40) + 2, PIPE_DOWN_RIGHT);
-  POKE(scr_mem + (80 + 40) + 3, PIPE_LEFT_RIGHT);
-  POKE(scr_mem + (80 + 40) + 4, PIPE_UP_LEFT);
+  draw_text("LEAD TO EXIT. PUT OUT FIRE. WALL. PIPES.", scr_mem + 80 + 0);
 
-  POKE(scr_mem + (80 + 40) + 8, PIPE_BROKEN_UP_DOWN);
-  POKE(scr_mem + (80 + 40) + 9, GASLEAK_RIGHT);
+  POKE(scr_mem + (80 + 40) + 0, CIVILIAN);
+  POKE(scr_mem + (80 + 40) + 1, CIVILIAN);
+  POKE(scr_mem + (80 + 40) + 2, FIREFIGHTER_RIGHT);
 
-  POKE(scr_mem + (80 + 40) + 14, PIPE_LEFT_RIGHT);
-  POKE(scr_mem + (80 + 40) + 15, VALVE_OPEN);
-  POKE(scr_mem + (80 + 40) + 16, PIPE_LEFT_RIGHT);
+  POKE(scr_mem + (80 + 40) + 3, EXIT1);
+  POKE(scr_mem + (80 + 40) + 4, EXIT2);
+  POKE(scr_mem + (80 + 40) + 5, DOOR);
+
+  POKE(scr_mem + (80 + 40) + 7, FIRE_LG);
+  POKE(scr_mem + (80 + 40) + 8, FIRE_MD);
+  POKE(scr_mem + (80 + 40) + 9, FIRE_SM);
+
+  POKE(scr_mem + (80 + 40) + 10, 'e' + 64);
+  POKE(scr_mem + (80 + 40) + 11, 'g' + 64);
+  POKE(scr_mem + (80 + 40) + 12, FIREFIGHTER_LEFT);
+
+  POKE(scr_mem + (80 + 40) + 14, WALL);
+  POKE(scr_mem + (80 + 40) + 15, WALL);
+
+  POKE(scr_mem + (80 + 40) + 17, PIPE_DOWN_RIGHT);
+  POKE(scr_mem + (80 + 40) + 18, PIPE_LEFT_RIGHT);
+  POKE(scr_mem + (80 + 40) + 19, PIPE_UP_LEFT);
 
   /* Help section 2 */
-  draw_text("GET AX  BREAK CRATES   OIL    WALLS", scr_mem + 140 + 2);
-  POKE(scr_mem + (140 + 40) + 2, AX);
+  draw_text("PUSH CRATES&OIL. AX BREAKS CRATES&PIPES", scr_mem + 140 + 0);
 
-  POKE(scr_mem + (140 + 40) + 7, CRATE);
-  POKE(scr_mem + (140 + 40) + 8, CRATE_BROKEN);
+  POKE(scr_mem + (140 + 40) + 2, FIREFIGHTER_RIGHT);
+  POKE(scr_mem + (140 + 40) + 3, CRATE);
+  POKE(scr_mem + (140 + 40) + 6, OIL);
 
-  POKE(scr_mem + (140 + 40) + 13, OIL);
+  POKE(scr_mem + (140 + 40) + 9, AX);
 
-  POKE(scr_mem + (140 + 40) + 16, WALL);
-  POKE(scr_mem + (140 + 40) + 17, WALL);
-  POKE(scr_mem + (140 + 40) + 18, WALL);
+  POKE(scr_mem + (140 + 40) + 14, CRATE_BROKEN);
+
+  POKE(scr_mem + (140 + 40) + 17, GASLEAK_LEFT);
+  POKE(scr_mem + (140 + 40) + 18, PIPE_BROKEN_UP_DOWN);
+  POKE(scr_mem + (140 + 40) + 19, GASLEAK_RIGHT);
+
 
   /* Help section 3 */
-  draw_text("PUT OUT FIRE, LEAD CIVILIANS TO EXIT", scr_mem + 200 + 2);
-  POKE(scr_mem + (200 + 40) + 0, FIRE_LG);
-  POKE(scr_mem + (200 + 40) + 1, FIRE_MD);
-  POKE(scr_mem + (200 + 40) + 2, FIRE_SM);
+  draw_text("TURN VALVE. OIL&LEAKS EXPLODE! PUSH EXIT", scr_mem + 200 + 0);
 
-  POKE(scr_mem + (200 + 40) + 3, 'e' + 64);
-  POKE(scr_mem + (200 + 40) + 4, 'g' + 64);
-  POKE(scr_mem + (200 + 40) + 5, FIREFIGHTER_LEFT);
+  POKE(scr_mem + (200 + 40) + 1, PIPE_LEFT_RIGHT);
+  POKE(scr_mem + (200 + 40) + 2, VALVE_OPEN);
+  POKE(scr_mem + (200 + 40) + 3, PIPE_LEFT_RIGHT);
 
-  POKE(scr_mem + (200 + 40) + 8, CIVILIAN);
-  POKE(scr_mem + (200 + 40) + 9, CIVILIAN);
-  POKE(scr_mem + (200 + 40) + 10, FIREFIGHTER_RIGHT);
+  POKE(scr_mem + (200 + 40) + 7, FIRE_LG);
+  POKE(scr_mem + (200 + 40) + 8, FIRE_LG);
+  POKE(scr_mem + (200 + 40) + 9, OIL);
+  POKE(scr_mem + (200 + 40) + 10, FIRE_LG);
 
-  POKE(scr_mem + (200 + 40) + 15, DOOR);
-  POKE(scr_mem + (200 + 40) + 17, EXIT1);
-  POKE(scr_mem + (200 + 40) + 18, EXIT2);
+  POKE(scr_mem + (200 + 40) + 16, FIREFIGHTER_RIGHT);
+  POKE(scr_mem + (200 + 40) + 17, DOOR);
 
   /* Control instructions */
   show_controls();
