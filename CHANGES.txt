@@ -4,6 +4,9 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
+0.1-beta-4 (2023-08-26):
+ * WIP: Compressed level data
+
 0.1-beta-3 (2023-08-25):
  * Disable attract mode.
  * Score deduction when crates are destroyed by fire, too (not just ax).

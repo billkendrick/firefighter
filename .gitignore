@@ -4,5 +4,6 @@
 *.atr
 *.AR0
 *.map
-levels.dat
+data/levels.dat
+data/levels_cmp.dat
 disk/README.txt

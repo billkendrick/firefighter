@@ -7,8 +7,10 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-18 - 2023-08-22
+  2023-08-18 - 2023-08-26
 */
+
+require_once("tools/level_consts.inc.php");
 
 $ascii_to_shape = array(
   " " => (0), // blank (floor)
@@ -66,9 +68,6 @@ if ($fo == NULL) {
 
 /* How many levels will there be? */
 fputs($fo, chr($argc - 1), 1);
-
-$LEVEL_W = 20;
-$LEVEL_H = 11;
 
 /* Process each level file */
 for ($i = 1; $i < $argc; $i++) {

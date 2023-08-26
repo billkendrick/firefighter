@@ -4,11 +4,11 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-08-24
+# 2023-08-13 - 2023-08-26
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA3
+VERSION=0.1-BETA4
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,
@@ -64,6 +64,7 @@ clean-intermediate:
 	-rm asm/*.s
 	-rm firefite.map
 	-rm data/levels.dat
+	-rm data/levels_cmp.dat
 	-rm firefths.xex
 	-rm disk/FIREFITE.AR0
 	-rm disk/README.txt
@@ -160,12 +161,16 @@ asm/dli.s:  src/dli.c src/dli.h
 
 # Data segments:
 # --------------
+# FIXME: Include levels_cmp.dat
 obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt data/levels.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
 
 
 ## Data files to build:
 
-data/levels.dat:	tools/level_to_dat.php ${LEVEL_FILES}
+data/levels_cmp.dat:	tools/level_compress.php tools/level_consts.inc.php data/levels.dat
+	./tools/level_compress.php
+
+data/levels.dat:	tools/level_to_dat.php tools/level_consts.inc.php ${LEVEL_FILES}
 	./tools/level_to_dat.php ${LEVEL_FILES}
 
