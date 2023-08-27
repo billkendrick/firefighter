@@ -29,6 +29,10 @@
 #define LEVEL_SPAN (LEVEL_W * LEVEL_H)
 #define LEVEL_TOT_SIZE (LEVEL_SPAN + 2)
 
+/* Level exit countdown
+   (when pushing into door/exit after all workers rescued/perished) */
+#define EXIT_CNT 3
+
 /* External memory pointers we need */
 extern unsigned char font1_data[];
 extern unsigned char levels_data[];
@@ -294,7 +298,7 @@ void start_game(void) {
 
     /* Show "Exiting" counter */
     if (exiting > 0) {
-      POKE(scr_mem, (5 - (exiting >> 3)) + 16 + 128);
+      POKE(scr_mem, (EXIT_CNT - (exiting >> 3)) + 16 + 128);
     } else if (civilians_remaining == 0) {
       POKE(scr_mem, 1 + 128);
     } else {
@@ -441,7 +445,7 @@ void start_game(void) {
 
 
     /* End of level test */
-    if (exiting >= (5 << 3)) {
+    if (exiting >= (EXIT_CNT << 3)) {
       /* Erase the player (they've left!) */
       set_shape(ply_x, ply_y, BLANK);
 
