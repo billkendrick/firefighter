@@ -11,11 +11,10 @@
 
   Compresses level data by stripping two high bits
   (used for color in ANTIC Mode 7 (GRAPHICS 2),
-  so we can "infer" them when we load the level),
+  so we can "infer" them when we load the level;
+  see `level_data_to_screen[]` in `src/shapes.c`),
   and then using those two high bits to represent
   how many times a shape repeats (up to four times).
-
-  FIXME: WIP
 */
 
 require_once("tools/level_consts.inc.php");
@@ -71,8 +70,35 @@ $level_offsets = array();
 for ($l = 0; $l < $level_cnt; $l++) {
   $level_offsets[$l] = $offset;
 
-  for ($i = 0; $i < ($LEVEL_H * $LEVEL_W); $i++) {
-    $data[$offset++] = $stream[($l * $LEVEL_W * $LEVEL_H) + $i];
+  for ($i = 0; $i < $LEVEL_SPAN; $i++) {
+    $ptr = ($l * $LEVEL_SPAN) + $i;
+    $c = $stream[$ptr];
+    $n = 1;
+
+    /* (This nested if is lame, but it's small; we can only
+       support up to 4 repeats before needing a new symbol) */
+    if ($i + 1 < $LEVEL_SPAN) {
+      if ($stream[$ptr + 1] == $c) {
+        $n++;
+        $i++;
+        if ($i + 1 < $LEVEL_SPAN) {
+          if ($stream[$ptr + 2] == $c) {
+            $n++;
+            $i++;
+            if ($i + 1 < $LEVEL_SPAN) {
+              if ($stream[$ptr + 3] == $c) {
+                $n++;
+                $i++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    $c += (($n - 1) << 6);
+
+    $data[$offset++] = $c;
   }
 }
 

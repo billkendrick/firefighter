@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2023-08-22
+Developed 2023-08-13 - 2023-08-27
 
 ------------------------------------------------------------------------
 
@@ -192,10 +192,47 @@ have any affect on fire beyond the position adjacent to the player).
 
 ## Levels
 
+### Level Creation
+
 Levels are created as plain ASCII text files containing special
 (human-readable) characters that represent the handful of various
-shapes possible in the game.  (While we have 64 shapes in our character
-set to work with, in up to 4 colors each, in reality many shapes are
-not part of the map.
+shapes possible in the game.
 
 See the [levels documentation](levels/README.md) for details.
+
+The script [level_to_dat.php](tools/level_to_dat.php) reads the
+individual ASCII text files in the [levels/](levels/) directory and
+generates a binary file containing the game's internal representation
+(aka the screen character bytes) of all of the levels.  (A single byte
+at the beginning indicates how many levels there are, and two bytes
+at the end of each level's data indicates where the firefighter's
+starting position is to be.)
+
+### Level Compression
+
+On the screen shapes that appear also include color data in their highest
+two bits).  However, we never use the same shape in multiple colors;
+e.g., pipes are always green, brick walls and boxes are always red, etc.
+
+Also, while we have 64 shapes in our character set to work with
+(in up to 4 colors each) in reality many shapes are not part of the
+level map.  (Half of the 32 characters in the set are used for the
+various directions of water spray shapes!)
+
+Therefore, we can strip the highest bits of the level data,
+and use those bits to indicate how many times the characters
+repeat (once, twice, three times, four times, etc.).  Since we often
+have the same character appear many times in a row (e.g., a row of
+bricks, or a large blank area in a room), this allows us to store
+one byte in the place of multiple bytes for the same level layout.
+
+The script [level_compress.php](tools/level_compress.php) reads
+the binary level data file (created by the tool above), which in
+early beta versions was used directly (and level data in the game
+executable was simply copied directly to screen memory) and
+creates a compressed file.  (As before, a single byte at the
+beginning indicates how many levels there are.  That is followed
+by four-byte sequences for each level, indicating the firefighter's
+starting position, and the offset within the compressed level data
+that each level starts -- they are of course different lengths!)
+
