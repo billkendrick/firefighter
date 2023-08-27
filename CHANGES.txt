@@ -13,6 +13,8 @@ http://www.newbreedsoftware.com/firefighter/
  * WIP High score table screen (disk version)
  * Character set (font) improvements:
    * Added missing connectors on some corner pipes
+   * Stylized "." and better "!"
+   * "EOL" symbol for high score initial entry
 
 0.1-beta-3 (2023-08-25):
  * Disable attract mode.
