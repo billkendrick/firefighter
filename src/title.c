@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-25
+  2023-08-13 - 2023-08-27
 */
 
 #include <atari.h>
@@ -37,7 +37,7 @@ void show_controls(void);
 char show_title(void) {
   int i;
   unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
-  unsigned int select_down, level_pos;
+  unsigned int select_down, level_pos, select_down_wait;
   unsigned char option_down, want_help;
 
   /* FIXME: Screen setup could be moved to a function -bjk 2023.08.22 */
@@ -215,6 +215,7 @@ char show_title(void) {
 
   /* Clear title screen loop input state */
   select_down = 0;
+  select_down_wait = 0;
   option_down = 0;
   want_help = 0;
 
@@ -280,18 +281,35 @@ char show_title(void) {
       OS.atract = 0;
 
       if (select_down == 0) {
+        /* Initial press of Select */
         if (level < levels_data[0])
           level++;
         else
           level = 1;
 
         draw_number(level, 2, scr_mem + level_pos);
-        select_down = 32;
+        select_down = 64;
       } else {
-        select_down += 32;
+        /* Holding Select down: */
+        if (select_down_wait < 1536) {
+          /* Wait before initial repeat */
+          select_down_wait++;
+        } else if (select_down_wait < 16384) {
+          /* Slow repeat at first */
+          select_down_wait++;
+          select_down += 64;
+        } else {
+          /* Fast repeat */
+          if (select_down < 65536 - 512)
+            select_down += 512;
+          else
+            select_down = 0;
+        }
       }
     } else {
+      /* Not pressing/holding Select */
       select_down = 0;
+      select_down_wait = 0;
     }
 
     /* Option: Toggle controls */
@@ -306,6 +324,8 @@ char show_title(void) {
     } else {
       option_down = 0;
     }
+
+//    while (ANTIC.vcount < 124);
 
 #ifdef DISK
     /* ? or Help: Show help screen */
