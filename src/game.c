@@ -15,13 +15,7 @@
 #include "shapes.h"
 #include "draw_text.h"
 #include "dli.h"
-
-/* FIXME: Shove in a "score.h" header? -bjk 2023.08.22 */
-#define SCORE_AX_COLLECT 15
-#define SCORE_CIVILIAN_RESCUE 100
-#define SCORE_CRATE_BREAK_DEDUCTION 1
-#define SCORE_PIPE_BREAK_DEDUCTION 5
-#define SCORE_NO_FIRE_BONUS 1000
+#include "score.h"
 
 /* Level size/shape constants */
 #define LEVEL_W 20

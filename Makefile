@@ -141,7 +141,7 @@ asm/config.s:  src/config.c src/config.h src/draw_text.h
 obj/game.o:  asm/game.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/game.s -o obj/game.o
 
-asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h
+asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h src/score.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/game.c -o asm/game.s
 
 # Shape table
