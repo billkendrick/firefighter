@@ -67,7 +67,7 @@ void quiet(void);
 extern unsigned long int high_score;
 
 /* Current game score */
-unsigned long int score;
+extern unsigned long int score;
 
 /* Current level number and player's starting position */
 extern char level;

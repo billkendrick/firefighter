@@ -23,10 +23,13 @@
 
 extern unsigned char scr_mem[];
 unsigned char * dlist = (scr_mem + 960);
+
+extern char main_stick;
+extern char level;
+
+extern unsigned long int score;
 extern unsigned long int high_score;
 extern char high_score_name[4];
-char main_stick;
-char level;
 
 /* Main loop! */
 void main(void) {
@@ -35,9 +38,13 @@ void main(void) {
   /* Set default high score */
   set_default_high_score();
 
+#ifdef DISK
+  /* Load high score table from disk */
+  load_high_scores();
+#endif
+
   /* Set default config */
-  main_stick = STICK_LEFT;
-  level = 1;
+  set_default_config();
 
 #ifdef DISK
   /* Load saved config from disk */
@@ -62,5 +69,13 @@ void main(void) {
 
     /* Play the game! */
     start_game();
+
+    /* Handle high score initials entry */
+    if (register_high_score()) {
+#ifdef DISK
+      save_high_scores();
+      show_high_score_table();
+#endif
+    }
   } while(1);
 }

@@ -11,6 +11,7 @@
 #include <string.h>
 
 #ifdef DISK
+#include <stdio.h>
 #include <atari.h>
 #include <peekpoke.h>
 #include "draw_text.h"
@@ -18,8 +19,9 @@
 
 #include "score.h"
 
-unsigned long int high_score;
+unsigned long int score, high_score;
 char high_score_name[4];
+char initials[4];
 
 #ifdef DISK
 unsigned long int high_score_table[10];
@@ -28,6 +30,9 @@ char high_score_name_table[10][4];
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
 #endif
+
+void get_initials(void);
+
 
 /* Sets default high score and (on disk version)
    top 10 high score table entries */
@@ -51,7 +56,43 @@ void set_default_high_score(void) {
 }
 
 
+/* Determine if they got a/the high score, get their initials, and
+   update the high score (table).
+
+   @return char 1 if they got a high score, 0 otherwise
+*/
+char register_high_score(void) {
 #ifdef DISK
+  int i;
+
+  /* Disk: Matched or beat one of the top 10 high scores? */
+
+  /* FIXME: Insert name in high score table */
+#else
+  /* Non-disk: Matched or beat high score? */
+  if (score >= high_score) {
+    get_initials();
+    strcpy(high_score_name, initials);
+    high_score = score;
+
+    return 1;
+  }
+#endif
+
+  return 0;
+}
+
+
+/* Ask user for their initials, store in `initials` variable */
+void get_initials(void) {
+  /* FIXME: */
+
+  strcpy(initials, "NEW");
+}
+
+
+#ifdef DISK
+/* Display the high score table */
 void show_high_score_table(void) {
   int i;
 
@@ -110,5 +151,47 @@ void show_high_score_table(void) {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
   OS.ch = KEY_NONE;
 }
+
+/* Load high scores from disk
+   (into high_score_table[] and high_score_name_table[]) */
+void load_high_scores(void) {
+  int i;
+  FILE * fi;
+
+  fi = fopen("highscor.dat", "rb");
+  if (fi != NULL) {
+    bzero(high_score_name_table, sizeof(char) * 4 * 10);
+    for (i = 0; i < 10; i++) {
+      fread(&(high_score_name_table[i]), sizeof(char), 3, fi);
+      fread(&(high_score_table[i]), sizeof(high_score), 1, fi);
+    }
+
+    fclose(fi);
+
+    /* Copy the top score into the variables used to
+       display the top score on the title screen
+       (which, in non-disk version, is all there is) */
+    high_score = high_score_table[0];
+    strcpy(high_score_name, high_score_name_table[0]);
+  }
+}
+
+/* Save high scores to disk
+   (from high_score_table[] and high_score_name_table[]) */
+void save_high_scores(void) {
+  int i;
+  FILE * fi;
+
+  fi = fopen("highscor.dat", "wb");
+  if (fi != NULL) {
+    for (i = 0; i < 10; i++) {
+      fwrite(&(high_score_name_table[i]), sizeof(char), 3, fi);
+      fwrite(&(high_score_table[i]), sizeof(high_score), 1, fi);
+    }
+
+    fclose(fi);
+  }
+}
+
 #endif
 

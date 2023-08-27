@@ -13,8 +13,8 @@
 #include <stdio.h>
 #include "config.h"
 
-extern char level;
-extern char main_stick;
+char level;
+char main_stick;
 
 /* Set default config (if we cannot load) */
 void set_default_config(void) {

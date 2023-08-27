@@ -18,8 +18,11 @@
 #define SCORE_NO_FIRE_BONUS 1000
 
 void set_default_high_score(void);
+char register_high_score(void);
 
 #ifdef DISK
+void load_high_scores(void);
+void save_high_scores(void);
 void show_high_score_table(void);
 #endif
 
