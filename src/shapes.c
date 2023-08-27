@@ -10,10 +10,12 @@
 
 #include "shapes.h"
 
-/* Compressed levels only record the low 6 bits of
+/* Compressed levels only record the low 5 bits of
    each shape, so we need to map back to the actual
    shapes we use (which include color data in the
-   high two bits; see above) */
+   high two bits; see above).  (Only the first half
+   of the character set is used for level data;
+   the latter half is entirely spray direction shapes.) */
 
 unsigned char level_data_to_screen[29] = {
   BLANK,

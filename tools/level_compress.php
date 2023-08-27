@@ -45,7 +45,7 @@ for ($l = 0; $l < $level_cnt; $l++) {
 
   for ($y = 0; $y < $LEVEL_H; $y++) {
     for ($x = 0; $x < $LEVEL_W; $x++) {
-      $c = ord(fgetc($fi)) & bindec("00111111");
+      $c = ord(fgetc($fi)) & bindec("00011111");
       $stream[] = $c;
     }
   }
@@ -96,7 +96,7 @@ for ($l = 0; $l < $level_cnt; $l++) {
       }
     }
 
-    $c += (($n - 1) << 6);
+    $c += (($n - 1) << 5);
 
     $data[$offset++] = $c;
   }

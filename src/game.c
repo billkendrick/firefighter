@@ -605,8 +605,8 @@ void draw_level(void) {
 
   do {
     s = levels_data[level_data_ptr++];
-    cnt = ((s & 0xC0) >> 6) + 1;
-    c = level_data_to_screen[s & 0x3F];
+    cnt = ((s & 0b11100000) >> 5) + 1;
+    c = level_data_to_screen[s & 0b00011111];
     for (i = 0; i < cnt; i++) {
       POKE(scr_mem + 60 + (scr_ptr++), c);
     }
