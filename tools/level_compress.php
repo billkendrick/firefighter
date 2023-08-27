@@ -75,8 +75,7 @@ for ($l = 0; $l < $level_cnt; $l++) {
     $c = $stream[$ptr];
     $n = 1;
 
-    /* (This nested if is lame, but it's small; we can only
-       support up to 4 repeats before needing a new symbol) */
+    /* (This nested if is lame, but it's small-ish) */
     if ($i + 1 < $LEVEL_SPAN) {
       if ($stream[$ptr + 1] == $c) {
         $n++;
@@ -89,6 +88,30 @@ for ($l = 0; $l < $level_cnt; $l++) {
               if ($stream[$ptr + 3] == $c) {
                 $n++;
                 $i++;
+                if ($i + 1 < $LEVEL_SPAN) {
+                  if ($stream[$ptr + 4] == $c) {
+                    $n++;
+                    $i++;
+                    if ($i + 1 < $LEVEL_SPAN) {
+                      if ($stream[$ptr + 5] == $c) {
+                        $n++;
+                        $i++;
+                        if ($i + 1 < $LEVEL_SPAN) {
+                          if ($stream[$ptr + 6] == $c) {
+                            $n++;
+                            $i++;
+                            if ($i + 1 < $LEVEL_SPAN) {
+                              if ($stream[$ptr + 7] == $c) {
+                                $n++;
+                                $i++;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
