@@ -65,7 +65,7 @@ void set_sound(char p, char pch, char dist, char vol, char volch);
 void level_end_bonus(void);
 void flash(void);
 void pause(void);
-void bonus_tally(int x, int deduct);
+void bonus_tally(int x);
 void quiet(void);
 
 /* High score (external b/c shared by title screen) */
@@ -949,7 +949,7 @@ void level_end_bonus(void) {
     flash();
     pause();
 
-    bonus_tally(13, 50);
+    bonus_tally(13);
     pause();
   } else {
     /* No time bonus */
@@ -979,7 +979,7 @@ void level_end_bonus(void) {
     flash();
     pause();
 
-    bonus_tally(14, 50);
+    bonus_tally(14);
     pause();
   } else {
     /* No time bonus */
@@ -1018,7 +1018,13 @@ void pause(void) {
    @param int x - X position to draw bonus score for countdown
    @param int deduct - How quickly to deduct points from bonus during tally
 */
-void bonus_tally(int x, int deduct) {
+void bonus_tally(int x) {
+  int deduct;
+
+  deduct = bonus / 20;
+  if (deduct < 1)
+    deduct = 1;
+
   while (bonus >= deduct) {
     bonus = bonus - deduct;
     score = score + deduct;
