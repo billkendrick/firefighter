@@ -10,6 +10,8 @@ http://www.newbreedsoftware.com/firefighter/
  * Exit countdown (when pushing into door) dropped from 5 to 3
    (h/t Will)
  * Bonus tally timing made consistent (regardless of score added)
+ * Character set (font) improvements:
+   * Added missing connectors on some corner pipes
 
 0.1-beta-3 (2023-08-25):
  * Disable attract mode.
