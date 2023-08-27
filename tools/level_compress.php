@@ -7,7 +7,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-26 - 2023-08-26
+  2023-08-26 - 2023-08-27
 
   Compresses level data by stripping two high bits
   (used for color in ANTIC Mode 7 (GRAPHICS 2),
@@ -72,7 +72,7 @@ for ($l = 0; $l < $level_cnt; $l++) {
   $level_offsets[$l] = $offset;
 
   for ($i = 0; $i < ($LEVEL_H * $LEVEL_W); $i++) {
-    $data[$offset++] = $stream[$i];
+    $data[$offset++] = $stream[($l * $LEVEL_W * $LEVEL_H) + $i];
   }
 }
 

@@ -169,8 +169,7 @@ asm/dli.s:  src/dli.c src/dli.h
 
 # Data segments:
 # --------------
-# FIXME: Include levels_cmp.dat
-obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt data/levels.dat
+obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt data/levels_cmp.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
 
 

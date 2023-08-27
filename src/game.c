@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-08-25
+  2023-08-15 - 2023-08-27
 */
 
 #include <atari.h>
@@ -34,6 +34,7 @@ extern unsigned char font1_data[];
 extern unsigned char levels_data[];
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
+extern unsigned char level_data_to_screen[];
 
 /* Joystick input choice */
 extern char main_stick;
@@ -561,17 +562,29 @@ void setup_game_screen(void) {
    Flashes a "GET READY!" message, before proceeding. */
 void draw_level(void) {
   int l;
+  unsigned int scr_ptr, level_header_ptr, level_data_ptr;
+  unsigned char c, s, i, cnt;
 
   l = (int) (level - 1);
 
+  /* Get info from level header */
+  level_header_ptr = (l * 4) + 1;
+
+  ply_start_x = levels_data[level_header_ptr + 0];
+  ply_start_y = levels_data[level_header_ptr + 1];
+
+  level_data_ptr = levels_data[level_header_ptr + 2];
+  level_data_ptr <<= 8;
+  level_data_ptr += levels_data[level_header_ptr + 3];
+  level_data_ptr += (levels_data[0] * 4) + 1;
+
+  /* Clear screen; draw score */
   bzero(scr_mem + 60, LEVEL_SPAN);
 
   draw_text("LEVEL: --  SCORE: ------  BONUS: -----", scr_mem + 20 + 1);
   draw_score();
 
-  ply_start_x = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 1];
-  ply_start_y = levels_data[l * LEVEL_TOT_SIZE + LEVEL_SPAN + 2];
-
+  /* Position player; draw level # & "Get Ready!" message: */
   set_shape(ply_start_x, ply_start_y, FIREFIGHTER_RIGHT);
 
   draw_text("LEVEL --  GET READY!", scr_mem);
@@ -579,9 +592,25 @@ void draw_level(void) {
   flash();
   pause();
 
+  /* Re-draw game title */
   draw_text("  @ FIREFIGHTER! @  ", scr_mem + 0);
 
-  memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE + 1, LEVEL_SPAN);
+
+  /* Draw the level itself! */
+
+  /* (Old way, when levels were uncompressed) */
+  // memcpy(scr_mem + 60, levels_data + l * LEVEL_TOT_SIZE + 1, LEVEL_SPAN);
+
+  scr_ptr = 0;
+
+  do {
+    s = levels_data[level_data_ptr++];
+    cnt = ((s & 0xC0) >> 6) + 1;
+    c = level_data_to_screen[s & 0x3F];
+    for (i = 0; i < cnt; i++) {
+      POKE(scr_mem + 60 + (scr_ptr++), c);
+    }
+  } while (scr_ptr < LEVEL_W * LEVEL_H);
 }
 
 /* Draws the level/score/bonus in the status bar */
