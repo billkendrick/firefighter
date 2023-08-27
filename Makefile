@@ -39,7 +39,8 @@ CC65_FLAGS=-Osir --add-source
 # MAP_ARGS=-m firefite.map
 
 ## Sources
-LEVEL_FILES=$(wildcard levels/level*.txt)
+# FIXME: LEVEL_FILES=$(wildcard levels/level*.txt)
+LEVEL_FILES=$(wildcard levels/level00[1-4].txt)
 OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
 OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o obj/help.o obj/config.o
 
