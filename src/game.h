@@ -11,6 +11,12 @@
 #ifndef _GAME_H
 #define _GAME_H
 
+/* Level size/shape constants */
+#define LEVEL_W 20
+#define LEVEL_H 11
+#define LEVEL_SPAN (LEVEL_W * LEVEL_H)
+#define LEVEL_TOT_SIZE (LEVEL_SPAN + 2)
+
 void start_game(void);
 
 #endif

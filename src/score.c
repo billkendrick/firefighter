@@ -9,25 +9,27 @@
 */
 
 #include <string.h>
+#include <peekpoke.h>
+#include <atari.h>
 
 #ifdef DISK
 #include <stdio.h>
-#include <atari.h>
-#include <peekpoke.h>
-#include "draw_text.h"
 #endif
 
+#include "game.h"
+#include "draw_text.h"
 #include "score.h"
 
 unsigned long int score, high_score;
 char high_score_name[4];
 char initials[4];
 
+extern unsigned char scr_mem[];
+
 #ifdef DISK
 unsigned long int high_score_table[10];
 char high_score_name_table[10][4];
 
-extern unsigned char scr_mem[];
 extern unsigned char * dlist;
 #endif
 
@@ -85,9 +87,76 @@ char register_high_score(void) {
 
 /* Ask user for their initials, store in `initials` variable */
 void get_initials(void) {
-  /* FIXME: */
+  char x, done, s, i;
 
-  strcpy(initials, "NEW");
+  bzero(scr_mem + 60, LEVEL_SPAN);
+
+  draw_text("HIGH! INITIALS: --- ", scr_mem);
+
+  x = 0;
+  strcpy(initials, "AAA");
+
+  done = 0;
+  do {
+    /* Draw initials (highlighting the chosen) */
+    for (i = 0; i < 3; i++) {
+      POKE(scr_mem + 16 + i, initials[i] - 32 + (x == i ? 128 : 0));
+    }
+
+    /* Draw (or not) "EOL" at the end */
+    if (x < 3) {
+      POKE(scr_mem + 19, 0);
+    } else {
+      POKE(scr_mem + 19, 63 + 128);
+    }
+
+    /* Wait for input */
+    do {
+      s = (OS.stick0 != 15 ? OS.stick0 : OS.stick1);
+    } while (s == 15 && OS.ch == KEY_NONE);
+
+    if (x < 3) {
+      if (s == 14) {
+        /* Up: Cycle letter backward */
+        if (initials[x] > 32)
+          initials[x]--;
+        else
+          initials[x] = 63;
+      } else if (s == 13) {
+        /* Down: Cycle letter forward */
+        if (initials[x] < 63)
+          initials[x]++;
+        else
+          initials[x] = 32;
+      } else if (s == 7 || OS.strig0 == 0 || OS.strig1 == 0) {
+        /* Right or Fire: Next initial */
+        x++;
+      } else {
+        if (OS.ch == KEY_RETURN) {
+          /* Return (in initials): Jump to "EOL" */
+          x = 3;
+        }
+        /* FIXME: Other keyboard input */
+      }
+    } else {
+      /* On "EOL" symbol */
+      if (OS.strig0 == 0 || OS.strig1 == 0 || OS.ch == KEY_RETURN) {
+        done = 1;
+      }
+    }
+
+    if (x > 0 && (s == 11 || OS.ch == KEY_DELETE)) {
+      /* Left or Backspace: Prev. initial */
+      x--;
+    }
+
+    /* FIXME: Input repeat support */
+
+    /* (Eat input) */
+    do {
+    } while (OS.stick0 != 15 || OS.stick1 != 15 || OS.strig0 == 0 || OS.strig1 == 0);
+    OS.ch = KEY_NONE;
+  } while (!done);
 }
 
 

@@ -10,7 +10,8 @@ http://www.newbreedsoftware.com/firefighter/
  * Exit countdown (when pushing into door) dropped from 5 to 3
    (h/t Will)
  * Bonus tally timing made consistent (regardless of score added)
- * WIP High score table screen (disk version)
+ * WIP High score recording & initials input
+ * High score table screen (disk version)
  * Character set (font) improvements:
    * Added missing connectors on some corner pipes
    * Stylized "." and better "!"

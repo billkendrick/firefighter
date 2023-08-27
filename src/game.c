@@ -18,12 +18,6 @@
 #include "score.h"
 #include "config.h"
 
-/* Level size/shape constants */
-#define LEVEL_W 20
-#define LEVEL_H 11
-#define LEVEL_SPAN (LEVEL_W * LEVEL_H)
-#define LEVEL_TOT_SIZE (LEVEL_SPAN + 2)
-
 /* Level exit countdown
    (when pushing into door/exit after all workers rescued/perished) */
 #define EXIT_CNT 3
@@ -466,6 +460,8 @@ void start_game(void) {
 
   do {
   } while (CONSOL_START(GTIA_READ.consol) == 1);
+
+  OS.sdmctl = 34;
 }
 
 /* Draw a water spray, if possible. If touching fire,

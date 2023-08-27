@@ -146,14 +146,14 @@ asm/config_disk.s:  src/config.c src/config.h src/draw_text.h
 obj/score.o:  asm/score.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/score.s -o obj/score.o
 
-asm/score_disk.s:  src/score.c src/score.h src/draw_text.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/score.c -o asm/score_disk.s
+asm/score.s:  src/score.c src/score.h src/game.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/score.c -o asm/score.s
 
-obj/score_disk.o:  asm/score_disk.s
+obj/score_disk.o:  asm/score_disk.s src/game.h
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/score_disk.s -o obj/score_disk.o
 
-asm/score.s:  src/score.c src/score.h
-	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/score.c -o asm/score.s
+asm/score_disk.s:  src/score.c src/score.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/score.c -o asm/score_disk.s
 
 # Game loop:
 # ----------
