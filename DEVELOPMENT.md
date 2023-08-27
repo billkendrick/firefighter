@@ -75,6 +75,8 @@ the game area, based on events (e.g., flashing when an oil barrel explodes).
 (See [`dli.c`](src/dli.c).  Note: This is the only hand-coded
 6502 assembly language in this game.  Everything else is in C.)
 
+Note: Currently, no Player/Missile Graphics ("sprites") are used in the game.
+
 ## Sound
 
 ### Title screen
