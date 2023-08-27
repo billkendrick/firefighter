@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-08-26
+# 2023-08-13 - 2023-08-27
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -40,8 +40,8 @@ CC65_FLAGS=-Osir --add-source
 
 ## Sources
 LEVEL_FILES=$(wildcard levels/level*.txt)
-OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/draw_text.o obj/dli.o
-OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/draw_text.o obj/dli.o obj/help.o obj/config.o
+OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
+OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o obj/help.o obj/config.o
 
 TMP=tmp-README.html
 
@@ -142,6 +142,14 @@ obj/game.o:  asm/game.s
 
 asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/game.c -o asm/game.s
+
+# Shape table
+# -----------
+obj/shapes.o:  asm/shapes.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/shapes.s -o obj/shapes.o
+
+asm/shapes.s:  src/shapes.c src/shapes.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/shapes.c -o asm/shapes.s
 
 # Text drawing:
 # -------------
