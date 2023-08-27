@@ -35,7 +35,7 @@ void show_controls(void);
 char show_title(void) {
   int i;
   unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
-  unsigned int select_down, level_pos, select_down_wait;
+  unsigned int select_down, level_pos, hs_pos, select_down_wait;
   unsigned char option_down, want_help;
 
   /* FIXME: Screen setup could be moved to a function -bjk 2023.08.22 */
@@ -185,10 +185,16 @@ char show_title(void) {
   draw_number(level, 2, scr_mem + level_pos);
 
   /* High score */
+#ifdef DISK
+  draw_text("HIGH SCORE: ------ --- - H: HIGH SCORES", scr_mem + 460 + 0);
+  hs_pos = 472;
+#else
   draw_text("HIGH SCORE: ------ ---", scr_mem + 460 + 9);
+  hs_pos = 481;
+#endif
 
-  draw_number(high_score, 6, scr_mem + 481);
-  draw_text(high_score_name, scr_mem + 488);
+  draw_number(high_score, 6, scr_mem + hs_pos);
+  draw_text(high_score_name, scr_mem + hs_pos + 7);
 
   /* Version & Date: */
   draw_text("VERSION: ", scr_mem + 500);
