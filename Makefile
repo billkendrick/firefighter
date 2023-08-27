@@ -41,8 +41,8 @@ CC65_FLAGS=-Osir --add-source
 ## Sources
 # FIXME: LEVEL_FILES=$(wildcard levels/level*.txt)
 LEVEL_FILES=$(wildcard levels/level00[1-4].txt)
-OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
-OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o obj/help.o obj/config.o
+OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o obj/score.o
+OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o obj/help.o obj/config.o obj/score.o
 
 TMP=tmp-README.html
 
@@ -101,7 +101,7 @@ firefths.xex:	${OBJECTS_DISK} src/atari.cfg
 obj/firefite.o:  asm/firefite.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/firefite.s -o obj/firefite.o
 
-asm/firefite.s:  src/firefite.c src/title.h src/game.h
+asm/firefite.s:  src/firefite.c src/title.h src/game.h src/score.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/firefite.c -o asm/firefite.s
 
 obj/firefite_disk.o:  asm/firefite_disk.s
@@ -135,6 +135,12 @@ obj/config.o:  asm/config.s
 
 asm/config.s:  src/config.c src/config.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/config.c -o asm/config.s
+
+obj/score.o:  asm/score.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/score.s -o obj/score.o
+
+asm/score.s:  src/score.c src/score.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/score.c -o asm/score.s
 
 # Game loop:
 # ----------

@@ -6,7 +6,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-22
+  2023-08-13 - 2023-08-27
 */
 
 #include <atari.h>
@@ -14,6 +14,7 @@
 #include <string.h>
 #include "title.h"
 #include "game.h"
+#include "score.h"
 
 #ifdef DISK
 #include "help.h"
@@ -22,8 +23,8 @@
 
 extern unsigned char scr_mem[];
 unsigned char * dlist = (scr_mem + 960);
-unsigned long int high_score;
-char high_score_name[4];
+extern unsigned long int high_score;
+extern char high_score_name[4];
 char main_stick;
 char level;
 
