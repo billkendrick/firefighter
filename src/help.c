@@ -79,7 +79,7 @@ void show_help(void) {
       OS.ch = KEY_NONE;
       do {
       } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && OS.ch != KEY_SPACE && OS.ch != KEY_ESC);
-  
+
       bzero(scr_mem, 40 * 23);
     } while (!feof(fi) && CONSOL_START(GTIA_READ.consol) == 0 && OS.ch != KEY_ESC);
     fclose(fi);

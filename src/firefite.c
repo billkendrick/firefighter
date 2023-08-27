@@ -30,7 +30,7 @@ char level;
 
 /* Main loop! */
 void main(void) {
-  char want_help;
+  char cmd;
 
   /* Set default high score */
   set_default_high_score();
@@ -47,15 +47,18 @@ void main(void) {
   do {
     do {
       /* Show title screen */
-      want_help = show_title();
+      cmd = show_title();
 
 #ifdef DISK
-      if (want_help) {
+      if (cmd == CMD_HELP) {
         /* Show help screen */
         show_help();
+      } else if (cmd == CMD_HIGHSCORES) {
+        /* Show high score screen */
+        show_high_score_table();
       }
 #endif
-    } while (want_help);
+    } while (cmd != CMD_PLAY);
 
     /* Play the game! */
     start_game();

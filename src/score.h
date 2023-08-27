@@ -19,4 +19,8 @@
 
 void set_default_high_score(void);
 
+#ifdef DISK
+void show_high_score_table(void);
+#endif
+
 #endif

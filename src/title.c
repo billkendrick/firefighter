@@ -31,12 +31,17 @@ extern char high_score_name[4];
 
 void show_controls(void);
 
-/* Set up and display title screen; title screen loop */
+/* Set up and display title screen; title screen loop
+   @return char - what the user wants to do:
+     * CMD_PLAY play the game
+     * CMD_HELP show help screen (disk only)
+     * CMD_HIGHSCORES show high score table (disk only)
+*/
 char show_title(void) {
   int i;
   unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
   unsigned int select_down, level_pos, hs_pos, select_down_wait;
-  unsigned char option_down, want_help;
+  unsigned char option_down, cmd;
 
   /* FIXME: Screen setup could be moved to a function -bjk 2023.08.22 */
 
@@ -219,7 +224,7 @@ char show_title(void) {
   select_down = 0;
   select_down_wait = 0;
   option_down = 0;
-  want_help = 0;
+  cmd = CMD_PLAY;
 
   /* (Eat any input) */
   do {
@@ -327,17 +332,22 @@ char show_title(void) {
       option_down = 0;
     }
 
-//    while (ANTIC.vcount < 124);
-
 #ifdef DISK
     /* ? or Help: Show help screen */
     if (OS.ch == KEY_QUESTIONMARK || POKEY_READ.kbcode == KEY_HELP) {
       OS.atract = 0;
 
-      want_help = 1;
+      cmd = CMD_HELP;
+    }
+
+    /* H: Show high score table */
+    if (OS.ch == KEY_H) {
+      OS.atract = 0;
+
+      cmd = CMD_HIGHSCORES;
     }
 #endif
-  } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && !want_help);
+  } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && cmd == CMD_PLAY);
 
 #ifdef DISK
   /* Save current config */
@@ -364,7 +374,7 @@ char show_title(void) {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
   OS.ch = KEY_NONE;
 
-  return want_help;
+  return cmd;
 }
 
 /* Show controls (based on the setting choice) */

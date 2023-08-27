@@ -146,7 +146,7 @@ asm/config_disk.s:  src/config.c src/config.h src/draw_text.h
 obj/score.o:  asm/score.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/score.s -o obj/score.o
 
-asm/score_disk.s:  src/score.c src/score.h
+asm/score_disk.s:  src/score.c src/score.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/score.c -o asm/score_disk.s
 
 obj/score_disk.o:  asm/score_disk.s
