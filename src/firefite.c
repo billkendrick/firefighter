@@ -15,10 +15,10 @@
 #include "title.h"
 #include "game.h"
 #include "score.h"
+#include "config.h"
 
 #ifdef DISK
 #include "help.h"
-#include "config.h"
 #endif
 
 extern unsigned char scr_mem[];
@@ -33,8 +33,7 @@ void main(void) {
   char want_help;
 
   /* Set default high score */
-  high_score = 1031;
-  strcpy(high_score_name, "BJK");
+  set_default_high_score();
 
   /* Set default config */
   main_stick = STICK_LEFT;

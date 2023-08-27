@@ -16,10 +16,8 @@
 #include "draw_text.h"
 #include "dli.h"
 #include "game.h"
-
-#ifdef DISK
+#include "score.h"
 #include "config.h"
-#endif
 
 extern unsigned char font1_data[];
 extern unsigned char scr_mem[];
@@ -186,13 +184,11 @@ char show_title(void) {
 #endif
   draw_number(level, 2, scr_mem + level_pos);
 
-#if 0
   /* High score */
   draw_text("HIGH SCORE: ------ ---", scr_mem + 460 + 9);
 
   draw_number(high_score, 6, scr_mem + 481);
   draw_text(high_score_name, scr_mem + 488);
-#endif
 
   /* Version & Date: */
   draw_text("VERSION: ", scr_mem + 500);

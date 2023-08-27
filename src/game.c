@@ -16,6 +16,7 @@
 #include "draw_text.h"
 #include "dli.h"
 #include "score.h"
+#include "config.h"
 
 /* Level size/shape constants */
 #define LEVEL_W 20

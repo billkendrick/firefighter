@@ -17,4 +17,6 @@
 #define SCORE_PIPE_BREAK_DEDUCTION 5
 #define SCORE_NO_FIRE_BONUS 1000
 
+void set_default_high_score(void);
+
 #endif

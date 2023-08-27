@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-08-22
+  2023-08-22 - 2023-08-27
 */
 
 #include <atari.h>
@@ -16,8 +16,16 @@
 extern char level;
 extern char main_stick;
 
+/* Set default config (if we cannot load) */
+void set_default_config(void) {
+  main_stick = STICK_LEFT;
+  level = 1;
+}
+
+#ifdef DISK
+
 /* (Attempt to) load config from disk */
-void load_config() {
+void load_config(void) {
   FILE * fi;
 
   fi = fopen("FIREFITE.CFG", "rb");
@@ -39,3 +47,6 @@ void save_config() {
     fclose(fi);
   }
 }
+
+#endif
+

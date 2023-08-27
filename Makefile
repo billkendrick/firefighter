@@ -41,8 +41,9 @@ CC65_FLAGS=-Osir --add-source
 ## Sources
 # FIXME: LEVEL_FILES=$(wildcard levels/level*.txt)
 LEVEL_FILES=$(wildcard levels/level00[1-4].txt)
-OBJECTS=obj/firefite.o obj/segments.o obj/title.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o obj/score.o
-OBJECTS_DISK=obj/firefite_disk.o obj/segments.o obj/title_disk.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o obj/help.o obj/config.o obj/score.o
+OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
+OBJECTS=obj/firefite.o obj/title.o obj/score.o obj/config.o ${OBJECTS_SHARED}
+OBJECTS_DISK=obj/firefite_disk.o obj/title_disk.o obj/score_disk.o obj/config_disk.o obj/help.o ${OBJECTS_SHARED}
 
 TMP=tmp-README.html
 
@@ -136,8 +137,20 @@ obj/config.o:  asm/config.s
 asm/config.s:  src/config.c src/config.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/config.c -o asm/config.s
 
+obj/config_disk.o:  asm/config_disk.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/config_disk.s -o obj/config_disk.o
+
+asm/config_disk.s:  src/config.c src/config.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/config.c -o asm/config_disk.s
+
 obj/score.o:  asm/score.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/score.s -o obj/score.o
+
+asm/score_disk.s:  src/score.c src/score.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/score.c -o asm/score_disk.s
+
+obj/score_disk.o:  asm/score_disk.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/score_disk.s -o obj/score_disk.o
 
 asm/score.s:  src/score.c src/score.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/score.c -o asm/score.s
@@ -147,7 +160,7 @@ asm/score.s:  src/score.c src/score.h
 obj/game.o:  asm/game.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/game.s -o obj/game.o
 
-asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h src/score.h
+asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h src/score.h src/config.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/game.c -o asm/game.s
 
 # Shape table
