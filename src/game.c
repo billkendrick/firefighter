@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-08-27
+  2023-08-15 - 2023-08-31
 */
 
 #include <atari.h>
@@ -36,6 +36,12 @@ extern char main_stick;
 int dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
 int dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 
+/* Reasons that civilian count goes down */
+enum {
+  CIVILIAN_SAVED,
+  CIVILIAN_DIED,
+};
+
 /* Local function prototypes (or macros): */
 void start_level(void);
 void draw_score(void);
@@ -56,6 +62,7 @@ void flash(void);
 void pause(void);
 void bonus_tally(int x);
 void quiet(void);
+void drop_civilians(char why);
 
 /* High score (external b/c shared by title screen) */
 extern unsigned long int high_score;
@@ -72,7 +79,7 @@ unsigned long int bonus;
 unsigned char bonus_tick;
 
 /* Current level's civilian counter */
-unsigned char civilians_remaining;
+unsigned char civilians_remaining, civilians_start;
 
 /* Current level's open valve counter */
 unsigned char open_valves;
@@ -117,6 +124,8 @@ void start_level(void) {
 
   odd_even = 0;
 
+  /* Find how many civilians, and open valves,
+     there are at the start of the level */
   open_valves = 0;
   civilians_remaining = 0;
   for (i = 0; i < LEVEL_SPAN; i++) {
@@ -127,6 +136,7 @@ void start_level(void) {
       open_valves++;
     }
   }
+  civilians_start = civilians_remaining;
 
   set_sound(0, 0, 0, 0, 0);
 }
@@ -267,7 +277,7 @@ void start_game(void) {
               set_shape(x, y, BLANK);
               score = score + SCORE_CIVILIAN_RESCUE;
               draw_score();
-              civilians_remaining--;
+              drop_civilians(CIVILIAN_SAVED);
               set_sound(50, -2, 0xA0, 15, 3);
             }
           }
@@ -289,7 +299,7 @@ void start_game(void) {
     if (exiting > 0) {
       POKE(scr_mem, (EXIT_CNT - (exiting >> 3)) + 16 + 128);
     } else if (civilians_remaining == 0) {
-      POKE(scr_mem, 1 + 128);
+      POKE(scr_mem, '-' - 32 + 128);
     } else {
       POKE(scr_mem, 0);
     }
@@ -877,7 +887,7 @@ unsigned char flammable(unsigned char c) {
     return FIRE_XLG;
   } else if (c == CIVILIAN) {
     /* Civilians die! ;-( */
-    civilians_remaining--;
+    drop_civilians(CIVILIAN_DIED);
     set_sound(100, 2, 0xA0, 15, 1);
     dying = 14;
     return 0;
@@ -1047,4 +1057,18 @@ void quiet(void) {
   POKEY_WRITE.audc3 = 0;
   POKEY_WRITE.audf4 = 0;
   POKEY_WRITE.audc4 = 0;
+}
+
+/* Reduce count of civilians.  If it drops to zero, then show
+   a hint to the player to go to the exit and push into it.
+
+   @param char why reason the civilian is gone (rescued, or died)
+*/
+void drop_civilians(char why) {
+  civilians_remaining--;
+
+  if (civilians_remaining == 0) {
+    draw_text("GOTO EXIT & PUSH", scr_mem + 2);
+    flash();
+  }
 }
