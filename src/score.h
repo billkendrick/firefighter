@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-27 - 2023-08-27
+  2023-08-27 - 2023-08-31
 */
 
 #ifndef _SCORE_H
@@ -23,7 +23,7 @@ char register_high_score(void);
 #ifdef DISK
 void load_high_scores(void);
 void save_high_scores(void);
-void show_high_score_table(void);
+void show_high_score_table(char highlight);
 #endif
 
 #endif

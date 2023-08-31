@@ -6,7 +6,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-27
+  2023-08-13 - 2023-08-31
 */
 
 #include <atari.h>
@@ -33,7 +33,7 @@ extern char high_score_name[4];
 
 /* Main loop! */
 void main(void) {
-  char cmd;
+  char cmd, pos;
 
   /* Set default high score */
   set_default_high_score();
@@ -62,7 +62,7 @@ void main(void) {
         show_help();
       } else if (cmd == CMD_HIGHSCORES) {
         /* Show high score screen */
-        show_high_score_table();
+        show_high_score_table(-1);
       }
 #endif
     } while (cmd != CMD_PLAY);
@@ -71,10 +71,11 @@ void main(void) {
     start_game();
 
     /* Handle high score initials entry */
-    if (register_high_score()) {
+    pos = register_high_score();
+    if (pos != -1) {
 #ifdef DISK
       save_high_scores();
-      show_high_score_table();
+      show_high_score_table(pos);
 #endif
     }
   } while(1);

@@ -111,7 +111,7 @@ asm/firefite.s:  src/firefite.c src/title.h src/game.h src/score.h
 obj/firefite_disk.o:  asm/firefite_disk.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/firefite_disk.s -o obj/firefite_disk.o
 
-asm/firefite_disk.s:  src/firefite.c src/title.h src/game.h
+asm/firefite_disk.s:  src/firefite.c src/title.h src/game.h src/score.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/firefite.c -o asm/firefite_disk.s
 
 # Title and Help Screens:
