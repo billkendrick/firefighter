@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-08-27
+# 2023-08-13 - 2023-08-30
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -38,9 +38,12 @@ CC65_LIB=${CC65_HOME}/lib
 CC65_FLAGS=-Osir --add-source
 # MAP_ARGS=-m firefite.map
 
-## Sources
-# FIXME: LEVEL_FILES=$(wildcard levels/level*.txt)
+## Level 'source' files:
+# FIXME
+# LEVEL_FILES=$(wildcard levels/level*.txt)
 LEVEL_FILES=$(wildcard levels/level00[1-4].txt)
+
+## Objects
 OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
 OBJECTS=obj/firefite.o obj/title.o obj/score.o obj/config.o ${OBJECTS_SHARED}
 OBJECTS_DISK=obj/firefite_disk.o obj/title_disk.o obj/score_disk.o obj/config_disk.o obj/help.o ${OBJECTS_SHARED}
