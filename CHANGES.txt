@@ -5,18 +5,22 @@ Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
 0.1-beta-4 (2023-08-31):
- * Compressed level data
- * Improved [Select] key repeat for level select
- * Exit countdown (when pushing into door) dropped from 5 to 3
-   (h/t Will)
- * Hint to user to push door to initial exit countdown
- * Bonus tally timing made consistent (regardless of score added)
- * High score recording & initials input
- * High score table screen (disk version)
+ * Gameplay:
+   * Exit countdown (when pushing into door) dropped from 5 to 3
+     (h/t Will)
+   * Hint to player to push door to initial exit countdown
+   * Bonus tally timing made consistent (regardless of score added)
+   * High score initials input at end of game
+   * High score(s) recorded
+ * Title screen:
+   * High score table screen (disk version) (access via [H])
+   * Improved [Select] key repeat for level select
  * Character set (font) improvements:
    * Added missing connectors on some corner pipes
-   * Stylized "." and better "!"
+   * Stylized more punctuation.
    * "EOL" symbol for high score initial entry
+ * Under the hood:
+   * Level data is compressed
 
 0.1-beta-3 (2023-08-25):
  * Disable attract mode.
