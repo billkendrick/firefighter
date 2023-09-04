@@ -270,3 +270,16 @@ the ATR disk image file format's header.  The script
 ["High Score storage for Legacy Games" page](https://github.com/FujiNetWIFI/fujinet-platformio/wiki/High-Score-storage-for-Legacy-Games)
 for further information.)
 
+## Help Screen
+
+The disk version offers a help screen (press `[?]` or `[Help]`
+on the title screen).  This contains exactly the same content
+as [`README.md`](README.md), but it has been converted from
+Markdown to 40 column plain ATASCII text.
+
+This is done using the [`markdown`](https://daringfireball.net/projects/markdown/)
+tool to convert to HTML, then the [`w3m`](https://w3m.sourceforge.net/)
+text-based web browser, in `-dump` mode, to convert to 40-column text,
+and finally the [`tr`](https://www.gnu.org/software/coreutils/tr) tool
+to convert Unix end-of-line (EOL) characters to ATASCII.
+
