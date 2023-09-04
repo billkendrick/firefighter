@@ -15,9 +15,10 @@
 #include "help.h"
 #include "draw_text.h"
 
-// #define FANCY_HELP_IO
+#define FANCY_HELP_IO
 
 #ifdef FANCY_HELP_IO
+#define HELP_TEXT_IOCB 1
 #define LINES 22
 #define MAX_PAGES 50 // Should be plenty? Check ATASCII "README.txt"'s output length, divided by LINES
 #else
@@ -39,9 +40,10 @@ extern unsigned char * dlist;
 /* Local function prototypes: */
 #ifdef FANCY_HELP_IO
 void ciov(void);
-void xio_get(unsigned char * ptr);
+void xio_open_read(char * filename);
 void xio_note(unsigned char * ptr);
 void xio_point(unsigned char * ptr);
+void xio_get_record(unsigned char * buf, unsigned int len);
 #endif
 
 /* Routine to load and show help text on a fullscreen text display */
@@ -99,6 +101,7 @@ void show_help(void) {
   /* Open the help text file for read */
 #ifdef FANCY_HELP_IO
   cur_page = 0;
+  xio_open_read("README.TXT");
 #else
   fi = fopen("README.TXT", "r");
   if (fi == NULL)
@@ -118,7 +121,7 @@ void show_help(void) {
 
     do {
 #ifdef FANCY_HELP_IO
-      // FIXME
+      xio_get_record(str, sizeof(str));
 #else
       fgets(str, sizeof(str), fi);
       eof = feof(fi);
@@ -196,17 +199,32 @@ void show_help(void) {
 }
 
 #ifdef FANCY_HELP_IO
+void xio_open_read(char * filename) {
+  OS.iocb[HELP_TEXT_IOCB].command = IOCB_OPEN;
+  OS.iocb[HELP_TEXT_IOCB].buffer = filename;
+  OS.iocb[HELP_TEXT_IOCB].buflen = strlen(filename);
+  OS.iocb[HELP_TEXT_IOCB].aux1 = 4; // Open for READ
+  ciov();
+}
+
+void xio_get_record(unsigned char * buf, unsigned int len) {
+  OS.iocb[HELP_TEXT_IOCB].command = IOCB_GETREC;
+  OS.iocb[HELP_TEXT_IOCB].buffer = buf;
+  OS.iocb[HELP_TEXT_IOCB].buflen = 40;
+  ciov();
+}
+
 void xio_note(unsigned char * ptr) {
-  OS.iocb[0].command = IOCB_NOTE;
-  OS.iocb[0].buffer = ptr;
-  OS.iocb[0].buflen = 3;
+  OS.iocb[HELP_TEXT_IOCB].command = IOCB_NOTE;
+  OS.iocb[HELP_TEXT_IOCB].buffer = ptr;
+  OS.iocb[HELP_TEXT_IOCB].buflen = 3;
   ciov();
 }
 
 void xio_point(unsigned char * ptr) {
-  OS.iocb[0].command = IOCB_POINT;
-  OS.iocb[0].buffer = ptr;
-  OS.iocb[0].buflen = 3;
+  OS.iocb[HELP_TEXT_IOCB].command = IOCB_POINT;
+  OS.iocb[HELP_TEXT_IOCB].buffer = ptr;
+  OS.iocb[HELP_TEXT_IOCB].buflen = 3;
   ciov();
 }
 
@@ -221,7 +239,7 @@ _ciov:  LDX #$00
         RTS
 */
 void ciov(void) {
-  asm("LDX #$00"); // IOCB #
+  asm("LDX #%b", HELP_TEXT_IOCB);
   asm("JSR $E456");
 }
 #endif
