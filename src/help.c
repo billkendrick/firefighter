@@ -15,10 +15,9 @@
 #include "help.h"
 #include "draw_text.h"
 
-#define FANCY_HELP_IO
+// #define FANCY_HELP_IO /* N.B. Doesn't work yet -bjk 2023.09.04 */
 
 #ifdef FANCY_HELP_IO
-#define HELP_TEXT_IOCB 1
 #define LINES 22
 #define MAX_PAGES 50 // Should be plenty? Check ATASCII "README.txt"'s output length, divided by LINES
 #else
@@ -43,7 +42,7 @@ void ciov(void);
 void xio_open_read(char * filename);
 void xio_note(unsigned char * ptr);
 void xio_point(unsigned char * ptr);
-void xio_get_record(unsigned char * buf, unsigned int len);
+void xio_get_record(char * buf, unsigned int len);
 #endif
 
 /* Routine to load and show help text on a fullscreen text display */
@@ -122,6 +121,7 @@ void show_help(void) {
     do {
 #ifdef FANCY_HELP_IO
       xio_get_record(str, sizeof(str));
+      /* FIXME: Determine EOF status! */
 #else
       fgets(str, sizeof(str), fi);
       eof = feof(fi);
@@ -199,18 +199,23 @@ void show_help(void) {
 }
 
 #ifdef FANCY_HELP_IO
+
+#define HELP_TEXT_IOCB 7
+#define IOCB_OPEN_READ 4
+
 void xio_open_read(char * filename) {
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_OPEN;
   OS.iocb[HELP_TEXT_IOCB].buffer = filename;
   OS.iocb[HELP_TEXT_IOCB].buflen = strlen(filename);
-  OS.iocb[HELP_TEXT_IOCB].aux1 = 4; // Open for READ
+  OS.iocb[HELP_TEXT_IOCB].aux1 = IOCB_OPEN_READ;
+  OS.iocb[HELP_TEXT_IOCB].aux2 = 0;
   ciov();
 }
 
-void xio_get_record(unsigned char * buf, unsigned int len) {
+void xio_get_record(char * buf, unsigned int len) {
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_GETREC;
   OS.iocb[HELP_TEXT_IOCB].buffer = buf;
-  OS.iocb[HELP_TEXT_IOCB].buflen = 40;
+  OS.iocb[HELP_TEXT_IOCB].buflen = len;
   ciov();
 }
 
@@ -228,18 +233,8 @@ void xio_point(unsigned char * ptr) {
   ciov();
 }
 
-/*
-cio.s
-        ;; Call CIO
-
-        .export _ciov
-
-_ciov:  LDX #$00
-        JSR $E456
-        RTS
-*/
 void ciov(void) {
-  asm("LDX #%b", HELP_TEXT_IOCB);
+  asm("LDX #%b", HELP_TEXT_IOCB << 4);
   asm("JSR $E456");
 }
 #endif

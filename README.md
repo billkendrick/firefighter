@@ -1,6 +1,6 @@
 # Firefighter
 
-### Version: 0.1-BETA3
+### Version: 0.1-BETA4
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
@@ -18,7 +18,7 @@ and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
 (Williams Electronics, arcade, 1982).
 See the [development docs](DEVELOPMENT.md).
 
-Developed 2023-08-13 - 2023-08-24
+Developed 2023-08-13 - 2023-09-04
 
 ------------------------------------------------------------------------
 

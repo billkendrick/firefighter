@@ -18,6 +18,8 @@ http://www.newbreedsoftware.com/firefighter/
  * Title screen:
    * High score table screen (disk version) (access via [H])
    * Improved [Select] key repeat for level select
+ * Help screen:
+   * WIP: Ability to page backwards
  * Character set (font) improvements:
    * Added missing connectors on some corner pipes
    * Stylized more punctuation.

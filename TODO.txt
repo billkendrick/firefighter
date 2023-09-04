@@ -12,7 +12,3 @@ http://www.newbreedsoftware.com/firefighter/
      would do you 'earn' any back?
  * More levels
    (reminder: tweak LEVELS variable declaration in Makefile!)
- * Ability to page backwards on help screen
-   (cc65 ftell()/fseek()/fgetpos()/fsetpos() not implemented;
-   will need to use XIO calls to NOTE & POINT)
-
