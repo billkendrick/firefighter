@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-2023-08-18 - 2023-08-31
+2023-08-18 - 2023-09-04
 
  * Game-ending event.  Possible ideas:
    + Losing all workers on the current level
@@ -12,7 +12,6 @@ http://www.newbreedsoftware.com/firefighter/
      would do you 'earn' any back?
  * More levels
    (reminder: tweak LEVELS variable declaration in Makefile!)
- * Make it easy for FujiNet high score feature to work
  * Ability to page backwards on help screen
    (cc65 ftell()/fseek()/fgetpos()/fsetpos() not implemented;
    will need to use XIO calls to NOTE & POINT)
