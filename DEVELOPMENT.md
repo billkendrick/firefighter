@@ -202,8 +202,8 @@ shapes possible in the game.
 
 See the [levels documentation](levels/README.md) for details.
 
-The script [level_to_dat.php](tools/level_to_dat.php) reads the
-individual ASCII text files in the [levels/](levels/) directory and
+The script [`level_to_dat.php`](tools/level_to_dat.php) reads the
+individual ASCII text files in the [`levels/`](levels/) directory and
 generates a binary file containing the game's internal representation
 (aka the screen character bytes) of all of the levels.  (A single byte
 at the beginning indicates how many levels there are, and two bytes
@@ -228,7 +228,7 @@ have the same character appear many times in a row (e.g., a row of
 bricks, or a large blank area in a room), this allows us to store
 one byte in the place of multiple bytes for the same level layout.
 
-The script [level_compress.php](tools/level_compress.php) reads
+The script [`level_compress.php`](tools/level_compress.php) reads
 the binary level data file (created by the tool above), which in
 early beta versions was used directly (and level data in the game
 executable was simply copied directly to screen memory) and
@@ -263,8 +263,10 @@ TNFS server hosting it can be told to grant players write-access
 to *just* the sector containing the high score table (the rest
 of the disk image will be read-only).
 
-This is implemented using three unused bytes in the ATR disk image
-file format's header.  See the FujiNet project's
+This is implemented using three unused bytes in
+the ATR disk image file format's header.  The script
+[`high_score_atr.php`](tools/high_score_atr.php) handles this modification.
+(See the FujiNet project's
 ["High Score storage for Legacy Games" page](https://github.com/FujiNetWIFI/fujinet-platformio/wiki/High-Score-storage-for-Legacy-Games)
-for further information.
+for further information.)
 

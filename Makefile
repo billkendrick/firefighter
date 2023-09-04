@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-08-30
+# 2023-08-13 - 2023-09-04
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -71,17 +71,21 @@ clean-intermediate:
 	-rm data/levels.dat
 	-rm data/levels_cmp.dat
 	-rm firefths.xex
+	-rm firefite-nohighscore.atr
 	-rm disk/FIREFITE.AR0
 	-rm disk/README.txt
 
 
 ## Files to generate:
 
-firefite.atr:	firefths.xex README.md
+firefite.atr:	firefite-nohighscore.atr tools/high_score_atr.php
+	tools/high_score_atr.php firefite-nohighscore.atr firefite.atr
+
+firefite-nohighscore.atr:	firefths.xex README.md
 	cp firefths.xex disk/FIREFITE.AR0
 	${MARKDOWN2HTML} README.md > ${TMP}; ${HTML2TXT} ${TMP} | ${TXT2ATASCII} > disk/README.txt
 	rm ${TMP}
-	${DIR2ATR} firefite.atr disk
+	${DIR2ATR} firefite-nohighscore.atr disk
 
 firefite.xex:	${OBJECTS} src/atari.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
