@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2023-08-27
+Developed 2023-08-13 - 2023-09-04
 
 ------------------------------------------------------------------------
 
@@ -237,4 +237,34 @@ beginning indicates how many levels there are.  That is followed
 by four-byte sequences for each level, indicating the firefighter's
 starting position, and the offset within the compressed level data
 that each level starts -- they are of course different lengths!)
+
+## High Score
+
+The game records a top score, and allows the user to enter their
+initials at the end of the game.  The disk-based version provides
+a top-10 high score table, which it saves to disk.
+
+Code exists (in [`score.c`](src/score.c)) to use standard C file
+input/output (I/O) functions -- `fopen()`, `fread()`, etc. --
+to write to and read from a simple high score file, "`highscor.dat`".
+
+However, by default the game stores the high score table directly
+onto a pre-defined sector of the disk.  This means there's no "file"
+attached to the data, however, it allow one to easily extract the
+data from the disk image.  (You always look at the same sector,
+in this case 720, and don't need to worry about it moving around
+between releases and dealing with the filesystem; the
+Volume Table of Contents (VTOC).)
+
+Why? So the high score table may be "shared" by many players
+over the Internet! If the game disk image is made available to
+users who use a [FujiNet](https://fujinet.online/) device, the
+TNFS server hosting it can be told to grant players write-access
+to *just* the sector containing the high score table (the rest
+of the disk image will be read-only).
+
+This is implemented using three unused bytes in the ATR disk image
+file format's header.  See the FujiNet project's
+["High Score storage for Legacy Games" page](https://github.com/FujiNetWIFI/fujinet-platformio/wiki/High-Score-storage-for-Legacy-Games)
+for further information.
 

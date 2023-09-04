@@ -5,7 +5,27 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-27 - 2023-08-31
+  If "DISK" is defined, the game will support 10 high scores
+  and save the results to disk.  Otherwise, it will keep a
+  single high score, which will be lost when the game quits.
+
+  Note: This is defined via compile-time options by the disk-based
+  (".atr") version of the game.
+
+  Further, if "HIGHSCORE_FILE" is defined, the game will
+  use standard C `fopen()`/`fread()`/`fwrite()`/etc. functions
+  to create a file named "highscor.dat" on disk to store the
+  high scores.  Otherwise (the default) it will do direct
+  sector I/O operations to load/save data on sector 720,
+  and assumes the disk is Single Density (128 bytes per sector).
+  (This allows it to remain in the same place on disk, regardless
+  of other changes during each release, allowing for extraction
+  of the high scores from the disk image, e.g. by a TNFS server
+  to allow sharing a high score table by users playing over FujiNet.)
+
+  h/t Thomas Cherryholmes for sharing example code.
+
+  2023-08-27 - 2023-09-04
 */
 
 #include <string.h>
@@ -143,6 +163,13 @@ char key_shift_to_ch_map[NUM_SHIFTED_KEYS][2] = {
 /* Local function prototype: */
 void get_initials(void);
 
+#ifdef DISK
+#ifndef HIGHSCORE_FILE
+void write_sector(unsigned short s, unsigned char *buf, unsigned short len);
+void read_sector(unsigned short s, unsigned char *buf, unsigned short len);
+void siov(void);
+#endif
+#endif
 
 /* Sets default high score and (on disk version)
    top 10 high score table entries */
@@ -387,6 +414,8 @@ void show_high_score_table(char highlight) {
 
 /* Load high scores from disk
    (into high_score_table[] and high_score_name_table[]) */
+
+#ifdef HIGHSCORE_FILE
 void load_high_scores(void) {
   int i;
   FILE * fi;
@@ -408,9 +437,25 @@ void load_high_scores(void) {
     strcpy(high_score_name, high_score_name_table[0]);
   }
 }
+#else
+void load_high_scores(void) {
+  unsigned char buf[128];
+
+  read_sector(720, buf, 128);
+
+  if (buf[0] == 0) {
+    /* Seems to be nothing in this sector yet; ignore it! */
+    return;
+  }
+
+  memcpy(high_score_table, buf, sizeof(high_score_table));
+  memcpy(high_score_name_table, buf + sizeof(high_score_table), sizeof(high_score_name_table));
+}
+#endif
 
 /* Save high scores to disk
    (from high_score_table[] and high_score_name_table[]) */
+#ifdef HIGHSCORE_FILE
 void save_high_scores(void) {
   int i;
   FILE * fi;
@@ -425,5 +470,59 @@ void save_high_scores(void) {
     fclose(fi);
   }
 }
+#else
+void save_high_scores(void) {
+  unsigned char buf[128];
+
+  memcpy(buf, high_score_table, sizeof(high_score_table));
+  memcpy(buf + sizeof(high_score_table), high_score_name_table, sizeof(high_score_name_table));
+
+  write_sector(720, buf, 128);
+}
+#endif
+
+#ifndef HIGHSCORE_FILE
+void write_sector(unsigned short s, unsigned char *buf, unsigned short len)
+{
+    OS.dcb.ddevic = 0x31;
+    OS.dcb.dunit = 0x01;
+    OS.dcb.dcomnd = 'W';
+    OS.dcb.dstats = 0x80;
+    OS.dcb.dbuf = buf;
+    OS.dcb.dtimlo = 0x0f;
+    OS.dcb.dbyt = len;
+    OS.dcb.daux = s;
+    siov();
+}
+
+void read_sector(unsigned short s, unsigned char *buf, unsigned short len)
+{
+    OS.dcb.ddevic = 0x31;
+    OS.dcb.dunit = 0x01;
+    OS.dcb.dcomnd = 'R';
+    OS.dcb.dstats = 0x40;
+    OS.dcb.dbuf = buf;
+    OS.dcb.dtimlo = 0x0f;
+    OS.dcb.dbyt = len;
+    OS.dcb.daux = s;
+    siov();
+}
+
+/*
+siov.s
+        ;; Call SIO
+
+        .export _siov
+
+_siov:  JSR $E459               ; Call SIOV
+        LDA $0303               ; get/return DVSTAT
+        RTS                     ; Bye
+*/
+
+void siov(void) {
+  asm("JSR $E459");
+  asm("LDA $0303");
+}
+#endif
 
 #endif
