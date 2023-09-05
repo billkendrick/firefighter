@@ -15,7 +15,7 @@
 #include "help.h"
 #include "draw_text.h"
 
-// #define FANCY_HELP_IO /* N.B. Doesn't work yet -bjk 2023.09.04 */
+#define FANCY_HELP_IO
 
 #ifdef FANCY_HELP_IO
 #define LINES 22
@@ -24,6 +24,7 @@
 #define LINES 23
 #endif
 
+/* Controls/commands within the help screen */
 enum {
   HELP_CMD_NONE,
   HELP_CMD_NEXT,
@@ -38,11 +39,12 @@ extern unsigned char * dlist;
 
 /* Local function prototypes: */
 #ifdef FANCY_HELP_IO
-void ciov(void);
-void xio_open_read(char * filename);
-void xio_note(unsigned char * ptr);
-void xio_point(unsigned char * ptr);
-void xio_get_record(char * buf, unsigned int len);
+unsigned char ciov(void);
+unsigned char xio_open_read(char * filespec);
+unsigned char xio_close(void);
+unsigned char xio_note(unsigned char * ptr);
+unsigned char xio_point(unsigned char * ptr);
+unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * read_len);
 #endif
 
 /* Routine to load and show help text on a fullscreen text display */
@@ -52,6 +54,9 @@ void show_help(void) {
   char str[41];
 #ifdef FANCY_HELP_IO
   int cur_page;
+  unsigned char err;
+  unsigned int len;
+  unsigned char ptr[3];
   unsigned char ptrs[MAX_PAGES * 3];
 #else
   FILE * fi;
@@ -100,7 +105,9 @@ void show_help(void) {
   /* Open the help text file for read */
 #ifdef FANCY_HELP_IO
   cur_page = 0;
-  xio_open_read("README.TXT");
+  err = xio_open_read("D:README.TXT");
+  if (err > 127)
+    return;
 #else
   fi = fopen("README.TXT", "r");
   if (fi == NULL)
@@ -111,7 +118,17 @@ void show_help(void) {
   /* -- Main help screen loop -- */
   do {
 #ifdef FANCY_HELP_IO
-    xio_note(ptrs + (cur_page * 3));
+    err = xio_note(ptr);
+    ptrs[cur_page * 3 + 0] = ptr[0];
+    ptrs[cur_page * 3 + 1] = ptr[1];
+    ptrs[cur_page * 3 + 2] = ptr[2];
+/*
+    draw_text("NOTED: ", scr_mem + (LINES * 40) + 8);
+    draw_number(ptr[0], 3, scr_mem + (LINES * 40) + 20);
+    draw_number(ptr[1], 3, scr_mem + (LINES * 40) + 24);
+    draw_number(ptr[2], 3, scr_mem + (LINES * 40) + 28);
+    draw_number(err, 3, scr_mem + (LINES * 40) + 37);
+*/
 #endif
 
     /* Display a screenful (page) of text */
@@ -120,8 +137,11 @@ void show_help(void) {
 
     do {
 #ifdef FANCY_HELP_IO
-      xio_get_record(str, sizeof(str));
-      /* FIXME: Determine EOF status! */
+      err = xio_get_record(str, sizeof(str), &len);
+      str[len] = '\0';
+
+      if (err == 136)
+        eof = 1;
 #else
       fgets(str, sizeof(str), fi);
       eof = feof(fi);
@@ -187,7 +207,7 @@ void show_help(void) {
   } while (!eof && cmd != HELP_CMD_EXIT);
 
 #ifdef FANCY_HELP_IO
-  // FIXME
+  xio_close();
 #else
   fclose(fi);
 #endif
@@ -200,42 +220,86 @@ void show_help(void) {
 
 #ifdef FANCY_HELP_IO
 
-#define HELP_TEXT_IOCB 7
+#define HELP_TEXT_IOCB 2
 #define IOCB_OPEN_READ 4
 
-void xio_open_read(char * filename) {
+/* Open a file for read via CIO routine.
+   @param char * filespec file to open (e.g., "D:FILE.TXT")
+   @return unsigned char CIO status code
+*/
+unsigned char xio_open_read(char * filespec) {
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_OPEN;
-  OS.iocb[HELP_TEXT_IOCB].buffer = filename;
-  OS.iocb[HELP_TEXT_IOCB].buflen = strlen(filename);
+  OS.iocb[HELP_TEXT_IOCB].buffer = filespec;
+  OS.iocb[HELP_TEXT_IOCB].buflen = strlen(filespec);
   OS.iocb[HELP_TEXT_IOCB].aux1 = IOCB_OPEN_READ;
   OS.iocb[HELP_TEXT_IOCB].aux2 = 0;
-  ciov();
+  return ciov();
 }
 
-void xio_get_record(char * buf, unsigned int len) {
+/* Close the file opened by `xio_open_read()` (via CIO routine).
+   @return unsigned char CIO status code
+*/
+unsigned char xio_close(void) {
+  OS.iocb[HELP_TEXT_IOCB].command = IOCB_CLOSE;
+  return ciov();
+}
+
+/* Read a record (line of text, up to ATASCII EOF character)
+   from the file opened by `xio_open_read()` (via CIO routine).
+   @param char * buf buffer to store the results
+   @param unsigned int buf_size maximum amount of data `buf` can accept
+   @param unsigned int * read_line where we return the size of data actually loaded
+   @return unsigned char CIO status code
+*/
+unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * read_len) {
+  unsigned char err;
+
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_GETREC;
   OS.iocb[HELP_TEXT_IOCB].buffer = buf;
-  OS.iocb[HELP_TEXT_IOCB].buflen = len;
-  ciov();
+  OS.iocb[HELP_TEXT_IOCB].buflen = buf_size;
+  err = ciov();
+
+  if (err > 127) {
+    *read_len = 0;
+  } else {
+    *read_len = OS.iocb[HELP_TEXT_IOCB].buflen;
+  }
+  return err;
 }
 
-void xio_note(unsigned char * ptr) {
+/* Grab a pointer of where we were in the file opened by
+   `xio_open_read()` (via CIO routine).
+   @param unsigned char ptr[3] buffer to store the pointer (send it to `xio_point()`, below)
+   @return unsigned char CIO status code
+*/
+unsigned char xio_note(unsigned char ptr[3]) {
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_NOTE;
   OS.iocb[HELP_TEXT_IOCB].buffer = ptr;
-  OS.iocb[HELP_TEXT_IOCB].buflen = 3;
-  ciov();
+  OS.iocb[HELP_TEXT_IOCB].buflen = sizeof(ptr);
+  return ciov();
 }
 
-void xio_point(unsigned char * ptr) {
+/* Point to a position in the file opened by `xio_open_read()` (via CIO routine).
+   @param unsigned char ptr[3] buffer storing the pointer (previously read by `xio_note()`, above)
+   @return unsigned char CIO status code
+*/
+unsigned char xio_point(unsigned char ptr[3]) {
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_POINT;
   OS.iocb[HELP_TEXT_IOCB].buffer = ptr;
-  OS.iocb[HELP_TEXT_IOCB].buflen = 3;
-  ciov();
+  OS.iocb[HELP_TEXT_IOCB].buflen = sizeof(ptr);
+  return ciov();
 }
 
-void ciov(void) {
+/* Call OS's CIO vector routine.
+   @return unsigned char CIO status code
+*/
+unsigned char ciov(void) {
   asm("LDX #%b", HELP_TEXT_IOCB << 4);
   asm("JSR $E456");
+  asm("TYA"); /* Get the error code */
+  /* This is probably a dumb way of returning */
+  asm("STA $6FF");
+  return (PEEK(0x6ff));
 }
 #endif
 
