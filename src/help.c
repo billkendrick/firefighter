@@ -122,13 +122,6 @@ void show_help(void) {
     ptrs[cur_page * 3 + 0] = ptr[0];
     ptrs[cur_page * 3 + 1] = ptr[1];
     ptrs[cur_page * 3 + 2] = ptr[2];
-/*
-    draw_text("NOTED: ", scr_mem + (LINES * 40) + 8);
-    draw_number(ptr[0], 3, scr_mem + (LINES * 40) + 20);
-    draw_number(ptr[1], 3, scr_mem + (LINES * 40) + 24);
-    draw_number(ptr[2], 3, scr_mem + (LINES * 40) + 28);
-    draw_number(err, 3, scr_mem + (LINES * 40) + 37);
-*/
 #endif
 
     /* Display a screenful (page) of text */
@@ -273,10 +266,17 @@ unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * r
    @return unsigned char CIO status code
 */
 unsigned char xio_note(unsigned char ptr[3]) {
+  unsigned char err;
+
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_NOTE;
-  OS.iocb[HELP_TEXT_IOCB].buffer = ptr;
-  OS.iocb[HELP_TEXT_IOCB].buflen = sizeof(ptr);
-  return ciov();
+  err = ciov();
+
+  /* h/t https://www.atariarchives.org/mmm/iocbs.php */
+  ptr[0] = OS.iocb[HELP_TEXT_IOCB].aux3;
+  ptr[1] = OS.iocb[HELP_TEXT_IOCB].aux4;
+  ptr[2] = OS.iocb[HELP_TEXT_IOCB].aux5;
+
+  return err;
 }
 
 /* Point to a position in the file opened by `xio_open_read()` (via CIO routine).
@@ -285,8 +285,12 @@ unsigned char xio_note(unsigned char ptr[3]) {
 */
 unsigned char xio_point(unsigned char ptr[3]) {
   OS.iocb[HELP_TEXT_IOCB].command = IOCB_POINT;
-  OS.iocb[HELP_TEXT_IOCB].buffer = ptr;
-  OS.iocb[HELP_TEXT_IOCB].buflen = sizeof(ptr);
+
+  /* h/t https://www.atariarchives.org/mmm/iocbs.php */
+  OS.iocb[HELP_TEXT_IOCB].aux3 = ptr[0];
+  OS.iocb[HELP_TEXT_IOCB].aux4 = ptr[1];
+  OS.iocb[HELP_TEXT_IOCB].aux5 = ptr[2];
+
   return ciov();
 }
 
