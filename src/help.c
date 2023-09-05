@@ -38,6 +38,8 @@ extern unsigned char scr_mem[];
 extern unsigned char * dlist;
 
 /* Local function prototypes: */
+void show_help_controls(unsigned char first_page, unsigned char last_page);
+
 #ifdef FANCY_HELP_IO
 unsigned char ciov(void);
 unsigned char xio_open_read(char * filespec);
@@ -46,6 +48,7 @@ unsigned char xio_note(unsigned char * ptr);
 unsigned char xio_point(unsigned char * ptr);
 unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * read_len);
 #endif
+
 
 /* Routine to load and show help text on a fullscreen text display */
 void show_help(void) {
@@ -96,11 +99,8 @@ void show_help(void) {
 
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 
-  /* Show control instructions */
-  draw_text("SPACE/RETURN/FIRE: Next Page - ESC: Exit", scr_mem + (LINES * 40));
-#ifdef FANCY_HELP_IO
-  draw_text("UP/BACKSPACE: Previous Page", scr_mem + ((LINES + 1) * 40) + 7);
-#endif
+  /* Show control instructions (the first time) */
+  show_help_controls(1, 0);
 
   /* Open the help text file for read */
 #ifdef FANCY_HELP_IO
@@ -154,6 +154,8 @@ void show_help(void) {
     draw_number(cur_page, 2, scr_mem + ((LINES + 1) * 40));
 #endif
 
+    show_help_controls((cur_page == 1), eof);
+
     /* (Eat input) */
     do {
     } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
@@ -197,7 +199,7 @@ void show_help(void) {
       xio_point(ptrs + (cur_page * 3));
     }
 #endif
-  } while (!eof && cmd != HELP_CMD_EXIT);
+  } while (cmd != HELP_CMD_EXIT);
 
 #ifdef FANCY_HELP_IO
   xio_close();
@@ -306,4 +308,25 @@ unsigned char ciov(void) {
   return (PEEK(0x6ff));
 }
 #endif
+
+
+/* Show help screen controls at the bottom of the screen.
+   @param unsigned char first_page true, if we're on the first page
+   @param unsigned char last_page true, if we're on the last page (have hit EOF)
+*/
+void show_help_controls(unsigned char first_page, unsigned char last_page) {
+  if (!last_page) {
+    draw_text("SPACE/RETURN/FIRE: Next Page - ESC: Exit", scr_mem + (LINES * 40));
+  } else {
+    draw_text("      SPACE/RETURN/FIRE/ESC: Exit       ", scr_mem + (LINES * 40));
+  }
+
+#ifdef FANCY_HELP_IO
+  if (!first_page) {
+    draw_text("UP/BACKSPACE: Previous Page", scr_mem + ((LINES + 1) * 40) + 7);
+  } else {
+    draw_text("                           ", scr_mem + ((LINES + 1) * 40) + 7);
+  }
+#endif
+}
 
