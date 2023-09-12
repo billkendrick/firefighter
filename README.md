@@ -1,6 +1,6 @@
 # Firefighter
 
-### Version: 0.1-BETA4
+### Version: 0.1-BETA5
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
@@ -9,16 +9,16 @@ By Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
 Inspired by [_Real Heroes: Firefighter_](https://en.wikipedia.org/wiki/Real_Heroes:_Firefighter)
-(Wii, Conspiracy Entertainment, 2012),
+(Wii; Conspiracy Entertainment, 2012),
 [_Brave Firefighters_](https://www.arcade-museum.com/game_detail.php?game_id=7212)
-(SEGA, arcade, 1999),
+(arcade; SEGA, 1999),
 [_Boulderdash_](https://en.wikipedia.org/wiki/Boulder_Dash_%28video_game%29)
-(Atari 8-bit and other platforms, First Star Software, 1985),
+(Atari 8-bit and other platforms; First Star Software, 1985),
 and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
-(Williams Electronics, arcade, 1982).
+(arcade; Williams Electronics, 1982).
 See the [development docs](DEVELOPMENT.md).
 
-Developed 2023-08-13 - 2023-09-04
+Developed 2023-08-13 - 2023-09-11
 
 ------------------------------------------------------------------------
 
