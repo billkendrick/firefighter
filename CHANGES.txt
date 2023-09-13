@@ -4,6 +4,9 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
+0.1-beta-6 (2023-09-13):
+ * ...
+
 0.1-beta-5 (2023-09-13):
  * Gameplay:
    * Lose 3 workers and the game ends.
