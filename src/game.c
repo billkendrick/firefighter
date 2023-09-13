@@ -109,6 +109,7 @@ void start_level(void) {
 
   draw_level();
 
+  /* NOTE: If this is changed, update "Scoring" section of README.md! */
   if (level < 10)
     bonus = 1000 * level;
   else
