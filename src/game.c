@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-09-11
+  2023-08-15 - 2023-09-13
 */
 
 #include <atari.h>
@@ -1107,6 +1107,7 @@ void drop_civilians(char why) {
     draw_score();
   }
 
+  /* NOTE: If this is changed, update the README.md! */
   if (civilians_died >= 3) {
     /* Too many died? Game over */
     draw_text("G A M E  O V E R", scr_mem + 2);
