@@ -381,8 +381,10 @@ void show_high_score_table(char highlight) {
 
   /* Draw high scores */
   for (i = 0; i < 10; i++) {
-    draw_text(high_score_name_table[i], scr_mem + (i * 80) + 60 + 14);
-    draw_number(high_score_table[i], 6, scr_mem + (i * 80) + 60 + 19);
+    draw_number(i + 1, 2, scr_mem + (i * 80) + 60 + 12);
+
+    draw_text(high_score_name_table[i], scr_mem + (i * 80) + 60 + 16);
+    draw_number(high_score_table[i], 6, scr_mem + (i * 80) + 60 + 21);
 
     if (i == highlight) {
       int j;
