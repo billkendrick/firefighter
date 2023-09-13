@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-09-11
+# 2023-08-13 - 2023-09-12
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)

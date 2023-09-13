@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-08-31
+  2023-08-15 - 2023-09-11
 */
 
 #include <atari.h>
@@ -70,6 +70,9 @@ extern unsigned long int high_score;
 /* Current game score */
 extern unsigned long int score;
 
+/* Game over state */
+unsigned char game_over;
+
 /* Current level number and player's starting position */
 extern char level;
 char ply_start_x, ply_start_y;
@@ -79,7 +82,7 @@ unsigned long int bonus;
 unsigned char bonus_tick;
 
 /* Current level's civilian counter */
-unsigned char civilians_remaining, civilians_start;
+unsigned char civilians_remaining, civilians_start, civilians_died;
 
 /* Current level's open valve counter */
 unsigned char open_valves;
@@ -93,8 +96,10 @@ unsigned char ply_dir, ply_x, ply_y, have_ax, exiting;
 char exploding, dying;
 char hit_pitch, hit_pitch_change, hit_volume, hit_distortion, hit_vol_decrease;
 
+#ifdef CHECKER
 /* Cellular automata state */
 char odd_even;
+#endif
 
 
 /* Draw the level and set initial state of the level */
@@ -122,7 +127,9 @@ void start_level(void) {
   exploding = 0;
   dying = 0;
 
+#ifdef CHECKER
   odd_even = 0;
+#endif
 
   /* Find how many civilians, and open valves,
      there are at the start of the level */
@@ -144,14 +151,17 @@ void start_level(void) {
 
 /* The main game loop! */
 void start_game(void) {
-  unsigned char want_x, want_y, push_x, push_y, stick, shape, shape2;
+  unsigned char want_x, want_y, push_x, push_y, stick, shape, shape2, done;
 
   setup_game_screen();
 
+  /* Initial game state */
   score = 0;
+  civilians_died = 0;
+  game_over = 0;
+  done = 0;
 
   start_level();
-
 
   do {
     /* Control the player based on Joystick 1 input */
@@ -261,7 +271,9 @@ void start_game(void) {
       } else if ((shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) && have_ax) {
         /* Break a pipe with the ax (downside of having it!) */
         set_shape(want_x, want_y, shape + 1);
-        score = score - SCORE_PIPE_BREAK_DEDUCTION;
+        if (score >= SCORE_PIPE_BREAK_DEDUCTION) {
+          score -= SCORE_PIPE_BREAK_DEDUCTION;
+        }
         draw_score();
         set_sound(2, 0, 0xA0, 6, 3);
       } else if (shape == DOOR || shape == EXIT1 || shape == EXIT2) {
@@ -459,17 +471,34 @@ void start_game(void) {
 
       start_level();
     }
-  } while (CONSOL_START(GTIA_READ.consol) == 0);
+
+    if (CONSOL_START(GTIA_READ.consol) == 1) {
+      /* [Start] key: Abort game */
+      done = 1;
+    }
+  } while (!game_over && !done);
 
   POKE(0x601, 0);
 
   quiet();
 
+  /* Are we done because of Game Over?  Wait for input before proceeding */
+  if (game_over) {
+    /* Eat any input */
+    do {
+    } while (CONSOL_START(GTIA_READ.consol) == 1 || OS.strig0 == 0 || OS.strig1 == 0);
+
+    /* Now wait for input to proceed */
+    do {
+    } while (CONSOL_START(GTIA_READ.consol) == 0 && OS.strig0 == 1 && OS.strig1 == 1);
+  }
+
   OS.sdmctl = 0;
   ANTIC.nmien = NMIEN_VBI;
 
+  /* Eat any input */
   do {
-  } while (CONSOL_START(GTIA_READ.consol) == 1);
+  } while (CONSOL_START(GTIA_READ.consol) == 1 || OS.strig0 == 0 || OS.strig1 == 0);
 
   OS.sdmctl = 34;
 }
@@ -586,7 +615,7 @@ void draw_level(void) {
   /* Clear screen; draw score */
   bzero(scr_mem + 60, LEVEL_SPAN);
 
-  draw_text("LEVEL: --  SCORE: ------  BONUS: -----", scr_mem + 20 + 1);
+  draw_text("LEVEL:-- SCORE:------ BONUS:------ ^:-", scr_mem + 20 + 1);
   draw_score();
 
   /* Position player; draw level # & "Get Ready!" message: */
@@ -620,9 +649,10 @@ void draw_level(void) {
 
 /* Draws the level/score/bonus in the status bar */
 void draw_score(void) {
-  draw_number(level, 2, scr_mem + 28);
-  draw_number(score, 6, scr_mem + 39);
-  draw_number(bonus, 6, scr_mem + 54);
+  draw_number(level, 2, scr_mem + 20 + 7);
+  draw_number(score, 6, scr_mem + 20 + 16);
+  draw_number(bonus, 6, scr_mem + 20 + 29);
+  draw_number(civilians_died, 1, scr_mem + 20 + 38);
 }
 
 /* This routine analyzes the entire screen and
@@ -640,7 +670,9 @@ void cellular_automata(void) {
   char x, y;
   unsigned shape, shape2, ignited_shape, dir, rand, any_fire;
 
+#ifdef CHECKER
   odd_even = !odd_even;
+#endif
   any_fire = 0;
 
   for (y = 0; y < LEVEL_H; y++) {
@@ -893,7 +925,9 @@ unsigned char flammable(unsigned char c) {
     return 0;
   } else if (c == CRATE || c == CRATE_BROKEN) {
     /* Crates ignite fully (lose points!) */
-    score -= SCORE_CRATE_BREAK_DEDUCTION;
+    if (score >= SCORE_CRATE_BREAK_DEDUCTION) {
+      score -= SCORE_CRATE_BREAK_DEDUCTION;
+    }
     return FIRE_LG;
   } else if (c == AX) {
     /* Ax ignites fully */
@@ -1067,7 +1101,19 @@ void quiet(void) {
 void drop_civilians(char why) {
   civilians_remaining--;
 
-  if (civilians_remaining == 0) {
+  if (why == CIVILIAN_DIED) {
+    civilians_died++;
+    draw_score();
+  }
+
+  if (civilians_died >= 3) {
+    /* Too many died? Game over */
+    draw_text("G A M E  O V E R", scr_mem + 2);
+    flash();
+    game_over = 1;
+  } else if (civilians_remaining == 0) {
+    /* Last civilian rescued or died (and not game over?)
+       They can complete the level now */
     draw_text("GOTO EXIT & PUSH", scr_mem + 2);
     flash();
   }

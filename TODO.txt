@@ -4,11 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-2023-08-18 - 2023-09-04
+2023-08-18 - 2023-09-12
 
- * Game-ending event.  Possible ideas:
-   + Losing all workers on the current level
-   + Losing 3 workers throughout the game (a la "Stampede");
-     would do you 'earn' any back?
  * More levels
    (reminder: tweak LEVELS variable declaration in Makefile!)

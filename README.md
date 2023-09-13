@@ -18,7 +18,7 @@ and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
 (arcade; Williams Electronics, 1982).
 See the [development docs](DEVELOPMENT.md).
 
-Developed 2023-08-13 - 2023-09-11
+Developed 2023-08-13 - 2023-09-12
 
 ------------------------------------------------------------------------
 
@@ -44,6 +44,8 @@ Find the workers trapped in the room, and help them navigate to the exit.
 They are overcome by smoke and fear, and will wander aimlessly unless you
 are close by to guide them.  They can perish if they end up too close to a
 large fire!
+
+Lose three (3) workers, and the game ends.
 
 Some rooms contain crates and/or barrels which you can push out of
 your way if they block your path.  Be careful how you move them, though;
@@ -91,6 +93,15 @@ while you spray!
 ------------------------------------------------------------------------
 
 # Object and Item Descriptions
+
+## Status Bar
+
+Across the top of the screen you'll be shown:
+
+ * "LEVEL" - The current level
+ * "SCORE" - Your score
+ * "BONUS" - The current level's bonus (which counts down)
+ * Fire icon - How many workers you have lost during this game
 
 ## The Room
 
@@ -166,6 +177,8 @@ you'll receive points.
 If a large fire ends up spreading onto a worker, they'll
 perish: they disappear from the room, you'll hear a sad tone,
 and the screen will flash red.
+
+Lose three (3) workers, and the game ends.
 
 ## Ax
 

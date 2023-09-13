@@ -25,7 +25,7 @@
 
   h/t Thomas Cherryholmes for sharing example code.
 
-  2023-08-27 - 2023-09-04
+  2023-08-27 - 2023-09-12
 */
 
 #include <string.h>
@@ -153,7 +153,6 @@ char key_shift_to_ch_map[NUM_SHIFTED_KEYS][2] = {
   { KEY_CLOSINGPARAN,    ')' },
   { KEY_COLON,           ':' },
   { KEY_BACKSLASH,       '\\' },
-  { KEY_CIRCUMFLEX,      '^' },
   { KEY_OPENINGBRACKET,  '[' },
   { KEY_CLOSINGBRACKET,  ']' },
   { KEY_QUESTIONMARK,    '?' },
@@ -178,7 +177,7 @@ void set_default_high_score(void) {
   int i;
 #endif
 
-  high_score = 1031;
+  high_score = 1030;
   strcpy(high_score_name, "BJK");
 
 #ifdef DISK
@@ -186,7 +185,7 @@ void set_default_high_score(void) {
   strcpy(high_score_name_table[0], high_score_name);
 
   for (i = 1; i < 10; i++) {
-    high_score_table[i] = 1031 - (i * 100);
+    high_score_table[i] = 1030 - (i * 100);
     high_score_name_table[i][0] = default_high_initials[i * 3 + 0];
     high_score_name_table[i][1] = default_high_initials[i * 3 + 1];
     high_score_name_table[i][2] = default_high_initials[i * 3 + 2];
@@ -287,10 +286,10 @@ void get_initials(void) {
         if (initials[x] > 32)
           initials[x]--;
         else
-          initials[x] = 94;
+          initials[x] = 93;
       } else if (s == 13) {
         /* [JS-Down]: Cycle letter forward */
-        if (initials[x] < 94)
+        if (initials[x] < 93)
           initials[x]++;
         else
           initials[x] = 32;
