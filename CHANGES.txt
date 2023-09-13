@@ -4,11 +4,13 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-5 (2023-09-12):
+0.1-beta-5 (2023-09-13):
  * Gameplay:
    * Lose 3 workers and the game ends.
- * Title screen:
+ * High score table:
    * Top-10 high scores labeled (1...10)
+ * Help screen:
+   * Added numbering & indentation to documentation
  * Bugfixes:
    * Score deductions (e.g., crate destruction) with a very
      low score (e.g., 000000) could cause score to wrap around

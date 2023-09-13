@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-09-12
+# 2023-08-13 - 2023-09-13
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -25,7 +25,7 @@ CA65=${CC65BIN}/ca65
 LD65=${CC65BIN}/ld65
 DIR2ATR=/usr/local/bin/dir2atr -S -b MyDos4534
 MARKDOWN2HTML=/usr/bin/markdown
-HTML2TXT=/usr/bin/w3m -dump -no-graph -cols 40
+HTML2TXT=/usr/bin/w3m -dump -no-graph -cols 40 -o indent_incr=1
 TXT2ATASCII=/usr/bin/tr "\n" "\233"
 
 ## Include and Library Paths
