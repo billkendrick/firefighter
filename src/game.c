@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-09-14
+  2023-08-15 - 2023-09-15
 */
 
 #include <atari.h>
@@ -63,6 +63,7 @@ void pause(void);
 void bonus_tally(int x);
 void quiet(void);
 void drop_civilians(char why);
+unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char push_x, unsigned char push_y);
 
 /* High score (external b/c shared by title screen) */
 extern unsigned long int high_score;
@@ -157,7 +158,7 @@ void start_level(void) {
 
 /* The main game loop! */
 void start_game(void) {
-  unsigned char want_x, want_y, push_x, push_y, stick, shape, shape2, done;
+  unsigned char want_x, want_y, push_x, push_y, stick, done;
 
   setup_game_screen();
 
@@ -217,99 +218,21 @@ void start_game(void) {
       }
     }
 
+    /* Try to move? */
     if (want_x != ply_x || want_y != ply_y) {
-      shape = shape_at(want_x, want_y);
-
-      /* Want to move to a new position */
-      if (!obstacle(shape) || (shape >= 32 + 128 && shape < 64 + 128) /* Water */) {
-        /* We can! Move there! */
-
-        set_shape(ply_x, ply_y, BLANK);
-        ply_x = want_x;
-        ply_y = want_y;
-
-        if (shape == AX) {
-          have_ax = 1;
-          draw_text("ax", scr_mem + 0 + 18);
-          set_sound(20, 0, 0xA0, 14, 2);
-          score += SCORE_AX_COLLECT;
-          draw_score();
-        }
-      } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL || shape == CIVILIAN) {
-        /* Hitting a crate, oil barrel, or civilian */
-
-        if (have_ax && shape != OIL && shape != CIVILIAN) {
-          /* Have the ax? You can break crates! */
-
-          set_shape(want_x, want_y, (shape == CRATE ? CRATE_BROKEN : 0));
-          set_sound(200, 0, 0x60, 10, 5);
-          if (score >= SCORE_CRATE_BREAK_DEDUCTION) {
-            score -= SCORE_CRATE_BREAK_DEDUCTION;
-          } else {
-            score = 0;
+      /* The exact direction we want... */
+      if (!try_move(want_x, want_y, push_x, push_y)) {
+        /* Failed? If it was diagonal... */
+        if (want_y != ply_y) {
+          /* Try just the vertical motion... */
+          if (!try_move(ply_x, want_y, ply_x, push_y)) {
+            /* Still failed? Try just the horizontal motion... */
+            try_move(want_x, ply_y, push_x, ply_y);
           }
-          draw_score();
-        } else {
-          /* No ax, or not a crate? See whether we can push it */
-
-          shape2 = shape_at(push_x, push_y);
-          if (shape2 == BLANK) {
-            set_shape(want_x, want_y, BLANK);
-            set_shape(push_x, push_y, shape);
-
-            set_shape(ply_x, ply_y, BLANK);
-            ply_x = want_x;
-            ply_y = want_y;
-
-            set_sound(200, 0, 0xA0, 10, 10);
-          }
-        }
-      } else if (shape == VALVE_OPEN) {
-        /* Close an opened valve (and disable leaks) */
-        set_shape(want_x, want_y, VALVE_CLOSED);
-        set_sound(200, 0, 0xA0, 8, 4);
-        open_valves--;
-      } else if (shape == VALVE_CLOSED) {
-        /* Open a closed valve */
-        set_shape(want_x, want_y, VALVE_OPEN);
-        set_sound(100, 0, 0xA0, 8, 4);
-        open_valves++;
-      } else if ((shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) && have_ax) {
-        /* Break a pipe with the ax (downside of having it!) */
-        set_shape(want_x, want_y, shape + 1);
-        if (score >= SCORE_PIPE_BREAK_DEDUCTION) {
-          score -= SCORE_PIPE_BREAK_DEDUCTION;
-        }
-        draw_score();
-        set_sound(2, 0, 0xA0, 6, 3);
-      } else if (shape == DOOR || shape == EXIT1 || shape == EXIT2) {
-        /* Door or exit */
-        char dir, x, y;
-
-        /* If any civilians are adjacent to player, save them! */
-        for (dir = 0; dir < 8; dir++) {
-          x = ply_x + dir_x[dir];
-          y = ply_y + dir_y[dir];
-          if (valid_dir(x, y, dir)) {
-            if (shape_at(x, y) == CIVILIAN) {
-              set_shape(x, y, BLANK);
-              score = score + SCORE_CIVILIAN_RESCUE;
-              draw_score();
-              drop_civilians(CIVILIAN_SAVED);
-              set_sound(50, -2, 0xA0, 15, 3);
-            }
-          }
-        }
-
-        /* No more civilians remain; push a few seconds to exit
-           (avoids immediately exiting level after saving final
-           civilian, in case player wants to go back and put out
-           remaining fire) */
-        if (civilians_remaining == 0) {
-          exiting++;
         }
       }
     } else {
+      /* Not trying to move */
       exiting = 0;
     }
 
@@ -1136,3 +1059,117 @@ void drop_civilians(char why) {
     flash();
   }
 }
+
+/* Try moving, breaking things, or pushing things based on
+   controller input.  If we do not succeed, the caller
+   will try other variations, permitting e.g., a down+right
+   push into the top of a horizontal wall to act as a rightward
+   movement along the wall; "sliding" across it, in other words.
+
+   @param unsigned char want_x - X of player positon we're trying to move into
+   @param unsigned char want_y - Y of {ditto}
+   @param unsigned char push_x - X of position ahead of user, for pushing objects
+   @param unsinged char push_y - Y of {ditto}
+   @return unsigned char boolean - did the attempt succeed?
+*/
+unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char push_x, unsigned char push_y) {
+  unsigned char shape, shape2;
+
+  shape = shape_at(want_x, want_y);
+
+  /* Want to move to a new position */
+  if (!obstacle(shape) || (shape >= 32 + 128 && shape < 64 + 128) /* Water */) {
+    /* We can! Move there! */
+
+    set_shape(ply_x, ply_y, BLANK);
+    ply_x = want_x;
+    ply_y = want_y;
+
+    if (shape == AX) {
+      have_ax = 1;
+      draw_text("ax", scr_mem + 0 + 18);
+      set_sound(20, 0, 0xA0, 14, 2);
+      score += SCORE_AX_COLLECT;
+      draw_score();
+    }
+  } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL || shape == CIVILIAN) {
+    /* Hitting a crate, oil barrel, or civilian */
+
+    if (have_ax && shape != OIL && shape != CIVILIAN) {
+      /* Have the ax? You can break crates! */
+
+      set_shape(want_x, want_y, (shape == CRATE ? CRATE_BROKEN : 0));
+      set_sound(200, 0, 0x60, 10, 5);
+      if (score >= SCORE_CRATE_BREAK_DEDUCTION) {
+        score -= SCORE_CRATE_BREAK_DEDUCTION;
+      } else {
+        score = 0;
+      }
+      draw_score();
+    } else {
+      /* No ax, or not a crate? See whether we can push it */
+
+      shape2 = shape_at(push_x, push_y);
+      if (shape2 == BLANK) {
+        set_shape(want_x, want_y, BLANK);
+        set_shape(push_x, push_y, shape);
+
+        set_shape(ply_x, ply_y, BLANK);
+        ply_x = want_x;
+        ply_y = want_y;
+
+        set_sound(200, 0, 0xA0, 10, 10);
+      }
+    }
+  } else if (shape == VALVE_OPEN) {
+    /* Close an opened valve (and disable leaks) */
+    set_shape(want_x, want_y, VALVE_CLOSED);
+    set_sound(200, 0, 0xA0, 8, 4);
+    open_valves--;
+  } else if (shape == VALVE_CLOSED) {
+    /* Open a closed valve */
+    set_shape(want_x, want_y, VALVE_OPEN);
+    set_sound(100, 0, 0xA0, 8, 4);
+    open_valves++;
+  } else if ((shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) && have_ax) {
+    /* Break a pipe with the ax (downside of having it!) */
+    set_shape(want_x, want_y, shape + 1);
+    if (score >= SCORE_PIPE_BREAK_DEDUCTION) {
+      score -= SCORE_PIPE_BREAK_DEDUCTION;
+    }
+    draw_score();
+    set_sound(2, 0, 0xA0, 6, 3);
+  } else if (shape == DOOR || shape == EXIT1 || shape == EXIT2) {
+    /* Door or exit */
+    char dir, x, y;
+
+    /* If any civilians are adjacent to player, save them! */
+    for (dir = 0; dir < 8; dir++) {
+      x = ply_x + dir_x[dir];
+      y = ply_y + dir_y[dir];
+      if (valid_dir(x, y, dir)) {
+        if (shape_at(x, y) == CIVILIAN) {
+          set_shape(x, y, BLANK);
+          score = score + SCORE_CIVILIAN_RESCUE;
+          draw_score();
+          drop_civilians(CIVILIAN_SAVED);
+          set_sound(50, -2, 0xA0, 15, 3);
+        }
+      }
+    }
+
+    /* No more civilians remain; push a few seconds to exit
+       (avoids immediately exiting level after saving final
+       civilian, in case player wants to go back and put out
+       remaining fire) */
+    if (civilians_remaining == 0) {
+      exiting++;
+    }
+  } else {
+    /* Couldn't do anything! */
+    return 0;
+  }
+
+  return 1;
+}
+

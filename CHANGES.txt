@@ -4,11 +4,12 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-6 (2023-09-13):
+0.1-beta-6 (2023-09-15):
  * Gameplay:
    * When a worker dies, there's a short grace period
      until the game will allow another worker to die.
-   * New levels: 5
+   * Ability to slide along obstacles when pushing diagonally.
+ * More levels
 
 0.1-beta-5 (2023-09-13):
  * Gameplay:
