@@ -5,7 +5,9 @@ Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
 0.1-beta-6 (2023-09-13):
- * ...
+ * Gameplay:
+   * When a worker dies, there's a short grace period
+     until the game will allow another worker to die.
 
 0.1-beta-5 (2023-09-13):
  * Gameplay:

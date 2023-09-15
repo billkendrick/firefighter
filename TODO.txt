@@ -4,9 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-2023-08-18 - 2023-09-13
-
- * When a worker dies, set a grace period before another can die
+2023-08-18 - 2023-09-14
 
  * More levels
    (reminder: tweak LEVELS variable declaration in Makefile!)

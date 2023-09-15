@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-09-13
+  2023-08-15 - 2023-09-14
 */
 
 #include <atari.h>
@@ -84,6 +84,10 @@ unsigned char bonus_tick;
 /* Current level's civilian counter */
 unsigned char civilians_remaining, civilians_start, civilians_died;
 
+/* Grace period timer between civilian deaths */
+#define CIVILIAN_GRACE_PERIOD 32
+unsigned char civilian_death_grace;
+
 /* Current level's open valve counter */
 unsigned char open_valves;
 
@@ -145,6 +149,7 @@ void start_level(void) {
     }
   }
   civilians_start = civilians_remaining;
+  civilian_death_grace = 0;
 
   set_sound(0, 0, 0, 0, 0);
 }
@@ -449,6 +454,10 @@ void start_game(void) {
       bonus -= 100;
       draw_score();
     }
+
+    /* Tick down civilian death grace period */
+    if (civilian_death_grace > 0)
+      civilian_death_grace--;
 
     /* Wait for next vertical blank (throttle fps) */
     while (ANTIC.vcount < 124);
@@ -920,10 +929,17 @@ unsigned char flammable(unsigned char c) {
     return FIRE_XLG;
   } else if (c == CIVILIAN) {
     /* Civilians die! ;-( */
-    drop_civilians(CIVILIAN_DIED);
-    set_sound(100, 2, 0xA0, 15, 1);
-    dying = 14;
-    return 0;
+    if (civilian_death_grace == 0) {
+      drop_civilians(CIVILIAN_DIED);
+      set_sound(100, 2, 0xA0, 15, 1);
+      dying = 14;
+      civilian_death_grace = CIVILIAN_GRACE_PERIOD;
+      return 0;
+    } else {
+      /* If a civilian died recently (grace period),
+         don't kill another one yet! */
+      return FIRE_INFLAM;
+    }
   } else if (c == CRATE || c == CRATE_BROKEN) {
     /* Crates ignite fully (lose points!) */
     if (score >= SCORE_CRATE_BREAK_DEDUCTION) {
