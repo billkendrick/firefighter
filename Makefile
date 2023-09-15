@@ -41,7 +41,7 @@ CC65_FLAGS=-Osir --add-source
 ## Level 'source' files:
 # FIXME
 # LEVEL_FILES=$(wildcard levels/level*.txt)
-LEVEL_FILES=$(wildcard levels/level00[1-4].txt)
+LEVEL_FILES=$(wildcard levels/level00[1-5].txt)
 
 ## Objects
 OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
