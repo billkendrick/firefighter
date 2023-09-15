@@ -11,6 +11,10 @@ http://www.newbreedsoftware.com/firefighter/
    * Ability to slide along obstacles when pushing diagonally.
    * Ax indicator moved from top right to top left; using icon.
    * Exit counter moved from top left to top right.
+ * Help screen:
+   * Help text word-wrapped at 38 chars (instead of 40);
+     improves readability if you [C]opy "D:README.TXT,E:" from DOS
+     with Atari OS's default left-margin of 2
  * More levels
 
 0.1-beta-5 (2023-09-13):

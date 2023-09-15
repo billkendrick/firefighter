@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-09-04
+  2023-08-22 - 2023-09-15
 */
 
 #include <atari.h>
@@ -144,7 +144,7 @@ void show_help(void) {
       if (str[last] == 0x9B /* ATASCII EOL */) {
         str[last] = '\0';
       }
-      draw_text(str, scr_mem + y * 40);
+      draw_text(str, scr_mem + y * 40 + 1); /* N.B. Indent by 1 to center it; text is word-wrapped at 38 characters */
       y++;
 
     } while (!eof && y < LINES);
