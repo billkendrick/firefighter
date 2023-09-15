@@ -25,7 +25,7 @@
 
   h/t Thomas Cherryholmes for sharing example code.
 
-  2023-08-27 - 2023-09-12
+  2023-08-27 - 2023-09-15
 */
 
 #include <string.h>
@@ -152,11 +152,11 @@ char key_shift_to_ch_map[NUM_SHIFTED_KEYS][2] = {
   { KEY_OPENINGPARAN,    '(' },
   { KEY_CLOSINGPARAN,    ')' },
   { KEY_COLON,           ':' },
-  { KEY_BACKSLASH,       '\\' },
-  { KEY_OPENINGBRACKET,  '[' },
-  { KEY_CLOSINGBRACKET,  ']' },
   { KEY_QUESTIONMARK,    '?' },
 };
+
+#define INITIAL_MIN 32
+#define INITIAL_MAX 90
 
 
 /* Local function prototype: */
@@ -283,16 +283,16 @@ void get_initials(void) {
     if (x < 3) {
       if (s == 14) {
         /* [JS-Up]: Cycle letter backward */
-        if (initials[x] > 32)
+        if (initials[x] > INITIAL_MIN)
           initials[x]--;
         else
-          initials[x] = 93;
+          initials[x] = INITIAL_MAX;
       } else if (s == 13) {
         /* [JS-Down]: Cycle letter forward */
-        if (initials[x] < 93)
+        if (initials[x] < INITIAL_MAX)
           initials[x]++;
         else
-          initials[x] = 32;
+          initials[x] = INITIAL_MIN;
       } else if (s == 7 || OS.strig0 == 0 || OS.strig1 == 0) {
         /* [JS-Right] or [Fire]: Next initial */
         x++;

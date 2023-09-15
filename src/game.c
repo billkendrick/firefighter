@@ -238,11 +238,11 @@ void start_game(void) {
 
     /* Show "Exiting" counter */
     if (exiting > 0) {
-      POKE(scr_mem, (EXIT_CNT - (exiting >> 3)) + 16 + 128);
+      POKE(scr_mem + 19, (EXIT_CNT - (exiting >> 3)) + 16 + 128);
     } else if (civilians_remaining == 0) {
-      POKE(scr_mem, '-' - 32 + 128);
+      POKE(scr_mem + 19, '-' - 32 + 128);
     } else {
-      POKE(scr_mem, 0);
+      POKE(scr_mem + 19, 0);
     }
 
     /* Draw the player */
@@ -1087,7 +1087,7 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
 
     if (shape == AX) {
       have_ax = 1;
-      draw_text("ax", scr_mem + 0 + 18);
+      POKE(scr_mem + 0, ']' + 32);
       set_sound(20, 0, 0xA0, 14, 2);
       score += SCORE_AX_COLLECT;
       draw_score();
