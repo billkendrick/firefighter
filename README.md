@@ -18,7 +18,7 @@ A twin-stick firefighting action game for the Atari 8-bit.
 > (arcade; Williams Electronics, 1982).
 > See the [development docs](DEVELOPMENT.md).
 
-Developed 2023-08-13 - 2023-09-14
+Developed 2023-08-13 - 2023-09-16
 
 ------------------------------------------------------------------------
 

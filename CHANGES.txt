@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-6 (2023-09-15):
+0.1-beta-6 (2023-09-16):
  * Gameplay:
    * When a worker dies, there's a short grace period
      until the game will allow another worker to die.
@@ -15,7 +15,7 @@ http://www.newbreedsoftware.com/firefighter/
    * Help text word-wrapped at 38 chars (instead of 40);
      improves readability if you [C]opy "D:README.TXT,E:" from DOS
      with Atari OS's default left-margin of 2
- * More levels
+ * Two more levels
 
 0.1-beta-5 (2023-09-13):
  * Gameplay:
