@@ -6,7 +6,7 @@ http://www.newbreedsoftware.com/firefighter/
 
 0.1-beta-7 (2023-09-19):
  * Splash:
-   * WIP Adding a splash screen (disk version)
+   * Added a splash screen (disk version)
  * Building:
    * "tools/release.sh" checks Makefile version vs README.md
 

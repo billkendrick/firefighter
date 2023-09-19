@@ -70,6 +70,7 @@ clean-intermediate:
 	-rm firefite.map
 	-rm data/levels.dat
 	-rm data/levels_cmp.dat
+	-rm data/title.gr9
 	-rm firefths.xex
 	-rm firefite-nohighscore.atr
 	-rm disk/FIREFITE.AR0
@@ -81,8 +82,10 @@ clean-intermediate:
 firefite.atr:	firefite-nohighscore.atr tools/high_score_atr.php
 	tools/high_score_atr.php firefite-nohighscore.atr firefite.atr
 
-firefite-nohighscore.atr:	firefths.xex README.md
-	cp firefths.xex disk/FIREFITE.AR0
+firefite-nohighscore.atr:	firefths.xex splash.xex README.md data/title.gr9
+	cp splash.xex disk/SPLASH.AR0
+	cp firefths.xex disk/FIREFITE.AR1
+	cp data/title.gr9 disk/TITLE.GR9
 	${MARKDOWN2HTML} README.md > ${TMP}; ${HTML2TXT} ${TMP} | ${TXT2ATASCII} > disk/README.txt
 	rm ${TMP}
 	${DIR2ATR} firefite-nohighscore.atr disk
@@ -101,6 +104,11 @@ firefths.xex:	${OBJECTS_DISK} src/atari.cfg
 		${MAP_ARGS} \
 		${OBJECTS_DISK} atari.lib
 
+splash.xex:	obj/splash.o obj/segments-splash.o src/atari-splash.cfg
+	${LD65} --lib-path "${CC65_LIB}" \
+		-o splash.xex \
+		-C src/atari-splash.cfg \
+		obj/splash.o obj/segments-splash.o atari.lib
 
 ## Source code to compile and/or assemble:
 
@@ -199,12 +207,29 @@ asm/dli.s:  src/dli.c src/dli.h
 obj/segments.o:     src/segments.s fonts/fire1.fnt fonts/fire2.fnt data/levels_cmp.dat
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments.s -o obj/segments.o
 
+# Splash:
+# -------
+obj/splash.o:  asm/splash.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/splash.s -o obj/splash.o
+
+asm/splash.s:  src/splash.c
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/splash.c -o asm/splash.s
+
+obj/segments-splash.o:     src/segments-splash.s
+	${CA65} -I "${CC65_ASMINC}" -t atari src/segments-splash.s -o obj/segments-splash.o
 
 ## Data files to build:
 
+# Levels:
+# -------
 data/levels_cmp.dat:	tools/level_compress.php tools/level_consts.inc.php data/levels.dat
 	./tools/level_compress.php
 
 data/levels.dat:	tools/level_to_dat.php tools/level_consts.inc.php ${LEVEL_FILES}
 	./tools/level_to_dat.php ${LEVEL_FILES}
+
+# Splash title screen:
+# --------------------
+data/title.gr9:	img-src/title.pgm tools/pgm2gr9.php
+	tools/pgm2gr9.php
 

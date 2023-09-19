@@ -3,7 +3,10 @@
 *.xex
 *.atr
 *.AR0
+*.AR1
 *.map
 data/levels.dat
 data/levels_cmp.dat
+data/title.gr9
 disk/README.txt
+disk/TITLE.GR9
