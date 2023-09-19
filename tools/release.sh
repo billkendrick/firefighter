@@ -9,22 +9,30 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 
-# Last updated 2023-08-25
+# Last updated 2023-09-19
 
 # Confirm that we've tagged with the same version
 # number we're bulding it as.  (Makefile "VERSION"
 # matches most recent "git tag".)  Use '-f' to force.
 
-VERSION=`grep "^VERSION=" Makefile | cut -d '=' -f 2`
+MAKE_VERSION=`grep "^VERSION=" Makefile | cut -d '=' -f 2`
+README_VERSION=`grep "^### Version: " README.md | cut -d ' ' -f 3`
 TAG=`git tag | tail -1 | sed -e "s/[a-z]/\U&/g"`
-echo "Version in Makefile: $VERSION"
-echo "Latest git repo tag: $TAG"
+echo "Version in Makefile:  $MAKE_VERSION"
+echo "Version in README.md: $README_VERSION"
+echo "Latest git repo tag:  $TAG"
 echo
 
-if [ "$VERSION" != "$TAG" ]; then
+if [ "$MAKE_VERSION" != "$README_VERSION" ]; then
+  echo "Mismatch!  Makefile version ($MAKE_VERSION) doesn't match"
+  echo "README.md version ($README_VERSION)!  Correct that first!"
+  exit
+fi
+
+if [ "$MAKE_VERSION" != "$TAG" ]; then
   if [ "$1" != "-f" ]; then
-    VERSION_LOWER=`echo "$VERSION" | sed -e "s/[A-Z]/\L&/g"`
-    echo "Mismatch!  Use '-f' to ignore. Will use Makefile version # ($VERSION)"
+    VERSION_LOWER=`echo "$MAKE_VERSION" | sed -e "s/[A-Z]/\L&/g"`
+    echo "Mismatch!  Use '-f' to ignore. Will use Makefile version # ($MAKE_VERSION)"
     echo "Or, if you're ready, run:"
     echo "  git tag $VERSION_LOWER"
     echo "  git push origin $VERSION_LOWER"
@@ -48,7 +56,7 @@ make clean-intermediate
 
 # ZIP this directory!
 cd ..
-zip --exclude "*/.git/*" -r firefighter-${VERSION}-`date +"%Y-%m-%d"`.zip firefighter/
+zip --exclude "*/.git/*" -r firefighter-${MAKE_VERSION}-`date +"%Y-%m-%d"`.zip firefighter/
 
 echo
 echo "Create a new release over at GitHub:"

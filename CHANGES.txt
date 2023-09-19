@@ -4,6 +4,12 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
+0.1-beta-7 (2023-09-19):
+ * Splash:
+   * WIP Adding a splash screen (disk version)
+ * Building:
+   * "tools/release.sh" checks Makefile version vs README.md
+
 0.1-beta-6 (2023-09-16):
  * Gameplay:
    * When a worker dies, there's a short grace period

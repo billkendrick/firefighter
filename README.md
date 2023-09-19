@@ -1,6 +1,6 @@
 # Firefighter
 
-### Version: 0.1-BETA6
+### Version: 0.1-BETA7
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
@@ -18,7 +18,7 @@ A twin-stick firefighting action game for the Atari 8-bit.
 > (arcade; Williams Electronics, 1982).
 > See the [development docs](DEVELOPMENT.md).
 
-Developed 2023-08-13 - 2023-09-16
+Developed 2023-08-13 - 2023-09-19
 
 ------------------------------------------------------------------------
 
