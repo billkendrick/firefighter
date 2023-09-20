@@ -25,7 +25,7 @@
 
   h/t Thomas Cherryholmes for sharing example code.
 
-  2023-08-27 - 2023-09-15
+  2023-08-27 - 2023-09-19
 */
 
 #include <string.h>
@@ -174,7 +174,7 @@ void siov(void);
    top 10 high score table entries */
 void set_default_high_score(void) {
 #ifdef DISK
-  int i;
+  unsigned char i;
 #endif
 
   high_score = 1030;
@@ -203,7 +203,7 @@ void set_default_high_score(void) {
 */
 char register_high_score(void) {
 #ifdef DISK
-  int i, better_than;
+  signed char i, better_than;
 
   /* Disk: Matched or beat one of the top 10 high scores? */
   better_than = -1;
@@ -339,7 +339,7 @@ void get_initials(void) {
 /* Display the high score table
    @param highlight which entry to highlight (-1 for none) */
 void show_high_score_table(char highlight) {
-  int i;
+  unsigned char i;
 
   OS.sdmctl = 0;
 
@@ -387,7 +387,7 @@ void show_high_score_table(char highlight) {
     draw_number(high_score_table[i], 6, scr_mem + (i * 80) + 60 + 21);
 
     if (i == highlight) {
-      int j;
+      unsigned char j;
       for (j = 0; j < 40; j++) {
         POKE(scr_mem + (i * 80) + 60 + j, PEEK(scr_mem + (i * 80) + 60 + j) + 128);
       }
@@ -418,7 +418,7 @@ void show_high_score_table(char highlight) {
 
 #ifdef HIGHSCORE_FILE
 void load_high_scores(void) {
-  int i;
+  unsigned char i;
   FILE * fi;
 
   fi = fopen("highscor.dat", "rb");
@@ -458,7 +458,7 @@ void load_high_scores(void) {
    (from high_score_table[] and high_score_name_table[]) */
 #ifdef HIGHSCORE_FILE
 void save_high_scores(void) {
-  int i;
+  unsigned char i;
   FILE * fi;
 
   fi = fopen("highscor.dat", "wb");

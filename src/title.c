@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-27
+  2023-08-13 - 2023-09-19
 */
 
 #include <atari.h>
@@ -38,8 +38,7 @@ void show_controls(void);
      * CMD_HIGHSCORES show high score table (disk only)
 */
 char show_title(void) {
-  int i;
-  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
+  unsigned char i, siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
   unsigned int select_down, level_pos, hs_pos, select_down_wait;
   unsigned char option_down, cmd;
 

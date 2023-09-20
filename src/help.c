@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-09-15
+  2023-08-22 - 2023-09-19
 */
 
 #include <atari.h>
@@ -52,11 +52,10 @@ unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * r
 
 /* Routine to load and show help text on a fullscreen text display */
 void show_help(void) {
-  int i, j;
-  unsigned char y, last, cmd, eof;
+  unsigned char i, j, y, last, cmd, eof;
   char str[41];
 #ifdef FANCY_HELP_IO
-  int cur_page;
+  unsigned char cur_page;
   unsigned char err;
   unsigned int len;
   unsigned char ptr[3];

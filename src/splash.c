@@ -27,7 +27,7 @@ void eat_input(void);
 /* Main loop! */
 void main(void) {
   FILE * fi;
-  int i;
+  unsigned char i;
 
   OS.sdmctl = 0;
   OS.gprior = 0b01000000;

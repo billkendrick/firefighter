@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-22
+  2023-08-13 - 2023-09-19
 */
 
 #include <peekpoke.h>
@@ -41,15 +41,14 @@ void draw_text(char * str, unsigned char * dest) {
 /* Draw a zero-padded decimal number on the screen.
 
    @param unsigned long int n - The number to draw
-   @param int digits - How many digits to show (will be zero-padded)
+   @param signed char digits - How many digits to show (will be zero-padded)
    @unsigned char * dest - The destination in memory
      (expected to within src_mem[]!!!)
 */
-void draw_number(unsigned long int n, int digits, unsigned char * dest) {
+void draw_number(unsigned long int n, signed char digits, unsigned char * dest) {
   do {
     POKE(dest + digits - 1, (n % 10) + 16);
     n = n / 10;
     digits--;
   } while (digits > 0);
 }
-

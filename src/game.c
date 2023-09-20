@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-09-15
+  2023-08-15 - 2023-09-19
 */
 
 #include <atari.h>
@@ -33,8 +33,8 @@ extern unsigned char level_data_to_screen[];
 extern char main_stick;
 
 /* The X & Y deltas for the 8 directions (clockwise, starting up / north) */
-int dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
-int dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
+signed char dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
+signed char dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 
 /* Reasons that civilian count goes down */
 enum {
@@ -51,7 +51,7 @@ void setup_game_screen(void);
 #define obstacle(s) ((s) != 0 && (s) != AX)
 void draw_level(void);
 void cellular_automata(void);
-void broken_pipe(int x, int y, char shape);
+void broken_pipe(signed char x, signed char y, char shape);
 unsigned char flammable(unsigned char c);
 unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir);
 void explode(char x, char y);
@@ -641,7 +641,7 @@ void cellular_automata(void) {
           /* Erase water */
           set_shape(x, y, BLANK);
         } else if (shape == CIVILIAN) {
-          int want_dir, dist;
+          signed char want_dir, dist;
 
           /* Civilian */
 
@@ -714,11 +714,11 @@ void cellular_automata(void) {
    [attempt to] draw a gas leak shape, or a blank,
    depending on the state of all valves on the screen.
 
-   @param int x - X position to [attempt to] draw/erase gas leak
-   @param int y - Y position to [attempt to] draw/erase gas leak
+   @param signed char x - X position to [attempt to] draw/erase gas leak
+   @param signed char y - Y position to [attempt to] draw/erase gas leak
    @param char shape - gas leak shape to [attempt to] draw there
 */
-void broken_pipe(int x, int y, char shape) {
+void broken_pipe(signed char x, signed char y, char shape) {
   char c;
 
   if (x > 0 && y > 0 && x < LEVEL_W && y < LEVEL_H) {
@@ -825,7 +825,7 @@ void explode(char x, char y) {
    @return unsigned char boolean whether the new position is in bounds
 */
 unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir) {
-  int dx, dy;
+  signed char dx, dy;
 
   dx = dir_x[dir];
   dy = dir_y[dir];
