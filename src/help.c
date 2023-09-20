@@ -25,14 +25,12 @@
 #endif
 
 /* Controls/commands within the help screen */
-enum {
-  HELP_CMD_NONE,
-  HELP_CMD_NEXT,
+#define HELP_CMD_NONE 0
+#define HELP_CMD_NEXT 1
 #ifdef FANCY_HELP_IO
-  HELP_CMD_PREV,
+#define HELP_CMD_PREV 2
 #endif
-  HELP_CMD_EXIT,
-};
+#define HELP_CMD_EXIT 255
 
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;

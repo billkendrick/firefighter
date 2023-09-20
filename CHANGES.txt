@@ -19,6 +19,7 @@ http://www.newbreedsoftware.com/firefighter/
      (h/t https://github.com/ilmenit/CC65-Advanced-Optimizations)
      * `--static-locals` (instead of using the stack (slower))
      * Replaced a bunch of `int` (habit!) with `char`
+     * Replaced `enum` constants with `#define`-ed ones
 
 0.1-beta-6 (2023-09-16):
  * Gameplay:

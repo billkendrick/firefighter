@@ -37,10 +37,8 @@ signed char dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
 signed char dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 
 /* Reasons that civilian count goes down */
-enum {
-  CIVILIAN_SAVED,
-  CIVILIAN_DIED,
-};
+#define CIVILIAN_SAVED 0
+#define CIVILIAN_DIED 1
 
 /* Local function prototypes (or macros): */
 void start_level(void);
