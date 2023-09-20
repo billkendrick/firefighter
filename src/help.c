@@ -15,21 +15,13 @@
 #include "help.h"
 #include "draw_text.h"
 
-#define FANCY_HELP_IO
-
-#ifdef FANCY_HELP_IO
 #define LINES 22
 #define MAX_PAGES 50 // Should be plenty? Check ATASCII "README.txt"'s output length, divided by LINES
-#else
-#define LINES 23
-#endif
 
 /* Controls/commands within the help screen */
 #define HELP_CMD_NONE 0
 #define HELP_CMD_NEXT 1
-#ifdef FANCY_HELP_IO
 #define HELP_CMD_PREV 2
-#endif
 #define HELP_CMD_EXIT 255
 
 extern unsigned char scr_mem[];
@@ -37,30 +29,23 @@ extern unsigned char * dlist;
 
 /* Local function prototypes: */
 void show_help_controls(unsigned char first_page, unsigned char last_page);
-
-#ifdef FANCY_HELP_IO
 unsigned char ciov(void);
 unsigned char xio_open_read(char * filespec);
 unsigned char xio_close(void);
 unsigned char xio_note(unsigned char * ptr);
 unsigned char xio_point(unsigned char * ptr);
 unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * read_len);
-#endif
 
 
 /* Routine to load and show help text on a fullscreen text display */
 void show_help(void) {
   unsigned char i, j, y, last, cmd, eof;
   char str[41];
-#ifdef FANCY_HELP_IO
   unsigned char cur_page;
   unsigned char err;
   unsigned int len;
   unsigned char ptr[3];
   unsigned char ptrs[MAX_PAGES * 3];
-#else
-  FILE * fi;
-#endif
 
   OS.sdmctl = 0;
 
@@ -100,42 +85,29 @@ void show_help(void) {
   show_help_controls(1, 0);
 
   /* Open the help text file for read */
-#ifdef FANCY_HELP_IO
   cur_page = 0;
   err = xio_open_read("D:README.TXT");
   if (err > 127)
     return;
-#else
-  fi = fopen("README.TXT", "r");
-  if (fi == NULL)
-    return;
-#endif
 
 
   /* -- Main help screen loop -- */
   do {
-#ifdef FANCY_HELP_IO
     err = xio_note(ptr);
     ptrs[cur_page * 3 + 0] = ptr[0];
     ptrs[cur_page * 3 + 1] = ptr[1];
     ptrs[cur_page * 3 + 2] = ptr[2];
-#endif
 
     /* Display a screenful (page) of text */
     y = 0;
     eof = 0;
 
     do {
-#ifdef FANCY_HELP_IO
       err = xio_get_record(str, sizeof(str), &len);
       str[len] = '\0';
 
       if (err == 136)
         eof = 1;
-#else
-      fgets(str, sizeof(str), fi);
-      eof = feof(fi);
-#endif
 
       last = strlen(str) - 1;
       if (str[last] == 0x9B /* ATASCII EOL */) {
@@ -146,10 +118,8 @@ void show_help(void) {
 
     } while (!eof && y < LINES);
 
-#ifdef FANCY_HELP_IO
     cur_page++;
     draw_number(cur_page, 2, scr_mem + ((LINES + 1) * 40));
-#endif
 
     show_help_controls((cur_page == 1), eof);
 
@@ -176,41 +146,31 @@ void show_help(void) {
         cmd = HELP_CMD_EXIT;
       }
 
-#ifdef FANCY_HELP_IO
       if (OS.stick0 == 14 || OS.stick1 == 14 || OS.ch == KEY_DASH || OS.ch == (KEY_DASH | KEY_CTRL)) {
         /* Go back a page */
         if (cur_page > 1) {
           cmd = HELP_CMD_PREV;
         }
       }
-#endif
     } while (cmd == HELP_CMD_NONE);
 
     bzero(scr_mem, 40 * LINES);
 
 
-#ifdef FANCY_HELP_IO
     if (cmd == HELP_CMD_PREV) {
       /* Go back a page */
       cur_page -= 2;
       xio_point(ptrs + (cur_page * 3));
     }
-#endif
   } while (cmd != HELP_CMD_EXIT);
 
-#ifdef FANCY_HELP_IO
   xio_close();
-#else
-  fclose(fi);
-#endif
 
   /* (Eat input) */
   do {
   } while (OS.strig0 == 0 || OS.strig1 == 0 || CONSOL_START(GTIA_READ.consol) == 1);
   OS.ch = KEY_NONE;
 }
-
-#ifdef FANCY_HELP_IO
 
 #define HELP_TEXT_IOCB 2
 #define IOCB_OPEN_READ 4
@@ -304,7 +264,6 @@ unsigned char ciov(void) {
   asm("STA $6FF");
   return (PEEK(0x6ff));
 }
-#endif
 
 
 /* Show help screen controls at the bottom of the screen.
@@ -318,12 +277,10 @@ void show_help_controls(unsigned char first_page, unsigned char last_page) {
     draw_text("      SPACE/RETURN/FIRE/ESC: Exit       ", scr_mem + (LINES * 40));
   }
 
-#ifdef FANCY_HELP_IO
   if (!first_page) {
     draw_text("UP/BACKSPACE: Previous Page", scr_mem + ((LINES + 1) * 40) + 7);
   } else {
     draw_text("                           ", scr_mem + ((LINES + 1) * 40) + 7);
   }
-#endif
 }
 
