@@ -9,6 +9,10 @@ http://www.newbreedsoftware.com/firefighter/
    * Added a splash screen (disk version)
  * Building:
    * "tools/release.sh" checks Makefile version vs README.md
+   * WIP - Optimizations:
+     (h/t https://github.com/ilmenit/CC65-Advanced-Optimizations)
+     * `--static-locals` (instead of using the stack (slower))
+     * ...
 
 0.1-beta-6 (2023-09-16):
  * Gameplay:

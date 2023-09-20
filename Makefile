@@ -35,7 +35,7 @@ CC65_ASMINC=${CC65_HOME}/asminc
 CC65_LIB=${CC65_HOME}/lib
 
 ## Flags
-CC65_FLAGS=-Osir --add-source
+CC65_FLAGS=-O -Os -Oi -Or --static-locals --add-source
 # MAP_ARGS=-m firefite.map
 
 ## Level 'source' files:
