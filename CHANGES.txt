@@ -24,8 +24,8 @@ http://www.newbreedsoftware.com/firefighter/
      * Avoid multiplication when doing shape look-up and placement
        (`shape_at()` and `set_shape()` now use a look-up table)
      * Replaced some "+= 2" and "-= 2" with "++" and "--" twice.
-     * WIP Replaced series of `POKE()`s with arrays for Display Lists
-       + TODO: game
+     * Improved Display List construction (some use of `memset()`
+       or static arrays)
 
 0.1-beta-6 (2023-09-16):
  * Gameplay:

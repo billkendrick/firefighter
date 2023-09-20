@@ -488,36 +488,47 @@ unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) 
   return 1;
 }
 
+
+void game_dlist = {
+  DL_BLK8,
+  DL_BLK8,
+  DL_BLK4,
+
+  DL_LMS(DL_GRAPHICS2),
+  scr_mem,
+  DL_BLK1,
+
+  DL_GRAPHICS0,
+
+  DL_DLI(DL_BLK1),
+
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+  DL_GRAPHICS2,
+
+  DL_JVB,
+  &dlist
+};
+
 /* Set up the display list for the game screen,
    and enable the DLI */
 void setup_game_screen(void) {
-  int i;
-
   OS.sdmctl = 0;
 
   bzero(scr_mem, 1024);
 
   /* Generate a display list... */
-  POKE(dlist, DL_BLK8);
-  POKE(dlist + 1, DL_BLK8);
-  POKE(dlist + 2, DL_BLK4);
-
-  POKE(dlist + 3, DL_LMS(DL_GRAPHICS2));
-  POKEW(dlist + 4, (unsigned int) scr_mem);
-  POKE(dlist + 6, DL_BLK1);
-
-  POKE(dlist + 7, DL_GRAPHICS0);
-
-  POKE(dlist + 8, DL_DLI(DL_BLK1));
-
-  for (i = 9; i < 20; i++) {
-    POKE(dlist + i, DL_GRAPHICS2);
-  }
-
-  POKE(dlist + 21, DL_JVB);
-  POKEW(dlist + 22, (unsigned int) dlist);
-
+  memcpy(dlist, &game_dlist, sizeof(game_dlist));
   OS.sdlst = dlist;
+
   OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
 
   POKE(0x600, OS.chbas + 2);
