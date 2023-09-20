@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-09-19
+  2023-08-22 - 2023-09-20
 */
 
 #include <atari.h>
@@ -39,7 +39,7 @@ unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * r
 
 /* Routine to load and show help text on a fullscreen text display */
 void show_help(void) {
-  unsigned char i, j, y, last, cmd, eof;
+  unsigned char y, last, cmd, eof;
   char str[41];
   unsigned char cur_page;
   unsigned char err;
@@ -52,6 +52,13 @@ void show_help(void) {
   bzero(scr_mem, 1024);
 
   /* Generate a display list... */
+
+  /* (Start by filling with all GRAPHICS 0 instructions;
+     other necessary things will be added directly below.
+     Unlike other parts of the game, we're not recording
+     the whole Display List as an array) */
+  memset(dlist + 6, DL_GRAPHICS0, 24);
+
   POKE(dlist, DL_BLK8);
   POKE(dlist + 1, DL_BLK8);
   POKE(dlist + 2, DL_BLK8);
@@ -59,17 +66,14 @@ void show_help(void) {
   POKE(dlist + 3, DL_LMS(DL_GRAPHICS0));
   POKEW(dlist + 4, (unsigned int) scr_mem);
 
-  for (i = 6; i < 6 + LINES - 1; i++) {
-    POKE(dlist + i, DL_GRAPHICS0);
-  }
+  /* ... */
 
-  POKE(dlist + i++, DL_BLK4);
+  POKE(dlist + 6 + LINES - 1, DL_BLK4);
 
-  for (j = LINES; j < 24; j++)
-    POKE(dlist + i++, DL_GRAPHICS0);
+  /* ... */
 
-  POKE(dlist + i++, DL_JVB);
-  POKEW(dlist + i++, (unsigned int) dlist);
+  POKE(dlist + 30, DL_JVB);
+  POKEW(dlist + 31, (unsigned int) dlist);
 
   OS.sdlst = dlist;
 

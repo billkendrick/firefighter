@@ -25,7 +25,7 @@ http://www.newbreedsoftware.com/firefighter/
        (`shape_at()` and `set_shape()` now use a look-up table)
      * Replaced some "+= 2" and "-= 2" with "++" and "--" twice.
      * WIP Replaced series of `POKE()`s with arrays for Display Lists
-       + TODO: game, help
+       + TODO: game
 
 0.1-beta-6 (2023-09-16):
  * Gameplay:
