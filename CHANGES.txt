@@ -22,7 +22,7 @@ http://www.newbreedsoftware.com/firefighter/
      * Replaced a bunch of `int` (habit!) with `char`
      * Replaced `enum` constants with `#define`-ed ones
      * WIP Replaced series of `POKE()`s with arrays for Display Lists
-       + TODO: game, help, score, splash
+       + TODO: game, help, score
 
 0.1-beta-6 (2023-09-16):
  * Gameplay:

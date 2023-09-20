@@ -27,26 +27,33 @@ void eat_input(void);
 /* Main loop! */
 void main(void) {
   FILE * fi;
-  unsigned char i;
 
   OS.sdmctl = 0;
   OS.gprior = 0b01000000;
   OS.color4 = 0x30;
 
   /* Set up display list */
+
+  /* (Start by filling with all GRAPHICS 8 instructions;
+     other necessary things will be added directly below.
+     Unlike other parts of the game, we're not recording
+     the whole Display List as an array) */
+  memset(dlist + 6, DL_GRAPHICS8, 192);
+
   POKE(dlist + 0, DL_BLK8);
   POKE(dlist + 1, DL_BLK8);
   POKE(dlist + 2, DL_BLK8);
+
   POKE(dlist + 3, DL_LMS(DL_GRAPHICS8));
   POKEW(dlist + 4, (unsigned int) scr_mem_pt1);
-  for (i = 6; i < 99; i++) {
-    POKE(dlist + i, DL_GRAPHICS8);
-  }
+
+  /* ... */
+
   POKE(dlist + 99, DL_LMS(DL_GRAPHICS8));
   POKEW(dlist + 100, (unsigned int) scr_mem_pt2);
-  for (i = 102; i < 198; i++) {
-    POKE(dlist + i, DL_GRAPHICS8);
-  }
+
+  /* ... */
+
   POKE(dlist + 199, DL_JVB);
   POKEW(dlist + 200, (unsigned int) dlist);
 
