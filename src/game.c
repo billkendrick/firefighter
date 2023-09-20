@@ -95,7 +95,7 @@ unsigned char open_valves;
 /* Player's directon, position, and state */
 #define DIR_LEFT 0
 #define DIR_RIGHT 1
-unsigned char ply_dir, ply_x, ply_y, have_ax, exiting;
+unsigned char ply_dir, ply_x, ply_y, have_ax, exiting, toggling_valve;
 
 /* Visual & sound event effect counters */
 char exploding, dying;
@@ -129,6 +129,7 @@ void start_level(void) {
   ply_dir = DIR_RIGHT;
   have_ax = 0;
   exiting = 0;
+  toggling_valve = 0;
 
   exploding = 0;
   dying = 0;
@@ -234,6 +235,7 @@ void start_game(void) {
     } else {
       /* Not trying to move */
       exiting = 0;
+      toggling_valve = 0;
     }
 
     /* Show "Exiting" counter */
@@ -1123,14 +1125,22 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
     }
   } else if (shape == VALVE_OPEN) {
     /* Close an opened valve (and disable leaks) */
-    set_shape(want_x, want_y, VALVE_CLOSED);
-    set_sound(200, 0, 0xA0, 8, 4);
-    open_valves--;
+    if (!toggling_valve) {
+      /* (Only toggle if we weren't already pressing into it) */
+      set_shape(want_x, want_y, VALVE_CLOSED);
+      set_sound(200, 0, 0xA0, 8, 4);
+      open_valves--;
+      toggling_valve = 1;
+    }
   } else if (shape == VALVE_CLOSED) {
     /* Open a closed valve */
-    set_shape(want_x, want_y, VALVE_OPEN);
-    set_sound(100, 0, 0xA0, 8, 4);
-    open_valves++;
+    if (!toggling_valve) {
+      /* (Only toggle if we weren't already pressing into it) */
+      set_shape(want_x, want_y, VALVE_OPEN);
+      set_sound(100, 0, 0xA0, 8, 4);
+      open_valves++;
+      toggling_valve = 1;
+    }
   } else if ((shape == PIPE_UP_DOWN || shape == PIPE_LEFT_RIGHT) && have_ax) {
     /* Break a pipe with the ax (downside of having it!) */
     set_shape(want_x, want_y, shape + 1);

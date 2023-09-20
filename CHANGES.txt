@@ -5,6 +5,10 @@ Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
 0.1-beta-7 (2023-09-19):
+ * Gameplay:
+   * Pushing joystick into a valve no longer causes it
+     to toggle open/close quickly.  Release joystick,
+     then push into the valve again to toggle.
  * Splash:
    * Added a splash screen (disk version)
  * Title screen:
