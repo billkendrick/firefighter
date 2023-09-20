@@ -31,6 +31,58 @@ extern char high_score_name[4];
 
 void show_controls(void);
 
+/* Title screen display list */
+void title_dlist = {
+  DL_BLK8,
+  DL_BLK8,
+  DL_BLK1,
+
+  DL_LMS(DL_GRAPHICS0),
+  scr_mem,
+  DL_BLK2,
+
+  DL_GRAPHICS2,
+  DL_BLK2,
+  DL_GRAPHICS1,
+
+  DL_DLI(DL_BLK8),
+
+  DL_GRAPHICS0,
+  DL_BLK2,
+  DL_GRAPHICS2,
+  DL_BLK6,
+
+  DL_GRAPHICS0,
+  DL_BLK2,
+  DL_GRAPHICS2,
+  DL_BLK6,
+
+  DL_GRAPHICS0,
+  DL_BLK2,
+  DL_GRAPHICS2,
+  DL_BLK6,
+
+  DL_BLK2,
+
+  DL_GRAPHICS0,
+  DL_GRAPHICS0,
+  DL_GRAPHICS0,
+
+  DL_BLK1,
+
+  DL_GRAPHICS0,
+  DL_GRAPHICS0,
+
+  DL_BLK4,
+  DL_GRAPHICS0,
+
+  DL_BLK1,
+  DL_GRAPHICS0,
+
+  DL_JVB,
+  &dlist
+};
+
 /* Set up and display title screen; title screen loop
    @return char - what the user wants to do:
      * CMD_PLAY play the game
@@ -49,44 +101,7 @@ char show_title(void) {
   bzero(scr_mem, 1024);
 
   /* Generate a display list... */
-  POKE(dlist, DL_BLK8);
-  POKE(dlist + 1, DL_BLK8);
-  POKE(dlist + 2, DL_BLK1);
-
-  POKE(dlist + 3, DL_LMS(DL_GRAPHICS0));
-  POKEW(dlist + 4, (unsigned int) scr_mem);
-  POKE(dlist + 6, DL_BLK2);
-
-  POKE(dlist + 7, DL_GRAPHICS2);
-  POKE(dlist + 8, DL_BLK2);
-  POKE(dlist + 9, DL_GRAPHICS1);
-
-  POKE(dlist + 10, DL_DLI(DL_BLK8));
-
-  for (i = 0; i < 3; i++) {
-    POKE(dlist + 11 + i * 4, DL_GRAPHICS0);
-    POKE(dlist + 11 + i * 4 + 1, DL_BLK2);
-    POKE(dlist + 11 + i * 4 + 2, DL_GRAPHICS2);
-    POKE(dlist + 11 + i * 4 + 3, DL_BLK6);
-  }
-
-  POKE(dlist + 26, DL_BLK2);
-  for (i = 27; i < 30; i++)
-    POKE(dlist + i, DL_GRAPHICS0);
-  POKE(dlist + 30, DL_BLK1);
-
-  POKE(dlist + 31, DL_GRAPHICS0);
-  POKE(dlist + 32, DL_GRAPHICS0);
-
-  POKE(dlist + 33, DL_BLK4);
-  POKE(dlist + 34, DL_GRAPHICS0);
-
-  POKE(dlist + 35, DL_BLK1);
-  POKE(dlist + 36, DL_GRAPHICS0);
-
-  POKE(dlist + 37, DL_JVB);
-  POKEW(dlist + 38, (unsigned int) dlist);
-
+  memcpy(dlist, &title_dlist, sizeof(title_dlist));
   OS.sdlst = dlist;
 
   /* Set character set */

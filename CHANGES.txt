@@ -16,10 +16,13 @@ http://www.newbreedsoftware.com/firefighter/
  * Building:
    * "tools/release.sh" checks Makefile version vs README.md
    * WIP - Optimizations:
-     (h/t https://github.com/ilmenit/CC65-Advanced-Optimizations)
+     (h/t https://github.com/ilmenit/CC65-Advanced-Optimizations
+     and Irgendwer @ AtariAge)
      * `--static-locals` (instead of using the stack (slower))
      * Replaced a bunch of `int` (habit!) with `char`
      * Replaced `enum` constants with `#define`-ed ones
+     * WIP Replaced series of `POKE()`s with arrays for Display Lists
+       + TODO: game, help, score, splash
 
 0.1-beta-6 (2023-09-16):
  * Gameplay:
