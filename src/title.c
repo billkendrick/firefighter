@@ -289,10 +289,12 @@ char show_title(void) {
 
       if (select_down == 0) {
         /* Initial press of Select */
-        if (level < levels_data[0])
+        if (level < levels_data[0]) {
           level++;
-        else
+        } else {
           level = 1;
+          select_down_wait = 0;
+        }
 
         draw_number(level, 2, scr_mem + level_pos);
         select_down = 64;

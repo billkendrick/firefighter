@@ -7,6 +7,8 @@ http://www.newbreedsoftware.com/firefighter/
 0.1-beta-7 (2023-09-19):
  * Splash:
    * Added a splash screen (disk version)
+ * Title screen:
+   * Pause [Select] key repeat when wrapping back to level 1
  * Building:
    * "tools/release.sh" checks Makefile version vs README.md
    * WIP - Optimizations:
