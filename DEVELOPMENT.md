@@ -293,10 +293,10 @@ They are assembled (composited), text is rendered, and they are scaled
 down in both size and color palette (remapped) using
 [ImageMagick](https://imagemagick.org/).
 
-The resulting file, a [NetPBM][https://netpbm.sourceforge.net/]
+The resulting file, a [NetPBM](https://netpbm.sourceforge.net/)
 Portable Gray Map (PGM), is converted to binary data suitable
-for display in Atari GTIA "`GRAPHICS 9`" 16-greyscale mode
-(80x192 pixels).
+for display in Atari GTIA "`GRAPHICS 9`" 16-greyscale mode (80x192 pixels)
+by the script [`pgm2gr9.php`](tools/pgm2gr9.php).
 
 A tiny program acts as the splash screen, loading and displaying
 this picture.  I take advantage of MyDOS's ability to chain
