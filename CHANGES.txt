@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-7 (2023-09-19):
+0.1-beta-7 (2023-09-20):
  * Gameplay:
    * Pushing joystick into a valve no longer causes it
      to toggle open/close quickly.  Release joystick,
@@ -23,6 +23,7 @@ http://www.newbreedsoftware.com/firefighter/
      * Replaced `enum` constants with `#define`-ed ones
      * Avoid multiplication when doing shape look-up and placement
        (`shape_at()` and `set_shape()` now use a look-up table)
+     * Replaced some "+= 2" and "-= 2" with "++" and "--" twice.
      * WIP Replaced series of `POKE()`s with arrays for Display Lists
        + TODO: game, help, score
 

@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-09-19
+  2023-08-15 - 2023-09-20
 */
 
 #include <atari.h>
@@ -207,26 +207,30 @@ void start_game(void) {
         ply_dir = 1;
         if (ply_x < (LEVEL_W - 1)) {
           want_x++;
-          push_x += 2;
+          push_x++;
+          push_x++;
         }
       }
       if (stick & STK_BIT_LEFT) {
         ply_dir = 0;
         if (ply_x > 0) {
           want_x--;
-          push_x -= 2;
+          push_x--;
+          push_x--;
         }
       }
       if (stick & STK_BIT_DOWN) {
         if (ply_y < (LEVEL_H - 1)) {
           want_y++;
-          push_y += 2;
+          push_y++;
+          push_y++;
         }
       }
       if (stick & STK_BIT_UP) {
         if (ply_y > 0) {
           want_y--;
-          push_y -= 2;
+          push_y--;
+          push_y--;
         }
       }
     }
@@ -370,7 +374,8 @@ void start_game(void) {
     } else if (dying) {
       /* Dying visual effect (sfx handled by `set_sound()`) */
       POKE(0x601, 0x40 + dying);
-      dying -= 2;
+      dying--;
+      dying--;
     } else {
       /* Nothing else happening */
       POKE(0x601, 0x00);
