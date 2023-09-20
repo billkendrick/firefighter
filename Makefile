@@ -73,8 +73,10 @@ clean-intermediate:
 	-rm data/title.gr9
 	-rm firefths.xex
 	-rm firefite-nohighscore.atr
-	-rm disk/FIREFITE.AR0
+	-rm disk/SPLASH.AR0
+	-rm disk/FIREFITE.AR1
 	-rm disk/README.txt
+	-rm disk/TITLE.GR9
 
 
 ## Files to generate:

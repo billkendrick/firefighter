@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2023-09-04
+Developed 2023-08-13 - 2023-09-19
 
 ------------------------------------------------------------------------
 
@@ -282,4 +282,25 @@ tool to convert to HTML, then the [`w3m`](https://w3m.sourceforge.net/)
 text-based web browser, in `-dump` mode, to convert to 40-column text,
 and finally the [`tr`](https://www.gnu.org/software/coreutils/tr) tool
 to convert Unix end-of-line (EOL) characters to ATASCII.
+
+## Splash Screen
+
+The splash screen (disk version) is comprised of a pair of public
+domain images, and text rendered in two fonts released under the SIL
+Open Font License.  They can be found in the [`img-src` folder](img-src/).
+
+They are assembled (composited), text is rendered, and they are scaled
+down in both size and color palette (remapped) using
+[ImageMagick](https://imagemagick.org/).
+
+The resulting file, a [NetPBM][https://netpbm.sourceforge.net/]
+Portable Gray Map (PGM), is converted to binary data suitable
+for display in Atari GTIA "`GRAPHICS 9`" 16-greyscale mode
+(80x192 pixels).
+
+A tiny program acts as the splash screen, loading and displaying
+this picture.  I take advantage of MyDOS's ability to chain
+multiple "autorun" programs (aka `AUTORUN.SYS` in Atari DOS) by
+having it load the splash first (`SPLASH.AR0`), followed by
+the game itself second (`FIREFITE.AR1`).
 
