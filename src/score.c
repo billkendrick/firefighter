@@ -25,7 +25,7 @@
 
   h/t Thomas Cherryholmes for sharing example code.
 
-  2023-08-27 - 2023-09-19
+  2023-08-27 - 2023-09-20
 */
 
 #include <string.h>
@@ -346,6 +346,13 @@ void show_high_score_table(char highlight) {
   bzero(scr_mem, 1024);
 
   /* Generate a display list... */
+
+  /* (Start by filling with all GRAPHICS 0 instructions;
+     other necessary things will be added directly below.
+     Unlike other parts of the game, we're not recording
+     the whole Display List as an array) */
+  memset(dlist + 7, DL_GRAPHICS0, 22);
+
   POKE(dlist, DL_BLK8);
   POKE(dlist + 1, DL_BLK8);
   POKE(dlist + 2, DL_BLK8);
@@ -355,9 +362,7 @@ void show_high_score_table(char highlight) {
 
   POKE(dlist + 6, DL_BLK2);
 
-  for (i = 7; i < 29; i++) {
-    POKE(dlist + i, DL_GRAPHICS0);
-  }
+  /* ... */
 
   POKE(dlist + 29, DL_BLK1);
   POKE(dlist + 30, DL_GRAPHICS0);
