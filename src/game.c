@@ -113,11 +113,6 @@ unsigned char ply_dir, ply_x, ply_y, have_ax, exiting, toggling_valve;
 char exploding, dying;
 char hit_pitch, hit_pitch_change, hit_volume, hit_distortion, hit_vol_decrease;
 
-#ifdef CHECKER
-/* Cellular automata state */
-char odd_even;
-#endif
-
 
 /* Draw the level and set initial state of the level */
 void start_level(void) {
@@ -145,10 +140,6 @@ void start_level(void) {
 
   exploding = 0;
   dying = 0;
-
-#ifdef CHECKER
-  odd_even = 0;
-#endif
 
   /* Find how many civilians, and open valves,
      there are at the start of the level */
@@ -622,100 +613,91 @@ void cellular_automata(void) {
   char x, y;
   unsigned shape, shape2, ignited_shape, dir, rand, any_fire;
 
-#ifdef CHECKER
-  odd_even = !odd_even;
-#endif
   any_fire = 0;
 
   for (y = 0; y < LEVEL_H; y++) {
     for (x = 0; x < LEVEL_W; x++) {
-#ifdef CHECKER
-      if (((y % 2) == (x % 2)) == odd_even) {
-#endif
-        shape = shape_at(x, y);
-        rand = POKEY_READ.random;
+      shape = shape_at(x, y);
+      rand = POKEY_READ.random;
 
-        if (shape == FIRE_SM && rand < 16) {
-          /* Grow small fire to medium */
-          set_shape(x, y, FIRE_MD);
-          any_fire++;
-        } else if (shape == FIRE_MD && rand < 16) {
-          /* Grow medium fire to large */
-          set_shape(x, y, FIRE_LG);
-          any_fire++;
-        } else if (shape == FIRE_LG && rand < 32) {
-          /* Large fire tries to spread */
-          dir = POKEY_READ.random % 8;
-          if (valid_dir(x, y, dir)) {
-            shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
-            ignited_shape = flammable(shape2);
-            if (ignited_shape == FIRE_XLG) {
-              explode(x + dir_x[dir], y + dir_y[dir]);
-            } else if (ignited_shape != FIRE_INFLAM) {
-              set_shape(x + dir_x[dir], y + dir_y[dir], ignited_shape);
-            }
+      if (shape == FIRE_SM && rand < 16) {
+        /* Grow small fire to medium */
+        set_shape(x, y, FIRE_MD);
+        any_fire++;
+      } else if (shape == FIRE_MD && rand < 16) {
+        /* Grow medium fire to large */
+        set_shape(x, y, FIRE_LG);
+        any_fire++;
+      } else if (shape == FIRE_LG && rand < 32) {
+        /* Large fire tries to spread */
+        dir = POKEY_READ.random % 8;
+        if (valid_dir(x, y, dir)) {
+          shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
+          ignited_shape = flammable(shape2);
+          if (ignited_shape == FIRE_XLG) {
+            explode(x + dir_x[dir], y + dir_y[dir]);
+          } else if (ignited_shape != FIRE_INFLAM) {
+            set_shape(x + dir_x[dir], y + dir_y[dir], ignited_shape);
           }
-          any_fire++;
-        } else if (shape >= 32 + 128 && shape < 64 + 128) {
-          /* Erase water */
-          set_shape(x, y, BLANK);
-        } else if (shape == CIVILIAN) {
-          signed char want_dir, dist;
-
-          /* Civilian */
-
-          /* If we're near the player, walk towards him */
-          want_dir = -1;
-          for (dist = 3; dist >= 2; dist--) {
-            for (dir = 0; dir < 8; dir++) {
-              if ((x + dir_x[dir] == ply_x || x + dir_x[dir] * 2 == ply_x) &&
-                  (y + dir_y[dir] == ply_y || y + dir_y[dir] * 2 == ply_y)) {
-                want_dir = dir;
-              }
-            }
-          }
-
-          /* If not near player (or occasionally), walk a random direction */
-          if (want_dir == -1 || rand < 2) {
-            if (rand < 32)
-              want_dir = POKEY_READ.random % 8;
-          }
-
-          /* Try to move in the chosen direction */
-          if (want_dir != -1) {
-            dir = want_dir;
-
-            if (valid_dir(x, y, dir) &&
-                shape_at(x + dir_x[dir], y + dir_y[dir]) == BLANK) {
-              set_shape(x, y, BLANK);
-
-              if ((dir_x[dir] == 1 && dir_y[dir] >= 0) || dir_y[dir] == 1) {
-                set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN_MOVED);
-              } else {
-                set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN);
-              }
-            }
-          }
-        } else if (shape == CIVILIAN_MOVED) {
-          /* Turn a previously-moved worker back into a regular worker.
-
-             (Since cellular automaton goes from top-to-bottom, left-to-right,
-             we use an interim 'shape' to avoid processing the same worker
-             multiple times per frame (causing them to 'fly' across or down
-             the screen) if they move down or right) */
-          set_shape(x, y, CIVILIAN);
-        } else if (shape == PIPE_BROKEN_UP_DOWN && rand < 128) {
-          /* Draw (or erase) gas leak on left/right of a broken vertical pipe */
-          broken_pipe(x - 1, y, GASLEAK_LEFT);
-          broken_pipe(x + 1, y, GASLEAK_RIGHT);
-        } else if (shape == PIPE_BROKEN_LEFT_RIGHT && rand < 128) {
-          /* Draw (or erase) gas leak above/below a broken horizontal pipe */
-          broken_pipe(x, y - 1, GASLEAK_UP);
-          broken_pipe(x, y + 1, GASLEAK_DOWN);
         }
-#ifdef CHECKER
+        any_fire++;
+      } else if (shape >= 32 + 128 && shape < 64 + 128) {
+        /* Erase water */
+        set_shape(x, y, BLANK);
+      } else if (shape == CIVILIAN) {
+        signed char want_dir, dist;
+
+        /* Civilian */
+
+        /* If we're near the player, walk towards him */
+        want_dir = -1;
+        for (dist = 3; dist >= 2; dist--) {
+          for (dir = 0; dir < 8; dir++) {
+            if ((x + dir_x[dir] == ply_x || x + dir_x[dir] * 2 == ply_x) &&
+                (y + dir_y[dir] == ply_y || y + dir_y[dir] * 2 == ply_y)) {
+              want_dir = dir;
+            }
+          }
+        }
+
+        /* If not near player (or occasionally), walk a random direction */
+        if (want_dir == -1 || rand < 2) {
+          if (rand < 32)
+            want_dir = POKEY_READ.random % 8;
+        }
+
+        /* Try to move in the chosen direction */
+        if (want_dir != -1) {
+          dir = want_dir;
+
+          if (valid_dir(x, y, dir) &&
+              shape_at(x + dir_x[dir], y + dir_y[dir]) == BLANK) {
+            set_shape(x, y, BLANK);
+
+            if ((dir_x[dir] == 1 && dir_y[dir] >= 0) || dir_y[dir] == 1) {
+              set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN_MOVED);
+            } else {
+              set_shape(x + dir_x[dir], y + dir_y[dir], CIVILIAN);
+            }
+          }
+        }
+      } else if (shape == CIVILIAN_MOVED) {
+        /* Turn a previously-moved worker back into a regular worker.
+
+           (Since cellular automaton goes from top-to-bottom, left-to-right,
+           we use an interim 'shape' to avoid processing the same worker
+           multiple times per frame (causing them to 'fly' across or down
+           the screen) if they move down or right) */
+        set_shape(x, y, CIVILIAN);
+      } else if (shape == PIPE_BROKEN_UP_DOWN && rand < 128) {
+        /* Draw (or erase) gas leak on left/right of a broken vertical pipe */
+        broken_pipe(x - 1, y, GASLEAK_LEFT);
+        broken_pipe(x + 1, y, GASLEAK_RIGHT);
+      } else if (shape == PIPE_BROKEN_LEFT_RIGHT && rand < 128) {
+        /* Draw (or erase) gas leak above/below a broken horizontal pipe */
+        broken_pipe(x, y - 1, GASLEAK_UP);
+        broken_pipe(x, y + 1, GASLEAK_DOWN);
       }
-#endif
     }
   }
 
