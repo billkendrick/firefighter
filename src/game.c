@@ -36,6 +36,20 @@ extern char main_stick;
 signed char dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
 signed char dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 
+char scr_row_ptr[LEVEL_H] = {
+  LEVEL_W * 0,
+  LEVEL_W * 1,
+  LEVEL_W * 2,
+  LEVEL_W * 3,
+  LEVEL_W * 4,
+  LEVEL_W * 5,
+  LEVEL_W * 6,
+  LEVEL_W * 7,
+  LEVEL_W * 8,
+  LEVEL_W * 9,
+  LEVEL_W * 10,
+};
+
 /* Reasons that civilian count goes down */
 #define CIVILIAN_SAVED 0
 #define CIVILIAN_DIED 1
@@ -44,8 +58,8 @@ signed char dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 void start_level(void);
 void draw_score(void);
 void setup_game_screen(void);
-#define shape_at(x, y) (PEEK(scr_mem + 60 + ((y) * LEVEL_W) + (x)))
-#define set_shape(x, y, s) POKE(scr_mem + 60 + ((y) * LEVEL_W) + (x), (s))
+#define shape_at(x, y) (PEEK(scr_mem + 60 + scr_row_ptr[y] + (x)))
+#define set_shape(x, y, s) POKE(scr_mem + 60 + scr_row_ptr[y] + (x), (s))
 #define obstacle(s) ((s) != 0 && (s) != AX)
 void draw_level(void);
 void cellular_automata(void);
@@ -831,8 +845,8 @@ unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir) {
   dy = dir_y[dir];
   return !((dx == -1 && x == 0) ||
       (dy == -1 && y == 0) ||
-      (dx == 1 && x == 19) ||
-      (dy == 1 && y == 10));
+      (dx == 1 && x == (LEVEL_W - 1)) ||
+      (dy == 1 && y == (LEVEL_H - 1)));
 };
 
 /* Return the flammability of an object; used to determine

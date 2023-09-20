@@ -21,6 +21,8 @@ http://www.newbreedsoftware.com/firefighter/
      * `--static-locals` (instead of using the stack (slower))
      * Replaced a bunch of `int` (habit!) with `char`
      * Replaced `enum` constants with `#define`-ed ones
+     * Avoid multiplication when doing shape look-up and placement
+       (`shape_at()` and `set_shape()` now use a look-up table)
      * WIP Replaced series of `POKE()`s with arrays for Display Lists
        + TODO: game, help, score
 
