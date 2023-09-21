@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-7 (2023-09-20):
+0.1-beta-7 (2023-09-21):
  * Gameplay:
    * Pushing joystick into a valve no longer causes it
      to toggle open/close quickly.  Release joystick,
@@ -13,6 +13,8 @@ http://www.newbreedsoftware.com/firefighter/
    * Added a splash screen (disk version)
  * Title screen:
    * Pause [Select] key repeat when wrapping back to level 1
+ * Help screen:
+   * Page breaks every horizontal rule (section break).
  * Building:
    * "tools/release.sh" checks Makefile version vs README.md
    * WIP - Optimizations:

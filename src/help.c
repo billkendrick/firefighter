@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-09-20
+  2023-08-22 - 2023-09-21
 */
 
 #include <atari.h>
@@ -120,7 +120,7 @@ void show_help(void) {
       draw_text(str, scr_mem + y * 40 + 1); /* N.B. Indent by 1 to center it; text is word-wrapped at 38 characters */
       y++;
 
-    } while (!eof && y < LINES);
+    } while (!eof && y < LINES && str[0] != '-');
 
     cur_page++;
     draw_number(cur_page, 2, scr_mem + ((LINES + 1) * 40));
