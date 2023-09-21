@@ -17,8 +17,17 @@ A twin-stick firefighting action game for the Atari 8-bit.
 > and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
 > (arcade; Williams Electronics, 1982).
 > See the [development docs](DEVELOPMENT.md).
+>
+> Splash screen photo: "Firefighter: Fireman in Action"
+> by Jean Beaufort (Public Domain).
+>
+> Splash screen firefighter badge: From "First Responders Three"
+> by Byron Songer (Public Domain).
+>
+> Splash screen fonts: "Echotopia" by Erik Kirtley
+> and "K.O. Activista" by deFharo (both SIL Open Font License).
 
-Developed 2023-08-13 - 2023-09-19
+Developed 2023-08-13 - 2023-09-21
 
 ------------------------------------------------------------------------
 
