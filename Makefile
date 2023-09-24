@@ -47,7 +47,7 @@ LEVEL_FILES=$(wildcard levels/level00[1-6].txt)
 OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
 OBJECTS=obj/firefite.o obj/title.o obj/score.o obj/config.o ${OBJECTS_SHARED}
 OBJECTS_DISK=obj/firefite_disk.o obj/title_disk.o obj/score_disk.o obj/config_disk.o obj/help.o ${OBJECTS_SHARED}
-OBJECTS_FUJINET=obj/firefite_fujinet.o obj/title_fujinet.o obj/score.o obj/config_fujinet.o ${OBJECTS_SHARED}
+OBJECTS_FUJINET=obj/firefite_fujinet.o obj/title_fujinet.o obj/score.o obj/config_fujinet.o obj/app_key.o obj/sio.o ${OBJECTS_SHARED}
 
 TMP=tmp-README.html
 
@@ -169,6 +169,8 @@ obj/help.o:  asm/help.s
 asm/help.s:  src/help.c src/help.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/help.c -o asm/help.s
 
+# Config and I/O:
+# ---------------
 obj/config.o:  asm/config.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/config.s -o obj/config.o
 
@@ -187,6 +189,8 @@ obj/config_fujinet.o:  asm/config_fujinet.s
 asm/config_fujinet.s:  src/config.c src/config.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D FUJINET src/config.c -o asm/config_fujinet.s
 
+# High Score Recording and Top-10 Screen:
+# ---------------------------------------
 obj/score.o:  asm/score.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/score.s -o obj/score.o
 
@@ -198,6 +202,18 @@ obj/score_disk.o:  asm/score_disk.s src/game.h
 
 asm/score_disk.s:  src/score.c src/score.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/score.c -o asm/score_disk.s
+
+# FujiNet High Score and Settings I/O:
+# ------------------------------------
+obj/app_key.o:	asm/app_key.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/app_key.s -o obj/app_key.o
+
+asm/app_key.s:  src/app_key.c src/app_key.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/app_key.c -o asm/app_key.s
+
+obj/sio.o:  src/sio.s
+	${CA65} -I "${CC65_ASMINC}" -t atari src/sio.s -o obj/sio.o
+
 
 # Game loop:
 # ----------

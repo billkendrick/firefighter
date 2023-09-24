@@ -13,6 +13,10 @@
 #include <stdio.h>
 #include "config.h"
 
+#ifdef FUJINET
+#include "app_key.h"
+#endif
+
 char level;
 char main_stick;
 
