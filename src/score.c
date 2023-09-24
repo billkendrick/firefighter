@@ -25,7 +25,7 @@
 
   h/t Thomas Cherryholmes for sharing example code.
 
-  2023-08-27 - 2023-09-20
+  2023-08-27 - 2023-09-24
 */
 
 #include <string.h>
@@ -529,6 +529,7 @@ void siov(void) {
   asm("JSR $E459");
   asm("LDA $0303");
 }
-#endif
+#endif /* HIGHSCORE_FILE */
 
-#endif
+#endif /* DISK */
+
