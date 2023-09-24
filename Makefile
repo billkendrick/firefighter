@@ -74,6 +74,7 @@ clean-intermediate:
 	-rm data/levels_cmp.dat
 	-rm data/title.gr9
 	-rm firefths.xex
+	-rm splash.xex
 	-rm firefite-nohighscore.atr
 	-rm disk/SPLASH.AR0
 	-rm disk/FIREFITE.AR1
