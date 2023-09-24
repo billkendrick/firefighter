@@ -59,12 +59,12 @@ void save_config() {
 
 /* (Attempt to) load config and high score from FujiNet App Key storage */
 void load_config(void) {
-  /* FIXME */
+  read_settings();
 }
 
 /* (Attempt to) save config and high score to FujiNet App Key storage */
 void save_config() {
-  /* FIXME */
+  write_settings();
 }
 
 #endif /* FUJINET */
