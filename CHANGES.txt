@@ -4,6 +4,9 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
+0.1-beta-8 (2023-09-24):
+ * TBD
+
 0.1-beta-7 (2023-09-21):
  * Gameplay:
    * Pushing joystick into a valve no longer causes it
