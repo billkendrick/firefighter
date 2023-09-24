@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-08-27
+  2023-08-22 - 2023-09-24
 */
 
 #include <atari.h>
@@ -48,5 +48,20 @@ void save_config() {
   }
 }
 
-#endif
+#endif /* DISK */
+
+
+#ifdef FUJINET
+
+/* (Attempt to) load config and high score from FujiNet App Key storage */
+void load_config(void) {
+  /* FIXME */
+}
+
+/* (Attempt to) save config and high score to FujiNet App Key storage */
+void save_config() {
+  /* FIXME */
+}
+
+#endif /* FUJINET */
 

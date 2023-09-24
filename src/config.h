@@ -1,11 +1,12 @@
 /*
-  Firefighter Config File (disk version) routines
+  Firefighter config settings, and
+  file (disk version) or FujiNet App Key I/O routines
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-08-27
+  2023-08-22 - 2023-09-24
 */
 
 #ifndef _CONFIG_H
@@ -17,7 +18,7 @@
 
 void set_default_config(void);
 
-#ifdef DISK
+#if defined(DISK) || defined(FUJINET)
 void load_config(void);
 void save_config(void);
 #endif

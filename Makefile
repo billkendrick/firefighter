@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
--# 2023-08-13 - 2023-09-24
+# 2023-08-13 - 2023-09-24
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -47,12 +47,13 @@ LEVEL_FILES=$(wildcard levels/level00[1-6].txt)
 OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
 OBJECTS=obj/firefite.o obj/title.o obj/score.o obj/config.o ${OBJECTS_SHARED}
 OBJECTS_DISK=obj/firefite_disk.o obj/title_disk.o obj/score_disk.o obj/config_disk.o obj/help.o ${OBJECTS_SHARED}
+OBJECTS_FUJINET=obj/firefite_fujinet.o obj/title_fujinet.o obj/score.o obj/config_fujinet.o ${OBJECTS_SHARED}
 
 TMP=tmp-README.html
 
 
 ## Main Targets:
-all:	firefite.atr firefite.xex
+all:	firefite.atr firefite.xex fireftfn.xex
 
 run:	firefite.xex
 	atari800 -nobasic -run firefite.xex
@@ -62,6 +63,7 @@ run-disk:	firefite.atr
 
 clean:	clean-intermediate
 	-rm firefite.xex
+	-rm fireftfn.xex
 	-rm firefite.atr
 
 clean-intermediate:
@@ -106,6 +108,13 @@ firefths.xex:	${OBJECTS_DISK} src/atari.cfg
 		${MAP_ARGS} \
 		${OBJECTS_DISK} atari.lib
 
+fireftfn.xex:	${OBJECTS_FUJINET} src/atari.cfg
+	${LD65} --lib-path "${CC65_LIB}" \
+		-o fireftfn.xex \
+		-C src/atari.cfg \
+		${MAP_ARGS} \
+		${OBJECTS_FUJINET} atari.lib
+
 splash.xex:	obj/splash.o obj/segments-splash.o src/atari-splash.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o splash.xex \
@@ -128,6 +137,12 @@ obj/firefite_disk.o:  asm/firefite_disk.s
 asm/firefite_disk.s:  src/firefite.c src/title.h src/game.h src/score.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/firefite.c -o asm/firefite_disk.s
 
+obj/firefite_fujinet.o:  asm/firefite_fujinet.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/firefite_fujinet.s -o obj/firefite_fujinet.o
+
+asm/firefite_fujinet.s:  src/firefite.c src/title.h src/game.h src/score.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D FUJINET src/firefite.c -o asm/firefite_fujinet.s
+
 # Title and Help Screens:
 # -----------------------
 obj/title.o:  asm/title.s
@@ -141,6 +156,12 @@ obj/title_disk.o:  asm/title_disk.s
 
 asm/title_disk.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h Makefile
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK -D VERSION=\"${VERSION}-DISK\" -D DATE=\"${DATE}\" src/title.c -o asm/title_disk.s
+
+obj/title_fujinet.o:  asm/title_fujinet.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/title_fujinet.s -o obj/title_fujinet.o
+
+asm/title_fujinet.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h Makefile
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D FUJINET -D VERSION=\"${VERSION}-FUJINET\" -D DATE=\"${DATE}\" src/title.c -o asm/title_fujinet.s
 
 obj/help.o:  asm/help.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/help.s -o obj/help.o
@@ -159,6 +180,12 @@ obj/config_disk.o:  asm/config_disk.s
 
 asm/config_disk.s:  src/config.c src/config.h src/draw_text.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/config.c -o asm/config_disk.s
+
+obj/config_fujinet.o:  asm/config_fujinet.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/config_fujinet.s -o obj/config_fujinet.o
+
+asm/config_fujinet.s:  src/config.c src/config.h src/draw_text.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D FUJINET src/config.c -o asm/config_fujinet.s
 
 obj/score.o:  asm/score.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/score.s -o obj/score.o

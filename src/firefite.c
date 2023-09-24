@@ -6,7 +6,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-31
+  2023-08-13 - 2023-09-24
 */
 
 #include <atari.h>
@@ -33,7 +33,8 @@ extern char high_score_name[4];
 
 /* Main loop! */
 void main(void) {
-  char cmd, pos;
+  char cmd;
+  signed char pos;
 
   /* Set default high score */
   set_default_high_score();

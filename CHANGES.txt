@@ -5,7 +5,10 @@ Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
 0.1-beta-8 (2023-09-24):
- * TBD
+ * Misc:
+   * WIP - Stand-alone (non-disk) XEX version with support
+     for reading/writing settings and high score to a
+     FujiNet device's App Key storage
 
 0.1-beta-7 (2023-09-21):
  * Gameplay:

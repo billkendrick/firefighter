@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-09-19
+  2023-08-13 - 2023-09-24
 */
 
 #include <atari.h>
@@ -90,7 +90,7 @@ void title_dlist = {
      * CMD_HIGHSCORES show high score table (disk only)
 */
 char show_title(void) {
-  unsigned char i, siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
+  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
   unsigned int select_down, level_pos, hs_pos, select_down_wait;
   unsigned char option_down, cmd;
 
@@ -367,6 +367,11 @@ char show_title(void) {
 
 #ifdef DISK
   /* Save current config */
+  save_config();
+#endif
+
+#ifdef FUJINET
+  /* Save current config and high score */
   save_config();
 #endif
 
