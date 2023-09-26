@@ -4,12 +4,11 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-2023-08-18 - 2023-09-24
+2023-08-18 - 2023-09-25
 
- * Splash screen music
-
- * FujiNet-aware version that can save high-score and settings
-   to an APPKEY
+ * Slow the gameplay down!
 
  * More levels
    (reminder: tweak LEVELS variable declaration in Makefile!)
+
+ * Splash screen music
