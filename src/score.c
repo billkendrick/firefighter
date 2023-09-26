@@ -25,7 +25,11 @@
 
   h/t Thomas Cherryholmes for sharing example code.
 
-  2023-08-27 - 2023-09-24
+  Note: If "FUJINET" is defined, the `config` module handles
+  saving the single high score & name (along with settings)
+  to a FujiNet AppKey.
+
+  2023-08-27 - 2023-09-25
 */
 
 #include <string.h>

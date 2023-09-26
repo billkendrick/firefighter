@@ -68,4 +68,3 @@ void save_config() {
 }
 
 #endif /* FUJINET */
-

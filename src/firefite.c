@@ -6,7 +6,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-09-24
+  2023-08-13 - 2023-09-25
 */
 
 #include <atari.h>
@@ -47,8 +47,8 @@ void main(void) {
   /* Set default config */
   set_default_config();
 
-#ifdef DISK
-  /* Load saved config from disk */
+#if defined(DISK) || defined(FUJINET)
+  /* Load saved config (disk & fujinet) and high score (fujinet) */
   load_config();
 #endif
 
@@ -77,6 +77,9 @@ void main(void) {
 #ifdef DISK
       save_high_scores();
       show_high_score_table(pos);
+#endif
+#ifdef FUJINET
+      save_config();
 #endif
     }
   } while(1);

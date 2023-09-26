@@ -4,9 +4,9 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-8 (2023-09-24):
+0.1-beta-8 (2023-09-25):
  * Misc:
-   * WIP - Stand-alone (non-disk) XEX version with support
+   * Stand-alone (non-disk) XEX version with support
      for reading/writing settings and high score to a
      FujiNet device's App Key storage
 

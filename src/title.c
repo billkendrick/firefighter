@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-09-24
+  2023-08-13 - 2023-09-25
 */
 
 #include <atari.h>
@@ -365,13 +365,8 @@ char show_title(void) {
 #endif
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && cmd == CMD_PLAY);
 
-#ifdef DISK
-  /* Save current config */
-  save_config();
-#endif
-
-#ifdef FUJINET
-  /* Save current config and high score */
+#if defined(DISK) || defined(FUJINET)
+  /* Save current config (disk & fujinet), and high score (fujinet) */
   save_config();
 #endif
 
