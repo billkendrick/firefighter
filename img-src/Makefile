@@ -4,12 +4,14 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-09-15
+# 2023-08-13 - 2023-09-25
 
 all:	title.pgm
 
-clean:
-	-rm title.png
+clean:	clean-intermediate
+	-rm title.pgm
+
+clean-intermediate:
 	-rm title-scaled.png
 	-rm title-fullsize1.png
 	-rm title-fullsize2.png

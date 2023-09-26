@@ -9,7 +9,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 
-# Last updated 2023-09-19
+# Last updated 2023-09-25
 
 # Confirm that we've tagged with the same version
 # number we're bulding it as.  (Makefile "VERSION"
@@ -50,6 +50,7 @@ fi
 # only the source code and the files end-users care about
 # (the stand alone XEX executable and the ATR disk image).
 
+cd img-src ; make clean-intermediate ; cd ..
 make clean
 make
 make clean-intermediate

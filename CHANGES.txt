@@ -11,6 +11,8 @@ http://www.newbreedsoftware.com/firefighter/
      FujiNet device's App Key storage
    * Added 2019-era design doc scribbles.
    * Added some documentation to the "fonts" folder.
+ * Building:
+   * Removing intermediate title screen images during release.
 
 0.1-beta-7 (2023-09-21):
  * Gameplay:
