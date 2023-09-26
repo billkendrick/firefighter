@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2023-09-19
+Developed 2023-08-13 - 2023-09-25
 
 ------------------------------------------------------------------------
 
@@ -28,10 +28,13 @@ of that game, and needed an excuse to write a twin-stick game.
 a game in Atari BASIC where you use a helicopter to put out a fire on a skyscraper.)
 
 Four years later I happened across my copious notes (including some hand-drawn
-pixel art) and decided to finally take a stab at it.  I fired up _Envision_
-font editor on Linux, and immediately spent too much time designing the shape of
-the text characters used in the game, based on the fonts seen on the sides of
-firetrucks in the US.  I finally also began adding the in-game objects.
+pixel art) and decided to finally take a stab at it.  Scans of, and notes about,
+the [original design docs](design-docs/) are available.
+
+I fired up _Envision_ font editor on Linux, and immediately spent too
+much time designing the shape of the text characters used in the game,
+based on the fonts seen on the sides of firetrucks in the US.  I finally
+also began adding the in-game objects.
 
 ## Graphics
 
