@@ -19,6 +19,8 @@ The two fonts are nearly identical; some shapes differ to provide
 two frames of animation to certain shapes: fire, water spray,
 gas leaks, the exit sign, and workers.
 
+![Screenshot of the font from 2023-09-25](fire1-fnt-20230925.png)
+
 The numerals, punctuation, and uppercase characters are meant to
 evoke the letters seen on the side of a firetruck in the US.
 
