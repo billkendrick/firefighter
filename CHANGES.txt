@@ -10,6 +10,7 @@ http://www.newbreedsoftware.com/firefighter/
      for reading/writing settings and high score to a
      FujiNet device's App Key storage
    * Added 2019-era design doc scribbles.
+   * Added some documentation to the "fonts" folder.
 
 0.1-beta-7 (2023-09-21):
  * Gameplay:
