@@ -67,7 +67,7 @@ clean:	clean-intermediate
 clean-intermediate:
 	-rm obj/*.o
 	-rm asm/*.s
-	-rm firefite.map
+	# -rm firefite.map
 	-rm data/levels.dat
 	-rm data/levels_cmp.dat
 	-rm data/title.gr9
