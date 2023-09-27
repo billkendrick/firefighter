@@ -1,6 +1,6 @@
 # Firefighter
 
-### Version: 0.1-BETA8
+### Version: 0.1-BETA9
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
@@ -26,6 +26,8 @@ A twin-stick firefighting action game for the Atari 8-bit.
 >
 > Splash screen fonts: "Echotopia" by Erik Kirtley
 > and "K.O. Activista" by deFharo (both SIL Open Font License).
+>
+> Level 7 by Edward
 
 Developed 2023-08-13 - 2023-09-26
 

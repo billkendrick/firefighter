@@ -4,11 +4,11 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-09-24
+# 2023-08-13 - 2023-09-26
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA8
+VERSION=0.1-BETA9
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,
@@ -39,9 +39,7 @@ CC65_FLAGS=-O -Os -Oi -Or --static-locals --add-source
 # MAP_ARGS=-m firefite.map
 
 ## Level 'source' files:
-# FIXME
-# LEVEL_FILES=$(wildcard levels/level*.txt)
-LEVEL_FILES=$(wildcard levels/level00[1-6].txt)
+LEVEL_FILES=$(shell seq -f "levels/level%03g.txt" 1 10)
 
 ## Objects
 OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o

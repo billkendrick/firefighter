@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-09-25
+  2023-08-13 - 2023-09-26
 */
 
 #include <atari.h>
@@ -44,8 +44,7 @@ void title_dlist = {
   DL_GRAPHICS2,
   DL_BLK2,
   DL_GRAPHICS1,
-
-  DL_DLI(DL_BLK8),
+  DL_DLI(DL_GRAPHICS1),
 
   DL_GRAPHICS0,
   DL_BLK2,
@@ -83,6 +82,13 @@ void title_dlist = {
   &dlist
 };
 
+char * additional_levels[3] = {
+  "additional levels by",
+  "edward",
+  "",
+};
+
+
 /* Set up and display title screen; title screen loop
    @return char - what the user wants to do:
      * CMD_PLAY play the game
@@ -92,6 +98,8 @@ void title_dlist = {
 char show_title(void) {
   unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
   unsigned int select_down, level_pos, hs_pos, select_down_wait;
+  unsigned int levels_by_wait;
+  unsigned char levels_by_idx;
   unsigned char option_down, cmd;
 
   /* FIXME: Screen setup could be moved to a function -bjk 2023.08.22 */
@@ -124,102 +132,119 @@ char show_title(void) {
   /* Title & Credits */
   draw_text("NEW BREED SOFTWARE PRESENTS:", scr_mem + 6);
   draw_text("@ FIREFIGHTER! @", scr_mem + 40 + 2);
-  draw_text("bill kendrick", scr_mem + 60 + 1);
+
+#define LINE_BY_1 60
+  draw_text("bill kendrick", scr_mem + LINE_BY_1 + 1);
   /* "2023" */
-  POKE(scr_mem + 75, 2 + 16 + 64);
-  POKE(scr_mem + 76, 0 + 16 + 64);
-  POKE(scr_mem + 77, 2 + 16 + 64);
-  POKE(scr_mem + 78, 3 + 16 + 64);
+  POKE(scr_mem + LINE_BY_1 + 15, 2 + 16 + 64);
+  POKE(scr_mem + LINE_BY_1 + 16, 0 + 16 + 64);
+  POKE(scr_mem + LINE_BY_1 + 17, 2 + 16 + 64);
+  POKE(scr_mem + LINE_BY_1 + 18, 3 + 16 + 64);
+
+#define LINE_BY_2 (LINE_BY_1 + 20)
+  draw_text(additional_levels[0], scr_mem + LINE_BY_2);
 
   /* Help section 1 */
-  draw_text("LEAD TO EXIT. PUT OUT FIRE. WALL. PIPES.", scr_mem + 80 + 0);
+#define LINE_HELP_1 (LINE_BY_2 + 20)
+  draw_text("LEAD TO EXIT. PUT OUT FIRE. WALL. PIPES.", scr_mem + LINE_HELP_1 + 0);
 
-  POKE(scr_mem + (80 + 40) + 0, CIVILIAN);
-  POKE(scr_mem + (80 + 40) + 1, CIVILIAN);
-  POKE(scr_mem + (80 + 40) + 2, FIREFIGHTER_RIGHT);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 0, CIVILIAN);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 1, CIVILIAN);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 2, FIREFIGHTER_RIGHT);
 
-  POKE(scr_mem + (80 + 40) + 3, EXIT1);
-  POKE(scr_mem + (80 + 40) + 4, EXIT2);
-  POKE(scr_mem + (80 + 40) + 5, DOOR);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 3, EXIT1);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 4, EXIT2);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 5, DOOR);
 
-  POKE(scr_mem + (80 + 40) + 7, FIRE_LG);
-  POKE(scr_mem + (80 + 40) + 8, FIRE_MD);
-  POKE(scr_mem + (80 + 40) + 9, FIRE_SM);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 7, FIRE_LG);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 8, FIRE_MD);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 9, FIRE_SM);
 
-  POKE(scr_mem + (80 + 40) + 10, 'e' + 64);
-  POKE(scr_mem + (80 + 40) + 11, 'g' + 64);
-  POKE(scr_mem + (80 + 40) + 12, FIREFIGHTER_LEFT);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 10, 'e' + 64);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 11, 'g' + 64);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 12, FIREFIGHTER_LEFT);
 
-  POKE(scr_mem + (80 + 40) + 14, WALL);
-  POKE(scr_mem + (80 + 40) + 15, WALL);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 14, WALL);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 15, WALL);
 
-  POKE(scr_mem + (80 + 40) + 17, PIPE_DOWN_RIGHT);
-  POKE(scr_mem + (80 + 40) + 18, PIPE_LEFT_RIGHT);
-  POKE(scr_mem + (80 + 40) + 19, PIPE_UP_LEFT);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 17, PIPE_DOWN_RIGHT);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 18, PIPE_LEFT_RIGHT);
+  POKE(scr_mem + (LINE_HELP_1 + 40) + 19, PIPE_UP_LEFT);
 
   /* Help section 2 */
-  draw_text("PUSH CRATES&OIL. AX BREAKS CRATES&PIPES", scr_mem + 140 + 0);
+#define LINE_HELP_2 (LINE_HELP_1 + 60)
+  draw_text("PUSH CRATES&OIL. AX BREAKS CRATES&PIPES", scr_mem + LINE_HELP_2 + 0);
 
-  POKE(scr_mem + (140 + 40) + 2, FIREFIGHTER_RIGHT);
-  POKE(scr_mem + (140 + 40) + 3, CRATE);
-  POKE(scr_mem + (140 + 40) + 6, OIL);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 2, FIREFIGHTER_RIGHT);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 3, CRATE);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 6, OIL);
 
-  POKE(scr_mem + (140 + 40) + 9, AX);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 9, AX);
 
-  POKE(scr_mem + (140 + 40) + 14, CRATE_BROKEN);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 14, CRATE_BROKEN);
 
-  POKE(scr_mem + (140 + 40) + 17, GASLEAK_LEFT);
-  POKE(scr_mem + (140 + 40) + 18, PIPE_BROKEN_UP_DOWN);
-  POKE(scr_mem + (140 + 40) + 19, GASLEAK_RIGHT);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 17, GASLEAK_LEFT);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 18, PIPE_BROKEN_UP_DOWN);
+  POKE(scr_mem + (LINE_HELP_2 + 40) + 19, GASLEAK_RIGHT);
 
 
   /* Help section 3 */
-  draw_text("TURN VALVE. OIL&LEAKS EXPLODE! PUSH EXIT", scr_mem + 200 + 0);
+#define LINE_HELP_3 (LINE_HELP_2 + 60)
+  draw_text("TURN VALVE. OIL&LEAKS EXPLODE! PUSH EXIT", scr_mem + LINE_HELP_3 + 0);
 
-  POKE(scr_mem + (200 + 40) + 1, PIPE_LEFT_RIGHT);
-  POKE(scr_mem + (200 + 40) + 2, VALVE_OPEN);
-  POKE(scr_mem + (200 + 40) + 3, PIPE_LEFT_RIGHT);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 1, PIPE_LEFT_RIGHT);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 2, VALVE_OPEN);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 3, PIPE_LEFT_RIGHT);
 
-  POKE(scr_mem + (200 + 40) + 7, FIRE_LG);
-  POKE(scr_mem + (200 + 40) + 8, FIRE_LG);
-  POKE(scr_mem + (200 + 40) + 9, OIL);
-  POKE(scr_mem + (200 + 40) + 10, FIRE_LG);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 7, FIRE_LG);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 8, FIRE_LG);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 9, OIL);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 10, FIRE_LG);
 
-  POKE(scr_mem + (200 + 40) + 16, FIREFIGHTER_RIGHT);
-  POKE(scr_mem + (200 + 40) + 17, DOOR);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 16, FIREFIGHTER_RIGHT);
+  POKE(scr_mem + (LINE_HELP_3 + 40) + 17, DOOR);
 
   /* Control instructions */
+#define LINE_CONTROLS (LINE_HELP_3 + 60)
   show_controls();
-  draw_text("TO SPRAY.", scr_mem + 340 + 16);
+  draw_text("TO SPRAY.", scr_mem + LINE_CONTROLS + 80 + 16);
 
   /* Title screen control instructions */
-  draw_text("START/FIRE: BEGIN - OPTION: SWAP STICKS", scr_mem + 380 + 0);
+#define LINE_START (LINE_CONTROLS + 120)
+  draw_text("START/FIRE: BEGIN - OPTION: SWAP STICKS", scr_mem + LINE_START + 0);
+
+#define LINE_LEVEL (LINE_START + 40)
 #ifdef DISK
-  draw_text("SELECT: STARTING LEVEL -- - HELP/?: INFO", scr_mem + 420);
-  level_pos = 443;
+  draw_text("SELECT: STARTING LEVEL -- - HELP/?: INFO", scr_mem + LINE_LEVEL);
+  level_pos = LINE_LEVEL + 23; /* FIXME #define */
 #else
-  draw_text("SELECT: STARTING LEVEL --", scr_mem + 420 + 7);
-  level_pos = 450;
+  draw_text("SELECT: STARTING LEVEL --", scr_mem + LINE_LEVEL + 7);
+  level_pos = LINE_LEVEL + 30; /* FIXME #define */
 #endif
+
   draw_number(level, 2, scr_mem + level_pos);
 
   /* High score */
+#define LINE_HIGH (LINE_LEVEL + 40)
 #ifdef DISK
-  draw_text("HIGH SCORE: ------ --- - H: HIGH SCORES", scr_mem + 460 + 0);
-  hs_pos = 472;
+  draw_text("HIGH SCORE: ------ --- - H: HIGH SCORES", scr_mem + LINE_HIGH + 0);
+  hs_pos = LINE_HIGH + 12; /* FIXME #define */
 #else
-  draw_text("HIGH SCORE: ------ ---", scr_mem + 460 + 9);
-  hs_pos = 481;
+  draw_text("HIGH SCORE: ------ ---", scr_mem + LINE_HIGH + 9);
+  hs_pos = LINE_HIGH + 21; /* FIXME #define */
 #endif
 
   draw_number(high_score, 6, scr_mem + hs_pos);
   draw_text(high_score_name, scr_mem + hs_pos + 7);
 
   /* Version & Date: */
-  draw_text("VERSION: ", scr_mem + 500);
-  draw_text(VERSION, scr_mem + 500 + 9);
-  draw_text(DATE, scr_mem + 500 + 40 - strlen(DATE));
+#define LINE_VERSION (LINE_HIGH + 40)
+  draw_text("VERSION: ", scr_mem + LINE_VERSION);
+  draw_text(VERSION, scr_mem + LINE_VERSION + 9);
+  draw_text(DATE, scr_mem + LINE_VERSION + 40 - strlen(DATE));
 
+
+  /* Activate the screen */
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 
   /* Init sound effects */
@@ -238,6 +263,8 @@ char show_title(void) {
   select_down = 0;
   select_down_wait = 0;
   option_down = 0;
+  levels_by_wait = 0;
+  levels_by_idx = 0;
   cmd = CMD_PLAY;
 
   /* (Eat any input) */
@@ -363,6 +390,18 @@ char show_title(void) {
       cmd = CMD_HIGHSCORES;
     }
 #endif
+
+    /* Handle rotating level credits line */
+    levels_by_wait++;
+    if (levels_by_wait > 10240) {
+      levels_by_wait = 0;
+      levels_by_idx++;
+      if (levels_by_idx >= sizeof(additional_levels) / sizeof(char *)) {
+        levels_by_idx = 0;
+      }
+      bzero(scr_mem + LINE_BY_2, 20);
+      draw_text(additional_levels[levels_by_idx], scr_mem + LINE_BY_2 + 10 - (strlen(additional_levels[levels_by_idx]) >> 1));
+    }
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && cmd == CMD_PLAY);
 
 #if defined(DISK) || defined(FUJINET)
@@ -396,11 +435,11 @@ char show_title(void) {
 /* Show controls (based on the setting choice) */
 void show_controls(void) {
   if (main_stick == STICK_LEFT) {
-    draw_text("USE LEFT JOYSTICK TO MOVE. ", scr_mem + 260 + 7);
-    draw_text("USE RIGHT STICK (OR LEFT STICK + FIRE)", scr_mem + 300 + 1);
+    draw_text("USE LEFT JOYSTICK TO MOVE. ", scr_mem + LINE_CONTROLS + 7);
+    draw_text("USE RIGHT STICK (OR LEFT STICK + FIRE)", scr_mem + LINE_CONTROLS + 40 + 1);
   } else {
-    draw_text("USE RIGHT JOYSTICK TO MOVE.", scr_mem + 260 + 7);
-    draw_text("USE LEFT STICK (OR RIGHT STICK + FIRE)", scr_mem + 300 + 1);
+    draw_text("USE RIGHT JOYSTICK TO MOVE.", scr_mem + LINE_CONTROLS + 7);
+    draw_text("USE LEFT STICK (OR RIGHT STICK + FIRE)", scr_mem + LINE_CONTROLS + 40 + 1);
   }
 }
 
