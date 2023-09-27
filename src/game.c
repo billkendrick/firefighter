@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-09-20
+  2023-08-15 - 2023-09-26
 */
 
 #include <atari.h>
@@ -162,7 +162,7 @@ void start_level(void) {
 
 /* The main game loop! */
 void start_game(void) {
-  unsigned char want_x, want_y, push_x, push_y, stick, done;
+  unsigned char want_x, want_y, push_x, push_y, stick, done, old_rtclok;
 
   setup_game_screen();
 
@@ -175,6 +175,8 @@ void start_game(void) {
   start_level();
 
   do {
+    old_rtclok = OS.rtclok[2];
+
     /* Control the player based on Joystick 1 input */
 
     want_x = ply_x;
@@ -392,8 +394,12 @@ void start_game(void) {
     if (civilian_death_grace > 0)
       civilian_death_grace--;
 
-    /* Wait for next vertical blank (throttle fps) */
-    while (ANTIC.vcount < 124);
+    /* Wait for next couple of vertical blanks (throttle fps) */
+    while (OS.rtclok[2] == old_rtclok) { }
+    old_rtclok = OS.rtclok[2];
+    while (OS.rtclok[2] == old_rtclok) { }
+    old_rtclok = OS.rtclok[2];
+    while (OS.rtclok[2] == old_rtclok) { }
 
     OS.atract = 0;
 
@@ -1001,27 +1007,59 @@ void pause(void) {
   }
 }
 
+/* Notes to play in a scale for the tally sound effect.
+   (https://www.atarimagazines.com/compute/issue34/112_1_16-BIT_ATARI_MUSIC.php)
+*/
+unsigned char tally_sound_notes[22] = {
+  243, // C (octave 3)
+  217, // D
+  193, // E
+  182, // F
+  162, // G
+  144, // A
+  128, // B
+  121, // C (octave 4)
+  108, // D
+  96,  // E
+  91,  // F
+  81,  // G
+  72,  // A
+  64,  // B
+  60,  // C (octave 5)
+  53,  // D
+  47,  // E
+  45,  // F
+  40,  // G
+  35,  // A
+  31,  // B
+  30,  // C (octave 6)
+};
+
 /* Bonus score tally sequence (used by end-of-level bonus sequence)
    @param int x - X position to draw bonus score for countdown
    @param int deduct - How quickly to deduct points from bonus during tally
 */
 void bonus_tally(int x) {
   int deduct;
+  unsigned char snd_count;
 
-  deduct = bonus / 20;
+  deduct = bonus / ((sizeof(tally_sound_notes) / sizeof(unsigned char)) + 1);
   if (deduct < 1)
     deduct = 1;
 
+  snd_count = 0;
   while (bonus >= deduct) {
     bonus = bonus - deduct;
     score = score + deduct;
     draw_score();
     draw_number(bonus, 6, scr_mem + x);
 
-    POKEY_WRITE.audf1 = bonus >> 4;
+    POKEY_WRITE.audf1 = tally_sound_notes[snd_count];
     POKEY_WRITE.audc1 = 0xA0 + (OS.rtclok[3] & 0x0F);
-    POKEY_WRITE.audf2 = (bonus >> 4) + 1;
+    POKEY_WRITE.audf2 = tally_sound_notes[snd_count] + 1;
     POKEY_WRITE.audc2 = 0xA0 + ((OS.rtclok[3] & 0x0F) >> 1);
+
+    snd_count++;
 
     while (ANTIC.vcount < 124);
   }

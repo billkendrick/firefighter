@@ -4,6 +4,15 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
+0.1-beta-9 (2023-09-26):
+ * Gameplay:
+   * Slowed the game down some.
+   * Nicer music scale when tallying bonus points.
+ * Levels:
+   * Four more levels
+ * Title:
+   * Level creator credits
+
 0.1-beta-8 (2023-09-26):
  * Misc:
    * Stand-alone (non-disk) XEX version with support
