@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-09-19 - 2023-09-19
+  2023-09-19 - 2023-10-17
 */
 
 #include <atari.h>
@@ -20,8 +20,30 @@ extern unsigned char scr_mem[];
 unsigned char * dlist = scr_mem;
 unsigned char * scr_mem_pt1 = (scr_mem + 0x150);
 unsigned char * scr_mem_pt2 = (scr_mem + 0x1000);
+unsigned char * scr_mem_row[191];
+unsigned char * scr_mem_row_src1, * scr_mem_row_src2, * scr_mem_row_dest;
 
 void eat_input(void);
+
+//#define FIRE_OUTRO
+
+#ifdef FIRE_OUTRO
+unsigned char fade[61] = {
+  0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,
+  8,8,8,9,9,9,9,9,10,10,10,10,10,11,11,11,11,11,12,12,12
+};
+
+unsigned char fade_shift4[61] = {
+  0,0,0,16,16,16,16,16,32,32,32,32,32,48,48,48,48,48,64,64,64,64,64,80,80,80,80,80,
+  96,96,96,96,96,112,112,112,112,112,128,128,128,128,128,144,144,144,144,144,160,
+  160,160,160,160,176,176,176,176,176,192,192,192
+};
+#pragma bss-name (push,"ZEROPAGE")
+  unsigned char x, y, i;
+  unsigned char c, c1, c2, c3, c4;
+  unsigned int new_c;
+#pragma bss-name (pop)
+#endif
 
 
 /* Main loop! */
@@ -73,6 +95,58 @@ void main(void) {
   eat_input();
   do {
   } while (OS.strig0 == 1 && OS.strig1 == 1 && OS.ch == 255 && GTIA_READ.consol == 7);
+
+
+/* Fire effect; very slow in straight C, at the moment */
+
+#ifdef FIRE_OUTRO
+  for (y = 0; y < 191; y++) {
+    scr_mem_row[y] = scr_mem_pt1 + (y * 40);
+  }
+
+/*
+xx T1 T2 xx
+S1 S2 S3 S4
+xx S5 S6 xx
+
+T1 = S1, S2, S3, S5
+T2 = S2, S3, S4, S6
+*/
+
+  for (i = 0; i < 8; i++) {
+    for (y = 0; y < 191; y++) {
+      scr_mem_row_dest = scr_mem_row[y];
+      scr_mem_row_src1 = scr_mem_row[y + 1];
+      scr_mem_row_src2 = scr_mem_row[y + 2];
+
+      for (x = 0; x < 40; x++) {
+        c1 = PEEK(scr_mem_row_src1 + x);
+#define        s1  ((c1 & 0xF0) >> 4)
+#define        s2  ((c1 & 0x0F))
+
+        c2 = PEEK(scr_mem_row_src1 + x + 1);
+#define        s3  ((c2 & 0xF0) >> 4)
+#define        s4  ((c2 & 0x0F))
+
+        c3 = PEEK(scr_mem_row_src2 + x);
+#define        s5  ((c3 & 0x0F))
+
+        c4 = PEEK(scr_mem_row_src2 + x + 1);
+#define        s6  ((c4 & 0xF0) >> 4)
+
+        new_c = fade[(s1 + s2 + s3 + s5)];
+        c = PEEK(scr_mem_row_dest + x) & 0xF0;
+        POKE(scr_mem_row_dest + x, c | new_c);
+
+        new_c = fade_shift4[(s2 + s3 + s4 + s6)];
+        c = PEEK(scr_mem_row_dest + x + 1) & 0x0F;
+        POKE(scr_mem_row_dest + x + 1, c | new_c);
+      }
+    }
+  }
+#endif
+
+
   eat_input();
 
   /* Blank the screen (and unset GRAPHICS 9 ANTIC mode), and exit */
