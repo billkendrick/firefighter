@@ -4,6 +4,10 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
+0.1-beta-10 (2023-12-22):
+ * Misc:
+   * Walking sound effect (uses GTIA)
+
 0.1-beta-9 (2023-10-17):
  * Gameplay:
    * Slowed the game down some.

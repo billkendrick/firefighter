@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-09-26
+  2023-08-15 - 2023-12-22
 */
 
 #include <atari.h>
@@ -1134,6 +1134,9 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
     set_shape(ply_x, ply_y, BLANK);
     ply_x = want_x;
     ply_y = want_y;
+
+    /* Walking "sound effect" */
+    GTIA_WRITE.consol = 1;
 
     if (shape == AX) {
       have_ax = 1;
