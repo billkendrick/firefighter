@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-22
+  2023-08-13 - 2023-12-24
 */
 
 #include "dli.h"
@@ -29,13 +29,16 @@ void dli(void) {
   asm("lda $D20A"); // <== RANDOM
   asm("and #$0F"); // Truncate high bits
   asm("asl");
-  asm("adc #$20"); // Add yellow
+  //asm("adc #$20"); // Add yellow
+  asm("adc $602"); // Add yellow
   asm("sta $D016"); // ==> COLOR0
 
-  asm("lda #$CA"); // <== Medium green
+  //asm("lda #$CA"); // <== Medium green
+  asm("lda $603"); // <== Medium green
   asm("sta $D017"); // COLOR1
 
-  asm("lda #$86"); // <== Medium blue
+  //asm("lda #$86"); // <== Medium blue
+  asm("lda $604"); // <== Medium blue
   asm("sta $D018"); // ==> COLOR2
 
   asm("lda $601"); // <== PEEK($601)

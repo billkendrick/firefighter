@@ -26,7 +26,6 @@ LD65=${CC65BIN}/ld65
 DIR2ATR=/usr/local/bin/dir2atr -S -b MyDos4534
 MARKDOWN2HTML=/usr/bin/markdown
 HTML2TXT=/usr/bin/w3m -dump -no-graph -cols 38 -o indent_incr=1
-TXT2ATASCII=/usr/bin/tr "\n" "\233"
 
 ## Include and Library Paths
 CC65_HOME=/usr/share/cc65
@@ -39,7 +38,7 @@ CC65_FLAGS=-O -Os -Oi -Or --static-locals --add-source
 # MAP_ARGS=-m firefite.map
 
 ## Level 'source' files:
-LEVEL_FILES=$(shell seq -f "levels/level%03g.txt" 1 11)
+LEVEL_FILES=$(shell seq -f "levels/level%03g.txt" 1 12)
 
 ## Objects
 OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
@@ -85,12 +84,10 @@ clean-intermediate:
 firefite.atr:	firefite-nohighscore.atr tools/high_score_atr.php
 	tools/high_score_atr.php firefite-nohighscore.atr firefite.atr
 
-firefite-nohighscore.atr:	firefths.xex splash.xex README.md data/title.gr9
+firefite-nohighscore.atr:	firefths.xex splash.xex README.md data/title.gr9 disk/README.txt
 	cp splash.xex disk/SPLASH.AR0
 	cp firefths.xex disk/FIREFITE.AR1
 	cp data/title.gr9 disk/TITLE.GR9
-	${MARKDOWN2HTML} README.md > ${TMP}; ${HTML2TXT} ${TMP} | ${TXT2ATASCII} > disk/README.txt
-	rm ${TMP}
 	${DIR2ATR} firefite-nohighscore.atr disk
 
 firefite.xex:	${OBJECTS} src/atari.cfg
@@ -212,6 +209,12 @@ asm/app_key.s:  src/app_key.c src/app_key.h
 
 obj/sio.o:  src/sio.s
 	${CA65} -I "${CC65_ASMINC}" -t atari src/sio.s -o obj/sio.o
+
+# Help Text:
+# ----------
+disk/README.txt:	README.md tools/txt2atascii.php
+	cat README.md | tr "\`" "\~" | ${MARKDOWN2HTML} > ${TMP}; ${HTML2TXT} ${TMP} | tools/txt2atascii.php > disk/README.txt
+	-rm ${TMP}
 
 
 # Game loop:

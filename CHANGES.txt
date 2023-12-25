@@ -5,10 +5,13 @@ Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
 0.1-beta-10 (2023-12-24):
- * Levels:
-   * One more level
- * Misc:
+ * Gameplay:
+   * In-game pause (press [Space] or [P])
    * Walking sound effect (uses GTIA)
+ * Levels:
+   * Two more levels
+ * Help screen:
+   * Inverse video for some text (e.g. key controls)
 
 0.1-beta-9 (2023-10-17):
  * Gameplay:

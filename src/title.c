@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-09-26
+  2023-08-13 - 2023-12-24
 */
 
 #include <atari.h>
@@ -122,6 +122,10 @@ char show_title(void) {
   OS.color2 = 0x02;
   OS.color3 = 0x46;
   OS.color4 = 0x02;
+
+  POKE(0x602, 0x20); // fire yellow
+  POKE(0x603, 0xCA); // medium green
+  POKE(0x604, 0x86); // medium blue
 
   /* Enable DLI rotuine */
   ANTIC.nmien = NMIEN_VBI;
@@ -300,7 +304,7 @@ char show_title(void) {
     if (siren_doppler <= 15) {
       POKEY_WRITE.audf1 = siren_pitch + (siren_doppler >> 2);
       POKEY_WRITE.audc1 = 0xAF - siren_doppler;
-  
+
       if (honk != 0) {
         POKEY_WRITE.audf2 = 10;
         POKEY_WRITE.audc2 = 0xCF - siren_doppler;
@@ -308,14 +312,14 @@ char show_title(void) {
         POKEY_WRITE.audc3 = 0xCF - siren_doppler;
         POKEY_WRITE.audf4 = 50;
         POKEY_WRITE.audc4 = 0xCF - siren_doppler;
-  
+
         if (siren_ctr1 == 0x00 || siren_ctr1 == 0x08)
           honk--;
       } else {
         POKEY_WRITE.audc2 = 0;
         POKEY_WRITE.audc3 = 0;
         POKEY_WRITE.audc4 = 0;
-  
+
         if (OS.stick0 != 15 || OS.stick1 != 15) {
           OS.atract = 0;
 

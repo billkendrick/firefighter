@@ -100,6 +100,9 @@ Developed 2023-08-13 - 2023-12-24
 > If you prefer to play with only one joystick, you can hold the fire button
 > and push a direction to spray that way.  However, you will stand still
 > while you spray!
+>
+> Press `Start` or `Esc` to abort the game.  Press `Space` or `P` to
+> pause and unpause gameplay.
 
 ------------------------------------------------------------------------
 

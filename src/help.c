@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-09-21
+  2023-08-22 - 2023-12-24
 */
 
 #include <atari.h>
@@ -274,17 +274,41 @@ unsigned char ciov(void) {
    @param unsigned char first_page true, if we're on the first page
    @param unsigned char last_page true, if we're on the last page (have hit EOF)
 */
+
+char txt_space[] = {'S'+128, 'P'+128, 'A'+128, 'C'+128, 'E'+128, '\0'};
+char txt_return[] = {'R'+128, 'E'+128, 'T'+128, 'U'+128, 'R'+128, 'N'+128, '\0'};
+char txt_fire[] = {'F'+128, 'I'+128, 'R'+128, 'E'+128, '\0'};
+char txt_esc[] = {'E'+128, 'S'+128, 'C'+128, '\0'};
+char txt_up_back[] = {
+  'U'+128, 'P'+128, '/',
+  'B'+128, 'A'+128, 'C'+128, 'K'+128, '\0'
+};
+
 void show_help_controls(unsigned char first_page, unsigned char last_page) {
+  unsigned char * scr_ptr = scr_mem + (LINES * 40);
+
   if (!last_page) {
-    draw_text("SPACE/RETURN/FIRE: Next Page - ESC: Exit", scr_mem + (LINES * 40));
+    draw_text("SPACE/RETURN/FIRE: Next Page - ESC: Exit", scr_ptr);
+    draw_text(txt_space, scr_ptr);
+    draw_text(txt_return, scr_ptr + 6);
+    draw_text(txt_fire, scr_ptr + 13);
+    draw_text(txt_esc, scr_ptr + 31);
   } else {
-    draw_text("      SPACE/RETURN/FIRE/ESC: Exit       ", scr_mem + (LINES * 40));
+    draw_text("      SPACE/RETURN/FIRE/ESC: Exit       ", scr_ptr);
+    draw_text(txt_space, scr_ptr + 6);
+    draw_text(txt_return, scr_ptr + 12);
+    draw_text(txt_fire, scr_ptr + 19);
+    draw_text(txt_esc, scr_ptr + 24);
   }
 
+  scr_ptr += 40;
+
   if (!first_page) {
-    draw_text("UP/BACKSPACE: Previous Page", scr_mem + ((LINES + 1) * 40) + 7);
+    draw_text("UP/BACKSPACE: Previous Page", scr_ptr + 7);
+    draw_text(txt_up_back, scr_ptr + 7);
+    draw_text(txt_space, scr_ptr + 14);
   } else {
-    draw_text("                           ", scr_mem + ((LINES + 1) * 40) + 7);
+    draw_text("                           ", scr_ptr + 7);
   }
 }
 

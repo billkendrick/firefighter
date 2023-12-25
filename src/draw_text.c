@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-09-19
+  2023-08-13 - 2023-12-24
 */
 
 #include <peekpoke.h>
@@ -28,9 +28,9 @@ void draw_text(char * str, unsigned char * dest) {
   for (i = 0; str[i] != '\0'; i++) {
     ch = str[i];
 
-    if (ch < 32) {
+    if (ch < 32 || (ch >= 128 && ch < 128 + 32)) {
       ch = ch + 64;
-    } else if (ch < 96) {
+    } else if (ch < 96 || (ch >= 128 && ch < 128 + 96)) {
       ch = ch - 32;
     }
 

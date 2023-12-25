@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-12-22
+  2023-08-15 - 2023-12-24
 */
 
 #include <atari.h>
@@ -421,13 +421,45 @@ void start_game(void) {
       start_level();
     }
 
-    if (CONSOL_START(GTIA_READ.consol) == 1) {
-      /* [Start] key: Abort game */
+    if (CONSOL_START(GTIA_READ.consol) == 1 || OS.ch == KEY_ESC) {
+      /* [Start] or [Esc] key: Abort game */
       done = 1;
+    }
+
+    if (OS.ch == KEY_SPACE || OS.ch == KEY_P) {
+      /* Pause */
+      OS.ch = KEY_NONE;
+
+      OS.color0 = 0x02;
+      OS.color1 = 0x04;
+      OS.color2 = 0x08;
+      OS.color3 = 0x06;
+
+      POKE(0x601, 0); // black background
+      POKE(0x602, 0); // grey the fire
+      POKE(0x603, 0x0A); // grey the green 
+      POKE(0x604, 0x06); // grey the blue
+
+      quiet();
+
+      do {
+      } while (OS.ch != KEY_SPACE && OS.ch != KEY_P);
+
+      OS.color0 = 0x52;
+      OS.color1 = 0x14;
+      OS.color2 = 0xA8;
+      OS.color3 = 0x46;
+
+      POKE(0x602, 0x20); // fire yellow
+      POKE(0x603, 0xCA); // medium green 
+      POKE(0x604, 0x86); // medium blue
+
+      OS.ch = KEY_NONE;
     }
   } while (!game_over && !done);
 
   POKE(0x601, 0);
+  OS.ch = KEY_NONE;
 
   quiet();
 
