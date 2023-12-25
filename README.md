@@ -29,7 +29,7 @@ A twin-stick firefighting action game for the Atari 8-bit.
 >
 > Level 7 by Edward
 
-Developed 2023-08-13 - 2023-12-22
+Developed 2023-08-13 - 2023-12-24
 
 ------------------------------------------------------------------------
 

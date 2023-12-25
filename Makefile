@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-12-22
+# 2023-08-13 - 2023-12-24
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -39,7 +39,7 @@ CC65_FLAGS=-O -Os -Oi -Or --static-locals --add-source
 # MAP_ARGS=-m firefite.map
 
 ## Level 'source' files:
-LEVEL_FILES=$(shell seq -f "levels/level%03g.txt" 1 10)
+LEVEL_FILES=$(shell seq -f "levels/level%03g.txt" 1 11)
 
 ## Objects
 OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
