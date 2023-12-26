@@ -4,12 +4,13 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-09-25
+# 2023-08-13 - 2023-12-26
 
-all:	title.pgm
+all:	title.pgm silh.pbm
 
 clean:	clean-intermediate
 	-rm title.pgm
+	-rm silh.pbm
 
 clean-intermediate:
 	-rm title-scaled.png
@@ -19,8 +20,14 @@ clean-intermediate:
 
 
 title.pgm:	title-scaled.png greys16.pgm
-	convert title-scaled.png -remap greys16.pgm \
+	convert title-scaled.png -dither FloydSteinberg -remap greys16.pgm \
 		-compress None title.pgm
+
+silh.pbm:	title-scaled.png
+	convert title-scaled.png -threshold 4% -white-threshold 255 \
+		-crop 50%x100% - \
+	| convert - -resize "40!x192" \
+		-compress None silh.pbm
 
 title-scaled.png: title-fullsize2.png
 	convert title-fullsize2.png -resize "80!x192" title-scaled.png
@@ -40,14 +47,6 @@ label.png:
 		-pointsize 110 -font "Echotopia-Regular" -fill black \
 		-annotate +10+90 'FIREFIGHTER' \
 		\
-		-pointsize 90 -font "K.O.-Activista*-Bold" -fill black \
-		-annotate +15+205 'BY BILL KENDRICK' \
-		-pointsize 90 -font "K.O.-Activista*-Bold" -fill black \
-		-annotate +5+205 'BY BILL KENDRICK' \
-		-pointsize 90 -font "K.O.-Activista*-Bold" -fill black \
-		-annotate +15+195 'BY BILL KENDRICK' \
-		-pointsize 90 -font "K.O.-Activista*-Bold" -fill black \
-		-annotate +5+195 'BY BILL KENDRICK' \
 		-pointsize 90 -font "K.O.-Activista*-Bold" -fill white \
 		-annotate +10+200 'BY BILL KENDRICK' \
 		\

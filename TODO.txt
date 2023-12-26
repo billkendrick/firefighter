@@ -4,14 +4,8 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-2023-08-18 - 2023-12-24
+2023-08-18 - 2023-12-26
 
  * More levels
 
  * Splash screen music
-
- * Higher-rez title screen
-   * 160x192 4 shades of red
-   * Idea: 4 shades of red for firey background,
-     and black Player/Missle GFX for firefighter in foreground
-

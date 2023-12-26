@@ -1,14 +1,14 @@
 #!/usr/bin/php
 <?php
 /*
-  Convers title screen from NetPBM portable greymap (PGM)
+  Converts title screen from NetPBM portable greymap (PGM)
   to 16-shade GRAPHICS 9 image file for the Atari
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-09-19 - 2023-09-19
+  2023-09-19 - 2023-12-26
 */
 
 $INFILE = "img-src/title.pgm";
@@ -23,8 +23,6 @@ if ($fi == NULL) {
 
 /*
 P2
-#CREATOR: gd-jpeg v1.0 (using IJG JPEG v62), quality = 95
-#
 80 192
 255
 */
@@ -47,11 +45,11 @@ while (substr($line, 0, 1) == '#') {
 fseek($fi, $pos);
 list($w, $h) = fscanf($fi, "%d %d\n");
 if ($w != 80 || $h != 192) {
-  fprintf(STDERR, "Input '%s' is not 80x192 255; it's %dx%d %d!\n", $INFILE, $w, $h, $d);
+  fprintf(STDERR, "Input '%s' is not 80x192; it's %dx%d!\n", $INFILE, $w, $h);
   exit(1);
 }
 
-echo fgets($fi); /* Read depth (making assumptions here!) */
+$_ = fgets($fi); /* Read depth (making assumptions here!) */
 
 
 /* So far so good; open output file! */
@@ -70,7 +68,6 @@ for ($y = 0; $y < $h; $y++) {
     $b = (($hi / 17) * 16) + ($lo / 17);
     fputs($fo, chr($b), 1);
   }
-  echo "\n";
 }
 
 fclose($fo);

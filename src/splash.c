@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-09-19 - 2023-10-17
+  2023-09-19 - 2023-12-26
 */
 
 #include <atari.h>
@@ -22,6 +22,7 @@ unsigned char * scr_mem_pt1 = (scr_mem + 0x150);
 unsigned char * scr_mem_pt2 = (scr_mem + 0x1000);
 unsigned char * scr_mem_row[191];
 unsigned char * scr_mem_row_src1, * scr_mem_row_src2, * scr_mem_row_dest;
+unsigned char * pmg = (scr_mem + 0x2000);
 
 void eat_input(void);
 
@@ -49,6 +50,7 @@ unsigned char fade_shift4[61] = {
 /* Main loop! */
 void main(void) {
   FILE * fi;
+  int ply;
 
   OS.sdmctl = 0;
   OS.gprior = 0b01000000;
@@ -89,8 +91,51 @@ void main(void) {
     fclose(fi);
   }
 
+#define SKIP 48
+#define PMG_TOP 32
+#define PMG_LEFT 48
+
+  /* Load the silhouette */
+  bzero(pmg, 2048);
+  fi = fopen("silh.dat", "rb");
+  if (fi != NULL) {
+    for (ply = 0; ply < 5; ply++) {
+      unsigned char * ptr;
+      ptr = (unsigned char *) ((unsigned int) pmg + ((unsigned int) ply * 256) + 768);
+      fread(ptr + ((unsigned char) (PMG_TOP + SKIP)), sizeof(unsigned char), 192 - SKIP, fi);
+    }
+    fclose(fi);
+
+    GTIA_WRITE.hposm3 = PMG_LEFT + 0;
+    GTIA_WRITE.hposm2 = PMG_LEFT + 4;
+    GTIA_WRITE.hposm1 = PMG_LEFT + 8;
+    GTIA_WRITE.hposm0 = PMG_LEFT + 12;
+    GTIA_WRITE.hposp0 = PMG_LEFT + 16;
+    GTIA_WRITE.hposp1 = PMG_LEFT + 32;
+    GTIA_WRITE.hposp2 = PMG_LEFT + 48;
+    GTIA_WRITE.hposp3 = PMG_LEFT + 64;
+
+    GTIA_WRITE.sizep0 = PMG_SIZE_DOUBLE;
+    GTIA_WRITE.sizep1 = PMG_SIZE_DOUBLE;
+    GTIA_WRITE.sizep2 = PMG_SIZE_DOUBLE;
+    GTIA_WRITE.sizep3 = PMG_SIZE_DOUBLE;
+    GTIA_WRITE.sizem = (
+      (PMG_SIZE_DOUBLE << 6) |
+      (PMG_SIZE_DOUBLE << 4) |
+      (PMG_SIZE_DOUBLE << 2) |
+      (PMG_SIZE_DOUBLE << 0)
+    );
+
+    OS.pcolr0 = 0xF0;
+    OS.pcolr1 = 0xF0;
+    OS.pcolr2 = 0xF0;
+    OS.pcolr3 = 0xF0;
+    ANTIC.pmbase = (unsigned char) ((unsigned int) pmg / 256);
+    GTIA_WRITE.gractl = GRACTL_MISSLES | GRACTL_PLAYERS;
+  }
+
   /* Show the screen and wait for input before proceeding */
-  OS.sdmctl = 34;
+  OS.sdmctl = DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH | DMACTL_DMA_MISSILES | DMACTL_DMA_PLAYERS | DMACTL_PMG_SINGLELINE;
 
   eat_input();
   do {
@@ -152,6 +197,16 @@ T2 = S2, S3, S4, S6
   /* Blank the screen (and unset GRAPHICS 9 ANTIC mode), and exit */
   OS.sdmctl = 0;
   OS.gprior = 0;
+
+  GTIA_WRITE.gractl = 0;
+  GTIA_WRITE.hposm3 = 0;
+  GTIA_WRITE.hposm2 = 0;
+  GTIA_WRITE.hposm1 = 0;
+  GTIA_WRITE.hposm0 = 0;
+  GTIA_WRITE.hposp0 = 0;
+  GTIA_WRITE.hposp1 = 0;
+  GTIA_WRITE.hposp2 = 0;
+  GTIA_WRITE.hposp3 = 0;
 
   /* ...MyDOS will load the game itself, as autorun file .AR1 */
 }

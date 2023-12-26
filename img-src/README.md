@@ -7,7 +7,7 @@ for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Documented 2023.09.19 - 2023.09.19
+Documented 2023.09.19 - 2023.12.26
 
 ------------------------------------------------------------------------
 
@@ -16,7 +16,9 @@ Documented 2023.09.19 - 2023.09.19
 The image files and `Makefile` here use [ImageMagick](https://imagemagick.org/)
 to assemble a title screen image from various parts (including rendering
 text), and then scale the final results and reduce its colors so it can
-be displayed by the Atari.
+be displayed by the Atari.  It creates two image files -- a 16-color
+full-screen bitmap and a 2-color image to overlay using Player/Missile
+Graphics.
 
 ------------------------------------------------------------------------
 

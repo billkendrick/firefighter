@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-12-24
+# 2023-08-13 - 2023-12-26
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -70,6 +70,7 @@ clean-intermediate:
 	-rm data/levels.dat
 	-rm data/levels_cmp.dat
 	-rm data/title.gr9
+	-rm data/silh.dat
 	-rm firefths.xex
 	-rm splash.xex
 	-rm firefite-nohighscore.atr
@@ -84,10 +85,11 @@ clean-intermediate:
 firefite.atr:	firefite-nohighscore.atr tools/high_score_atr.php
 	tools/high_score_atr.php firefite-nohighscore.atr firefite.atr
 
-firefite-nohighscore.atr:	firefths.xex splash.xex README.md data/title.gr9 disk/README.txt
+firefite-nohighscore.atr:	firefths.xex splash.xex README.md data/title.gr9 data/silh.dat disk/README.txt
 	cp splash.xex disk/SPLASH.AR0
 	cp firefths.xex disk/FIREFITE.AR1
 	cp data/title.gr9 disk/TITLE.GR9
+	cp data/silh.dat disk/SILH.DAT
 	${DIR2ATR} firefite-nohighscore.atr disk
 
 firefite.xex:	${OBJECTS} src/atari.cfg
@@ -279,4 +281,7 @@ data/levels.dat:	tools/level_to_dat.php tools/level_consts.inc.php ${LEVEL_FILES
 # --------------------
 data/title.gr9:	img-src/title.pgm tools/pgm2gr9.php
 	tools/pgm2gr9.php
+
+data/silh.dat:	img-src/silh.pbm tools/pbm2pmg.php
+	tools/pbm2pmg.php
 
