@@ -5,8 +5,9 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-09-19
+  2023-08-13 - 2024-07-17
 */
 
 void draw_text(char * str, unsigned char * dest);
+void draw_text_inv(char * str, unsigned char * dest);
 void draw_number(unsigned long int n, signed char digits, unsigned char * dest);

@@ -143,11 +143,11 @@ char show_title(void) {
 
 #define LINE_BY_1 60
   draw_text("bill kendrick", scr_mem + LINE_BY_1 + 1);
-  /* "2023" */
+  /* "2024" */
   POKE(scr_mem + LINE_BY_1 + 15, 2 + 16 + 64);
   POKE(scr_mem + LINE_BY_1 + 16, 0 + 16 + 64);
   POKE(scr_mem + LINE_BY_1 + 17, 2 + 16 + 64);
-  POKE(scr_mem + LINE_BY_1 + 18, 3 + 16 + 64);
+  POKE(scr_mem + LINE_BY_1 + 18, 4 + 16 + 64);
 
 #define LINE_BY_2 (LINE_BY_1 + 20)
   draw_text(additional_levels[0], scr_mem + LINE_BY_2);
@@ -181,7 +181,7 @@ char show_title(void) {
 
   /* Help section 2 */
 #define LINE_HELP_2 (LINE_HELP_1 + 60)
-  draw_text("PUSH CRATES&OIL. AX BREAKS CRATES&PIPES", scr_mem + LINE_HELP_2 + 0);
+  draw_text("PUSH CRATES&OIL. AX BREAKS CRATES&PIPES.", scr_mem + LINE_HELP_2 + 0);
 
   POKE(scr_mem + (LINE_HELP_2 + 40) + 2, FIREFIGHTER_RIGHT);
   POKE(scr_mem + (LINE_HELP_2 + 40) + 3, CRATE);
@@ -220,13 +220,20 @@ char show_title(void) {
   /* Title screen control instructions */
 #define LINE_START (LINE_CONTROLS + 120)
   draw_text("START/FIRE: BEGIN - OPTION: SWAP STICKS", scr_mem + LINE_START + 0);
+  draw_text_inv("START", scr_mem + LINE_START + 0);
+  draw_text_inv("FIRE", scr_mem + LINE_START + 6);
+  draw_text_inv("OPTION", scr_mem + LINE_START + 20);
 
 #define LINE_LEVEL (LINE_START + 40)
 #ifdef DISK
   draw_text("SELECT: STARTING LEVEL -- - HELP/?: INFO", scr_mem + LINE_LEVEL);
+  draw_text_inv("SELECT", scr_mem + LINE_LEVEL);
+  draw_text_inv("HELP", scr_mem + LINE_LEVEL + 28);
+  draw_text_inv("?", scr_mem + LINE_LEVEL + 33);
   level_pos = LINE_LEVEL + 23; /* FIXME #define */
 #else
   draw_text("SELECT: STARTING LEVEL --", scr_mem + LINE_LEVEL + 7);
+  draw_text_inv("SELECT", scr_mem + LINE_LEVEL + 7);
   level_pos = LINE_LEVEL + 30; /* FIXME #define */
 #endif
 

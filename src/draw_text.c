@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-12-24
+  2023-08-13 - 2024-07-17
 */
 
 #include <peekpoke.h>
@@ -18,8 +18,8 @@ extern unsigned char scr_mem[];
 /* Draw some text on the screen.
 
    @param char * str - The NUL-terminated ('\0') string to write
-   @unsigned char * dest - The destination in memory
-     (expected to within src_mem[]!!!)
+   @param unsigned char * dest - The destination in memory
+     (expected to be within src_mem[]!!!)
 */
 void draw_text(char * str, unsigned char * dest) {
   unsigned char ch;
@@ -35,6 +35,29 @@ void draw_text(char * str, unsigned char * dest) {
     }
 
     POKE((unsigned int) (dest + i), ch);
+  }
+}
+
+/* Draw some text on the screen in inverse-video.
+
+   @param char * str - The NUL-terminated ('\0') string to write
+   @param unsigned char * dest - The destination in memory
+     (expected to be within src_mem[]!!!)
+*/
+void draw_text_inv(char * str, unsigned char * dest) {
+  unsigned char ch;
+  unsigned int i;
+
+  for (i = 0; str[i] != '\0'; i++) {
+    ch = str[i];
+
+    if (ch < 32 || (ch >= 128 && ch < 128 + 32)) {
+      ch = ch + 64;
+    } else if (ch < 96 || (ch >= 128 && ch < 128 + 96)) {
+      ch = ch - 32;
+    }
+
+    POKE((unsigned int) (dest + i), ch + 128);
   }
 }
 
