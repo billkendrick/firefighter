@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-12-24
+  2023-08-13 - 2024-07-17
 */
 
 #include "dli.h"
@@ -21,13 +21,13 @@ void dli(void) {
   asm("lda $14"); // <== RTCLOK (lowest)
   asm("lsr"); // Slow it down
   asm("lsr");
-  asm("and #$04"); // Truncate all but "4" bit
+  asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
   asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
   asm("sta $D409"); // ==> CHBASE
 
   /* Different color palette for the game area */
   asm("lda $D20A"); // <== RANDOM
-  asm("and #$0F"); // Truncate high bits
+  asm("and $605"); // Truncate high bits (0x0F in normal situations)
   asm("asl");
   //asm("adc #$20"); // Add yellow
   asm("adc $602"); // Add yellow

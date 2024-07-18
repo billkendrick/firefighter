@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-12-24
+  2023-08-13 - 2024-07-17
 */
 
 #include <atari.h>
@@ -126,6 +126,10 @@ char show_title(void) {
   POKE(0x602, 0x20); // fire yellow
   POKE(0x603, 0xCA); // medium green
   POKE(0x604, 0x86); // medium blue
+
+  POKE(0x605, 0x0F); // enable fire flicker
+
+  POKE(0x606, 0x04); // enable animation
 
   /* Enable DLI rotuine */
   ANTIC.nmien = NMIEN_VBI;

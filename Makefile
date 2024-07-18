@@ -4,11 +4,11 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-12-26
+# 2023-08-13 - 2024-07-17
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA10
+VERSION=0.1-BETA11
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,

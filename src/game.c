@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2023-12-24
+  2023-08-15 - 2024-07-17
 */
 
 #include <atari.h>
@@ -76,6 +76,7 @@ void bonus_tally(int x);
 void quiet(void);
 void drop_civilians(char why);
 unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char push_x, unsigned char push_y);
+unsigned char confirm_done();
 
 /* High score (external b/c shared by title screen) */
 extern unsigned long int high_score;
@@ -423,7 +424,7 @@ void start_game(void) {
 
     if (CONSOL_START(GTIA_READ.consol) == 1 || OS.ch == KEY_ESC) {
       /* [Start] or [Esc] key: Abort game */
-      done = 1;
+      done = confirm_done();
     }
 
     if (OS.ch == KEY_SPACE || OS.ch == KEY_P) {
@@ -440,6 +441,10 @@ void start_game(void) {
       POKE(0x603, 0x0A); // grey the green 
       POKE(0x604, 0x06); // grey the blue
 
+      POKE(0x605, 0x01); // reduce fire flicker
+
+      POKE(0x606, 0x00); // disable animation
+
       quiet();
 
       do {
@@ -454,17 +459,35 @@ void start_game(void) {
       POKE(0x603, 0xCA); // medium green 
       POKE(0x604, 0x86); // medium blue
 
+      POKE(0x605, 0x0F); // enable fire flicker
+
+      POKE(0x606, 0x04); // enable animation
+
       OS.ch = KEY_NONE;
     }
   } while (!game_over && !done);
 
-  POKE(0x601, 0);
+  POKE(0x601, 0); // black background
   OS.ch = KEY_NONE;
 
   quiet();
 
   /* Are we done because of Game Over?  Wait for input before proceeding */
   if (game_over) {
+    /* Shades of red... */
+    OS.color0 = 0x42;
+    OS.color1 = 0x44;
+    OS.color2 = 0x48;
+    OS.color3 = 0x46;
+
+    POKE(0x602, 0x40);
+    POKE(0x603, 0x4A);
+    POKE(0x604, 0x46);
+
+    POKE(0x605, 0x01); // reduce fire flicker
+
+    POKE(0x606, 0x00); // disable animation
+
     /* Eat any input */
     do {
     } while (CONSOL_START(GTIA_READ.consol) == 1 || OS.strig0 == 0 || OS.strig1 == 0);
@@ -1264,5 +1287,80 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
   }
 
   return 1;
+}
+
+
+/**
+ * Ask the user whether they want to abort (quit) the game.
+ *
+   @return unsigned char boolean - do they want to quit?
+ */
+unsigned char confirm_done() {
+  unsigned char abort = 0, done = 0, old_abort;
+  unsigned char line_snapshot[20];
+
+  quiet();
+  POKE(0x606, 0x00); // disable animation
+
+  memcpy(line_snapshot, scr_mem, 20);
+  draw_text("ABORT?  YES >NO<", scr_mem + 2);
+
+  /* Eat any input */
+  do {
+  } while (CONSOL_START(GTIA_READ.consol) == 1 || OS.strig0 == 0 || OS.strig1 == 0);
+  OS.ch = KEY_NONE;
+
+  do {
+    old_abort = abort;
+
+    if (CONSOL_SELECT(GTIA_READ.consol) == 1) {
+      /* [Select] = Toggle */
+      abort = !abort;
+    }
+
+    if (OS.stick0 == 11 || OS.stick1 == 11) {
+      /* [Left] = Select "Yes" */
+      abort = 1;
+    } else if (OS.stick0 == 7 || OS.stick1 == 7) {
+      /* [Right] = Select "No" */
+      abort = 0;
+    }
+
+    if (CONSOL_START(GTIA_READ.consol) == 1 || OS.strig0 == 0 || OS.strig1 == 0) {
+      /* [Start] or [Fire] = Accept */
+      done = 1;
+    }
+    if (OS.ch == KEY_Y) {
+      /* [Y] = Select "Yes" & Accept */
+      abort = 1;
+      done = 1;
+    } else if (OS.ch == KEY_N) {
+      /* [N] = Select "No" & Accept */
+      abort = 0;
+      done = 1;
+    }
+
+    /* Show current choice */
+    if (abort != old_abort) {
+      if (abort) {
+        draw_text(">YES< NO ", scr_mem + 9);
+      } else {
+        draw_text(" YES >NO<", scr_mem + 9);
+      }
+      /* If [Select], [Left], or [Right], wait until released */
+      while (CONSOL_SELECT(GTIA_READ.consol) == 1 || OS.stick0 != 15 || OS.stick1 != 15) { }
+    }
+  } while (!done);
+
+  /* Eat any input */
+  do {
+  } while (CONSOL_START(GTIA_READ.consol) == 1 || OS.strig0 == 0 || OS.strig1 == 0);
+  OS.ch = KEY_NONE;
+
+  memcpy(scr_mem, line_snapshot, 20);
+
+  POKE(0x606, 0x04); // enable animation
+
+  return abort;
 }
 

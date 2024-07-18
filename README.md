@@ -101,8 +101,11 @@ Developed 2023-08-13 - 2023-12-26
 > and push a direction to spray that way.  However, you will stand still
 > while you spray!
 >
-> Press `Start` or `Esc` to abort the game.  Press `Space` or `P` to
-> pause and unpause gameplay.
+> Press `Start` or `Esc` to abort the game.  Use the joystick and
+> firebutton, `Select` and `Start`, or `Y` or `N` keys to confirm or
+> cancel aborting.
+>
+> Press `Space` or `P` to pause and unpause gameplay.
 
 ------------------------------------------------------------------------
 
