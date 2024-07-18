@@ -29,7 +29,7 @@
   saving the single high score & name (along with settings)
   to a FujiNet AppKey.
 
-  2023-08-27 - 2023-09-25
+  2023-08-27 - 2024-07-17
 */
 
 #include <string.h>
@@ -255,7 +255,7 @@ char register_high_score(void) {
 
 /* Ask user for their initials, store in `initials` variable. */
 void get_initials(void) {
-  char x, done, s, i, ch;
+  char x, done, s, i, ch, fire;
 
   bzero(scr_mem + 60, LEVEL_SPAN);
 
@@ -282,7 +282,9 @@ void get_initials(void) {
     do {
       s = (OS.stick0 != 15 ? OS.stick0 : OS.stick1);
       ch = OS.ch;
-    } while (s == 15 && ch == KEY_NONE);
+      fire = (OS.strig0 == 0 || OS.strig1 == 0);
+    } while (s == 15 && ch == KEY_NONE && fire == 0);
+
 
     if (x < 3) {
       if (s == 14) {
@@ -297,7 +299,7 @@ void get_initials(void) {
           initials[x]++;
         else
           initials[x] = INITIAL_MIN;
-      } else if (s == 7 || OS.strig0 == 0 || OS.strig1 == 0) {
+      } else if (s == 7 || fire) {
         /* [JS-Right] or [Fire]: Next initial */
         x++;
       } else {
@@ -321,7 +323,7 @@ void get_initials(void) {
       }
     } else {
       /* [JS-Fire] or [Return] on "EOL" symbol: All done! */
-      if (OS.strig0 == 0 || OS.strig1 == 0 || ch == KEY_RETURN) {
+      if (fire || ch == KEY_RETURN) {
         done = 1;
       }
     }
