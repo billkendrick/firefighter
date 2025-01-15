@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2024-07-17
+  2023-08-13 - 2025-01-15
 */
 
 #include <atari.h>
@@ -37,46 +37,46 @@ void title_dlist = {
   DL_BLK8,
   DL_BLK1,
 
-  DL_LMS(DL_GRAPHICS0),
+  DL_LMS(DL_GRAPHICS0), // NBS Presents
   scr_mem,
   DL_BLK2,
 
-  DL_GRAPHICS2,
+  DL_GRAPHICS2, // FIREFIGHTER!
   DL_BLK2,
-  DL_GRAPHICS1,
-  DL_DLI(DL_GRAPHICS1),
+  DL_GRAPHICS1, // Bill Kendrick
+  DL_DLI(DL_GRAPHICS1), // <animated credits line>
 
-  DL_GRAPHICS0,
-  DL_BLK2,
-  DL_GRAPHICS2,
+  DL_GRAPHICS0, // Item Row 1 Desc
+  DL_DLI(DL_BLK2),
+  DL_GRAPHICS2, // Item Row 1 Images
   DL_BLK6,
 
-  DL_GRAPHICS0,
-  DL_BLK2,
-  DL_GRAPHICS2,
+  DL_GRAPHICS0, // Item Row 2 Desc
+  DL_DLI(DL_BLK2),
+  DL_GRAPHICS2, // Item Row 2 Images
   DL_BLK6,
 
-  DL_GRAPHICS0,
-  DL_BLK2,
-  DL_GRAPHICS2,
+  DL_GRAPHICS0, // Item Row 3 Desc
+  DL_DLI(DL_BLK2),
+  DL_GRAPHICS2, // Item Row 3 Images
   DL_BLK6,
 
   DL_BLK2,
 
-  DL_GRAPHICS0,
+  DL_GRAPHICS0, // Game controls...
   DL_GRAPHICS0,
   DL_GRAPHICS0,
 
   DL_BLK1,
 
-  DL_GRAPHICS0,
+  DL_GRAPHICS0, // Title screen controls/options...
   DL_GRAPHICS0,
 
   DL_BLK4,
-  DL_GRAPHICS0,
+  DL_GRAPHICS0, // High score
 
   DL_BLK1,
-  DL_GRAPHICS0,
+  DL_GRAPHICS0, // Version
 
   DL_JVB,
   &dlist
@@ -136,6 +136,12 @@ char show_title(void) {
   while (ANTIC.vcount < 124);
   OS.vdslst = (void *) dli;
   ANTIC.nmien = NMIEN_VBI | NMIEN_DLI;
+
+  /* Enable VBI routine to start each frame with dli #1 */
+  OLDVEC = OS.vvblkd;
+  OS.critic = 1;
+  OS.vvblkd = (void *) dli_vbi;
+  OS.critic = 0;
 
   /* Title & Credits */
   draw_text("NEW BREED SOFTWARE PRESENTS:", scr_mem + 6);
@@ -243,6 +249,7 @@ char show_title(void) {
 #define LINE_HIGH (LINE_LEVEL + 40)
 #ifdef DISK
   draw_text("HIGH SCORE: ------ --- - H: HIGH SCORES", scr_mem + LINE_HIGH + 0);
+  draw_text_inv("H", scr_mem + LINE_HIGH + 25);
   hs_pos = LINE_HIGH + 12; /* FIXME #define */
 #else
   draw_text("HIGH SCORE: ------ ---", scr_mem + LINE_HIGH + 9);
@@ -435,9 +442,13 @@ char show_title(void) {
   POKEY_WRITE.audf3 = 0;
   POKEY_WRITE.audf4 = 0;
 
-  /* Disable DLI */
+  /* Disable DLI & VBI */
   OS.sdmctl = 0;
   ANTIC.nmien = NMIEN_VBI;
+
+  OS.critic = 1;
+  OS.vvblkd = OLDVEC;
+  OS.critic = 0;
 
   /* (Eat any input) */
   do {

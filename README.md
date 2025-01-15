@@ -1,6 +1,6 @@
 # Firefighter
 
-### Version: 0.1-BETA10
+### Version: 0.1-BETA11
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
@@ -29,7 +29,7 @@ A twin-stick firefighting action game for the Atari 8-bit.
 >
 > Level 7 by Edward
 
-Developed 2023-08-13 - 2024-07-18
+Developed 2023-08-13 - 2025-01-15
 
 ------------------------------------------------------------------------
 

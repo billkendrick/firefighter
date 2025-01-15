@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2024-07-17
+  2023-08-15 - 2025-01-15
 */
 
 #include <atari.h>
@@ -497,14 +497,19 @@ void start_game(void) {
     } while (CONSOL_START(GTIA_READ.consol) == 0 && OS.strig0 == 1 && OS.strig1 == 1);
   }
 
+  /* Disable DLI & VBI */
   OS.sdmctl = 0;
   ANTIC.nmien = NMIEN_VBI;
+
+  OS.critic = 1;
+  OS.vvblkd = OLDVEC;
+  OS.critic = 0;
 
   /* Eat any input */
   do {
   } while (CONSOL_START(GTIA_READ.consol) == 1 || OS.strig0 == 0 || OS.strig1 == 0);
 
-  OS.sdmctl = 34;
+  OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 }
 
 /* Draw a water spray, if possible. If touching fire,
@@ -563,16 +568,16 @@ void game_dlist = {
 
   DL_DLI(DL_BLK1),
 
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
-  DL_GRAPHICS2,
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
+  DL_DLI(DL_GRAPHICS2),
   DL_GRAPHICS2,
 
   DL_JVB,
@@ -590,6 +595,7 @@ void setup_game_screen(void) {
   memcpy(dlist, &game_dlist, sizeof(game_dlist));
   OS.sdlst = dlist;
 
+  /* Set up color & font values for DLI */
   OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
 
   POKE(0x600, OS.chbas + 2);
@@ -598,11 +604,19 @@ void setup_game_screen(void) {
   OS.color1 = 0x14;
   OS.color2 = 0xA8;
 
+  /* Enable DLI */
   ANTIC.nmien = NMIEN_VBI;
   while (ANTIC.vcount < 124);
   OS.vdslst = (void *) dli;
   ANTIC.nmien = NMIEN_VBI | NMIEN_DLI;
 
+  /* Enable VBI routine to start each frame with dli #1 */
+  OLDVEC = OS.vvblkd;
+  OS.critic = 1;
+  OS.vvblkd = (void *) dli_vbi;
+  OS.critic = 0;
+
+  /* Enable the screen */
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 }
 

@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-11 (2024-07-18):
+0.1-beta-11 (2025-01-15):
  * Gameplay:
    * Aborting (via [Start] or [Esc]) will now
      prompt for confirmation first.
@@ -12,6 +12,8 @@ http://www.newbreedsoftware.com/firefighter/
    * Game over screen turns red.
    * Fixed bug in high score initial entry;
      it was ignoring fire button input.
+ * Graphics:
+   * Nicer looking fire / gas leak flame effect
 
 0.1-beta-10 (2023-12-26):
  * Gameplay:

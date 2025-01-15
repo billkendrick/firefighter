@@ -5,7 +5,10 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2023-08-22
+  2023-08-13 - 2025-01-15
 */
 
+extern void * OLDVEC;
+
 void dli(void);
+void dli_vbi(void);
