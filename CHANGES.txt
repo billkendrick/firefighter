@@ -18,6 +18,7 @@ http://www.newbreedsoftware.com/firefighter/
    * Two more levels
  * Graphics:
    * Nicer looking fire / gas leak flame effect
+   * Screen tints red when the "Abort" prompt is up
  * Help screen / README:
    * Inverse video for some text (e.g. key controls)
    * Updated some out-of-date game UI descriptions

@@ -450,6 +450,7 @@ void start_game(void) {
       do {
       } while (OS.ch != KEY_SPACE && OS.ch != KEY_P);
 
+      /* FIXME: Modularize */
       OS.color0 = 0x52;
       OS.color1 = 0x14;
       OS.color2 = 0xA8;
@@ -1105,7 +1106,7 @@ unsigned char tally_sound_notes[22] = {
 };
 
 /* Bonus score tally sequence (used by end-of-level bonus sequence)
-   @param int x - X position to draw bonus score for countdown
+   @param int x - X position to draw bonus score for countdown effect
    @param int deduct - How quickly to deduct points from bonus during tally
 */
 void bonus_tally(int x) {
@@ -1134,8 +1135,11 @@ void bonus_tally(int x) {
   }
   quiet();
 
+  // Add any bonus leftovers, then zero the bonus
   score = score + bonus;
   bonus = 0;
+
+  // Show the final score, and zeroed-out bonus
   draw_score();
   draw_text("000000", scr_mem + x);
 }
@@ -1316,6 +1320,17 @@ unsigned char confirm_done() {
   quiet();
   POKE(0x606, 0x00); // disable animation
 
+  // Red tint everything
+  OS.color0 = 0x42;
+  OS.color1 = 0x44;
+  OS.color2 = 0x48;
+  OS.color3 = 0x46;
+
+  POKE(0x601, 0x40); // redden background
+  POKE(0x602, 0x40); // redden the fire
+  POKE(0x603, 0x4A); // redden the green 
+  POKE(0x604, 0x46); // redden the blue
+
   memcpy(line_snapshot, scr_mem, 20);
   draw_text("ABORT?  YES >NO<", scr_mem + 2);
 
@@ -1372,6 +1387,18 @@ unsigned char confirm_done() {
   OS.ch = KEY_NONE;
 
   memcpy(scr_mem, line_snapshot, 20);
+
+  /* FIXME: Modularize */
+  OS.color0 = 0x52;
+  OS.color1 = 0x14;
+  OS.color2 = 0xA8;
+  OS.color3 = 0x46;
+
+  POKE(0x602, 0x20); // fire yellow
+  POKE(0x603, 0xCA); // medium green 
+  POKE(0x604, 0x86); // medium blue
+
+  POKE(0x605, 0x0F); // enable fire flicker
 
   POKE(0x606, 0x04); // enable animation
 
