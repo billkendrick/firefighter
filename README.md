@@ -86,6 +86,12 @@ Developed 2023-08-13 - 2025-01-15
 > by pressing the `Option` console key.
 >
 > You can choose a starting level by using the `Select` console key.
+>
+> Some builds of the game include built-in help (this document),
+> accessible via the `?` or `Help` keys.
+>
+> And some builds of the game include a high score table, accessible
+> via the `H` key.
 
 ------------------------------------------------------------------------
 
@@ -202,8 +208,8 @@ Developed 2023-08-13 - 2025-01-15
 > > The ax is a collectible object that appear on some levels.
 > > (You start each level without the ax.)  When you touch it, it
 > > will disappear from the room, you'll hear a chime, you'll
-> > receive some points, and the word "AX" will appear at the top right.
-> > (Note: You cannot "unequip" yourself of the ax.)
+> > receive some points, and an ax icon will appear at the top left.
+> > (Note: You cannot "unequip" yourself of the ax during a level.)
 > >
 > > As described above, the ax can be used to break and destroy crates,
 > > but can also break pipes if you're not careful -- and that can lead
@@ -232,11 +238,11 @@ Developed 2023-08-13 - 2025-01-15
 # VI. Completing a Level
 
 > When no more workers remain on the screen -- either by being rescued,
-> or perishing -- you may exit the level.  This is indicated by a blue
-> exclamation point appearing at the top left of the screen.
+> or perishing -- you may exit the level.  This is indicated by the
+> message "GOTO EXIT & PUSH" appearing at the top.
 >
 > Walk to a door or "Exit" sign and hold the stick in the direction of
-> the door or sign.  A countdown will appear at the top left.  Once it
+> the door or sign.  A countdown will appear at the top right.  Once it
 > reaches zero (0), you will exit the level.
 >
 > Prior to leaving a level, you should try and put out any remaining

@@ -14,6 +14,9 @@ http://www.newbreedsoftware.com/firefighter/
      it was ignoring fire button input.
  * Graphics:
    * Nicer looking fire / gas leak flame effect
+ * Help screen / README:
+   * Updated some out-of-date game UI descriptions
+   * Mention Help & High Score table screens
 
 0.1-beta-10 (2023-12-26):
  * Gameplay:
