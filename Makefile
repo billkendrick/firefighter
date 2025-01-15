@@ -8,7 +8,7 @@
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA11
+VERSION=0.1-BETA10
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,
@@ -54,6 +54,9 @@ all:	firefite.atr firefite.xex fireftfn.xex
 
 run:	firefite.xex
 	atari800 -nobasic -run firefite.xex
+
+run-fujinet:	fireftfn.xex
+	atari800 -nobasic -run fireftfn.xex
 
 run-disk:	firefite.atr
 	atari800 -nobasic firefite.atr

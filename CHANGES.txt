@@ -4,30 +4,26 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-11 (2025-01-15):
+0.1-beta-10 (2025-01-15):
  * Gameplay:
+   * In-game pause (press [Space] or [P])
+   * Walking sound effect (uses GTIA)
    * Aborting (via [Start] or [Esc]) will now
      prompt for confirmation first.
    * Game over and pause screens stop animation.
    * Game over screen turns red.
    * Fixed bug in high score initial entry;
      it was ignoring fire button input.
+ * Levels:
+   * Two more levels
  * Graphics:
    * Nicer looking fire / gas leak flame effect
  * Help screen / README:
+   * Inverse video for some text (e.g. key controls)
    * Updated some out-of-date game UI descriptions
    * Mention Help & High Score table screens
-
-0.1-beta-10 (2023-12-26):
- * Gameplay:
-   * In-game pause (press [Space] or [P])
-   * Walking sound effect (uses GTIA)
- * Levels:
-   * Two more levels
  * Title:
    * Improved title screen
- * Help screen:
-   * Inverse video for some text (e.g. key controls)
 
 0.1-beta-9 (2023-10-17):
  * Gameplay:
