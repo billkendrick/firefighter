@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2023-12-24
+  2023-08-22 - 2025-01-15
 */
 
 #include <atari.h>
@@ -32,8 +32,8 @@ void show_help_controls(unsigned char first_page, unsigned char last_page);
 unsigned char ciov(void);
 unsigned char xio_open_read(char * filespec);
 unsigned char xio_close(void);
-unsigned char xio_note(unsigned char * ptr);
-unsigned char xio_point(unsigned char * ptr);
+unsigned char xio_note(unsigned char ptr[3]);
+unsigned char xio_point(unsigned char ptr[3]);
 unsigned char xio_get_record(char * buf, unsigned int buf_size, unsigned int * read_len);
 
 
