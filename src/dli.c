@@ -64,6 +64,14 @@ void dli2(void) {
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
   asm("lda %w", (unsigned)&OS.rtclok[2]);
+  asm("lsr"); // Slow it down
+  asm("lsr");
+  asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
+  asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
+  asm("sta %w", (unsigned)&ANTIC.chbase);
+
+
+  asm("lda %w", (unsigned)&OS.rtclok[2]);
   asm("lsr");
   asm("and $605"); // Truncate high bits (0x0F in normal situations)
   asm("adc $602"); // Add yellow
@@ -94,30 +102,13 @@ void dli2(void) {
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
-  asm("inx");
-  asm("inx");
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
-  asm("inx");
-  asm("inx");
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
-  asm("inx");
-  asm("inx");
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
-  asm("inx");
-  asm("inx");
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-  asm("sta %w", (unsigned)&ANTIC.wsync);
-
+  asm("lda %w", (unsigned)&OS.rtclok[2]);
+  asm("adc #4");
+  asm("lsr"); // Slow it down
+  asm("lsr");
+  asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
+  asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
+  asm("sta %w", (unsigned)&ANTIC.chbase);
 
   asm("pla");
   asm("tax");

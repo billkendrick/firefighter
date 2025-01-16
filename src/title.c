@@ -31,6 +31,17 @@ extern char high_score_name[4];
 
 void show_controls(void);
 
+#define LINE_BY_1 60
+#define LINE_BY_2 (LINE_BY_1 + 20)
+#define LINE_HELP_1 (LINE_BY_2 + 20)
+#define LINE_HELP_2 (LINE_HELP_1 + 60)
+#define LINE_HELP_3 (LINE_HELP_2 + 60)
+#define LINE_CONTROLS (LINE_HELP_3 + 60)
+#define LINE_START (LINE_CONTROLS + 120)
+#define LINE_LEVEL (LINE_START + 40)
+#define LINE_HIGH (LINE_LEVEL + 40)
+#define LINE_VERSION (LINE_HIGH + 40)
+
 /* Title screen display list */
 void title_dlist = {
   DL_BLK8,
@@ -48,17 +59,23 @@ void title_dlist = {
 
   DL_GRAPHICS0, // Item Row 1 Desc
   DL_DLI(DL_BLK2),
-  DL_GRAPHICS2, // Item Row 1 Images
+  DL_GRAPHICS1, // Item Row 1 Images
+  DL_LMS(DL_GRAPHICS1),
+  (scr_mem + LINE_HELP_1 + 40),
   DL_BLK6,
 
   DL_GRAPHICS0, // Item Row 2 Desc
   DL_DLI(DL_BLK2),
-  DL_GRAPHICS2, // Item Row 2 Images
+  DL_GRAPHICS1, // Item Row 2 Images
+  DL_LMS(DL_GRAPHICS1),
+  (scr_mem + LINE_HELP_2 + 40),
   DL_BLK6,
 
   DL_GRAPHICS0, // Item Row 3 Desc
   DL_DLI(DL_BLK2),
-  DL_GRAPHICS2, // Item Row 3 Images
+  DL_GRAPHICS1, // Item Row 3 Images
+  DL_LMS(DL_GRAPHICS1),
+  (scr_mem + LINE_HELP_3 + 40),
   DL_BLK6,
 
   DL_BLK2,
@@ -147,7 +164,6 @@ char show_title(void) {
   draw_text("NEW BREED SOFTWARE PRESENTS:", scr_mem + 6);
   draw_text("@ FIREFIGHTER! @", scr_mem + 40 + 2);
 
-#define LINE_BY_1 60
   draw_text("bill kendrick", scr_mem + LINE_BY_1 + 1);
   /* "2024" */
   POKE(scr_mem + LINE_BY_1 + 15, 2 + 16 + 64);
@@ -155,11 +171,9 @@ char show_title(void) {
   POKE(scr_mem + LINE_BY_1 + 17, 2 + 16 + 64);
   POKE(scr_mem + LINE_BY_1 + 18, 4 + 16 + 64);
 
-#define LINE_BY_2 (LINE_BY_1 + 20)
   draw_text(additional_levels[0], scr_mem + LINE_BY_2);
 
   /* Help section 1 */
-#define LINE_HELP_1 (LINE_BY_2 + 20)
   draw_text("LEAD TO EXIT. PUT OUT FIRE. WALL. PIPES.", scr_mem + LINE_HELP_1 + 0);
 
   POKE(scr_mem + (LINE_HELP_1 + 40) + 0, CIVILIAN);
@@ -186,7 +200,6 @@ char show_title(void) {
   POKE(scr_mem + (LINE_HELP_1 + 40) + 19, PIPE_UP_LEFT);
 
   /* Help section 2 */
-#define LINE_HELP_2 (LINE_HELP_1 + 60)
   draw_text("PUSH CRATES&OIL. AX BREAKS CRATES&PIPES.", scr_mem + LINE_HELP_2 + 0);
 
   POKE(scr_mem + (LINE_HELP_2 + 40) + 2, FIREFIGHTER_RIGHT);
@@ -203,7 +216,6 @@ char show_title(void) {
 
 
   /* Help section 3 */
-#define LINE_HELP_3 (LINE_HELP_2 + 60)
   draw_text("TURN VALVE. OIL&LEAKS EXPLODE! PUSH EXIT", scr_mem + LINE_HELP_3 + 0);
 
   POKE(scr_mem + (LINE_HELP_3 + 40) + 1, PIPE_LEFT_RIGHT);
@@ -219,18 +231,15 @@ char show_title(void) {
   POKE(scr_mem + (LINE_HELP_3 + 40) + 17, DOOR);
 
   /* Control instructions */
-#define LINE_CONTROLS (LINE_HELP_3 + 60)
   show_controls();
   draw_text("TO SPRAY.", scr_mem + LINE_CONTROLS + 80 + 16);
 
   /* Title screen control instructions */
-#define LINE_START (LINE_CONTROLS + 120)
   draw_text("START/FIRE: BEGIN - OPTION: SWAP STICKS", scr_mem + LINE_START + 0);
   draw_text_inv("START", scr_mem + LINE_START + 0);
   draw_text_inv("FIRE", scr_mem + LINE_START + 6);
   draw_text_inv("OPTION", scr_mem + LINE_START + 20);
 
-#define LINE_LEVEL (LINE_START + 40)
 #ifdef DISK
   draw_text("SELECT: STARTING LEVEL -- - HELP/?: INFO", scr_mem + LINE_LEVEL);
   draw_text_inv("SELECT", scr_mem + LINE_LEVEL);
@@ -246,7 +255,6 @@ char show_title(void) {
   draw_number(level, 2, scr_mem + level_pos);
 
   /* High score */
-#define LINE_HIGH (LINE_LEVEL + 40)
 #ifdef DISK
   draw_text("HIGH SCORE: ------ --- - H: HIGH SCORES", scr_mem + LINE_HIGH + 0);
   draw_text_inv("H", scr_mem + LINE_HIGH + 25);
@@ -260,7 +268,6 @@ char show_title(void) {
   draw_text(high_score_name, scr_mem + hs_pos + 7);
 
   /* Version & Date: */
-#define LINE_VERSION (LINE_HIGH + 40)
   draw_text("VERSION: ", scr_mem + LINE_VERSION);
   draw_text(VERSION, scr_mem + LINE_VERSION + 9);
   draw_text(DATE, scr_mem + LINE_VERSION + 40 - strlen(DATE));

@@ -555,45 +555,43 @@ unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) 
   return 1;
 }
 
-
-void game_dlist = {
-  DL_BLK8,
-  DL_BLK8,
-  DL_BLK4,
-
-  DL_LMS(DL_GRAPHICS2),
-  scr_mem,
-  DL_BLK1,
-
-  DL_GRAPHICS0,
-
-  DL_DLI(DL_BLK1),
-
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_DLI(DL_GRAPHICS2),
-  DL_GRAPHICS2,
-
-  DL_JVB,
-  &dlist
-};
-
 /* Set up the display list for the game screen,
    and enable the DLI */
 void setup_game_screen(void) {
+  unsigned char i, idx;
+  int scr_adr;
   OS.sdmctl = 0;
 
   bzero(scr_mem, 1024);
 
   /* Generate a display list... */
-  memcpy(dlist, &game_dlist, sizeof(game_dlist));
+  dlist[0] = DL_BLK8;
+  dlist[1] = DL_BLK8;
+  dlist[2] = DL_BLK4;
+
+  dlist[3] = DL_LMS(DL_GRAPHICS2);
+  dlist[4] = (int) scr_mem & 0xFF;
+  dlist[5] = (int) scr_mem >> 8;
+  dlist[6] = DL_BLK1;
+
+  dlist[7] = DL_GRAPHICS0;
+
+  dlist[8] = DL_DLI(DL_BLK1);
+
+  scr_adr = scr_mem + 60;
+  idx = 9;
+  for (i = 0; i < 11; i++) {
+    dlist[idx++] = DL_DLI(DL_GRAPHICS1);
+    dlist[idx++] = DL_LMS(DL_GRAPHICS1);
+    dlist[idx++] = scr_adr & 0xFF;
+    dlist[idx++] = scr_adr >> 8;
+    scr_adr += 20;
+  }
+
+  dlist[idx++] = DL_JVB;
+  dlist[idx++] = (int) dlist & 0xFF;
+  dlist[idx] = (int) dlist >> 8;
+
   OS.sdlst = dlist;
 
   /* Set up color & font values for DLI */
