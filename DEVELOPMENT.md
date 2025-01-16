@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2024-07-17
+Developed 2023-08-13 - 2024-01-15
 
 ------------------------------------------------------------------------
 
@@ -64,22 +64,34 @@ files in the [`fonts/`](fonts/) subdirectory.)
 You'll notice large mode 7 text used to display the "FIREFIGHTER" title at the
 top (and other messages between levels during the game).  This is acheived by
 _not_ offsetting the character set at first.  Instead, it happens during a
-Display List Interrupt (DLI), which also changes some colors in the
-palette, including handling the fire and gas leak color cycling.
-The font animation happens here, as well -- so any game loop slowdown that may
-happen has no effect on these things.
+Display List Interrupt (DLI) routine, which also changes some colors in the
+palette.  The font animation happens here, as well -- so any game loop slowdown
+that may happen has no effect on these things.
 
-One byte in Page 6 is used to tell the DLI where the font's base is (there may
-be a better way of handling this?), and it uses the `RTCLOK` timer register,
-updated by the OS each Vertical Blank Interrupt (VBI) to animate.
-(Note: I don't use any of my own VBIs in this game.)
+One byte in Page 6 is used to tell the DLI routine where the font's base is
+(there may be a better way of handling this?), and it uses the `RTCLOK` timer
+register, which is updated by the OS during each Vertical Blank Interrupt (VBI),
+to flip between the two character sets, and hence cause the shapes to animate.
 
 Another byte in Page 6 is used to let the DLI change the background color of
 the game area, based on events (e.g., flashing when an oil barrel explodes).
-(See [`dli.c`](src/dli.c).  Note: This is the only hand-coded
-6502 assembly language in this game.  Everything else is in C.)
+(See [`dli.c`](src/dli.c).  Note: This is among the only hand-coded
+6502 assembly language in this game.  Almost everything else is in straight C.)
+
+A second DLI routine exists which simply alters the color of the fire once
+every few scanlines (changing the `COLPF0` register, and then hitting the
+`WSYNC` register to wait for a horizontal sync), which gives the flames and
+gas leaks on the screen the "Atari Rainbow" effect.
+
+At the very end of the first DLI routine, the Display List Interrupt
+routine vector (`VDSLST`) is updated to point to the second DLI routine.
+The game has its own small Vertical Blank Interrupt (VBI) exists which
+simply sets the DLI vector back to the first DLI routine before the screen
+refreshes from the top, so the main color register and character set
+animation effect takes place.
 
 Note: Currently, no Player/Missile Graphics ("sprites") are used in the game.
+(They are used in the splash screen.)
 
 ## Sound
 
