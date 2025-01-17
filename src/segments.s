@@ -4,16 +4,16 @@
 .segment	"SCRMEM"
 _scr_mem:
 
-	.export		_font1_data
-.segment	"FONT1"
-_font1_data:
-	.incbin "fonts/fire1.fnt"
+	.export		_fonttext_data
+.segment	"FONTTEXT"
+_fonttext_data:
+	.incbin "fonts/firetext.fnt"
 	.code
 
-	.export		_font2_data
-.segment	"FONT2"
-_font2_data:
-	.incbin "fonts/fire2.fnt"
+	.export		_fontshap_data
+.segment	"FONTSHAP"
+_fontshap_data:
+	.incbin "fonts/fireshap.fnt"
 	.code
 
 	.export		_levels_data

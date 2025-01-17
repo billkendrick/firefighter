@@ -5,15 +5,13 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-01-15
+  2023-08-13 - 2025-01-17
 */
 
 #include <atari.h>
 #include "dli.h"
 
 void * OLDVEC;
-
-extern unsigned char font1_data[];
 
 void dli2(void);
 
@@ -28,6 +26,7 @@ void dli(void) {
   asm("lsr");
   asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
   asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
+  asm("adc #2");
   asm("sta %w", (unsigned)&ANTIC.chbase);
 
   /* Different color palette for the game area */
@@ -68,8 +67,8 @@ void dli2(void) {
   asm("lsr");
   asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
   asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
+  asm("adc #2");
   asm("sta %w", (unsigned)&ANTIC.chbase);
-
 
   asm("lda %w", (unsigned)&OS.rtclok[2]);
   asm("lsr");
@@ -103,11 +102,11 @@ void dli2(void) {
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
   asm("lda %w", (unsigned)&OS.rtclok[2]);
-  asm("adc #4");
   asm("lsr"); // Slow it down
   asm("lsr");
   asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
   asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
+  asm("adc #2");
   asm("sta %w", (unsigned)&ANTIC.chbase);
 
   asm("pla");

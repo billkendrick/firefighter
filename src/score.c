@@ -29,7 +29,7 @@
   saving the single high score & name (along with settings)
   to a FujiNet AppKey.
 
-  2023-08-27 - 2024-07-17
+  2023-08-27 - 2025-01-17
 */
 
 #include <string.h>
@@ -61,7 +61,7 @@ unsigned char fade[16] = {
 };
 
 extern unsigned char * dlist;
-extern unsigned char font1_data[];
+extern unsigned char fonttext_data[];
 #endif
 
 
@@ -383,7 +383,7 @@ void show_high_score_table(char highlight) {
   OS.color4 = 0x42;
 
   OS.chbas = 0xE0; // OS ROM default character set
-  OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
+  OS.chbas = (unsigned char) ((unsigned int) fonttext_data / 256);
 
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 

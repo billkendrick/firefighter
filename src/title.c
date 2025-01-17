@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-01-15
+  2023-08-13 - 2025-01-17
 */
 
 #include <atari.h>
@@ -19,7 +19,8 @@
 #include "score.h"
 #include "config.h"
 
-extern unsigned char font1_data[];
+extern unsigned char fonttext_data[];
+extern unsigned char fontshap_data[];
 extern unsigned char scr_mem[];
 extern unsigned char levels_data[];
 extern unsigned char * dlist;
@@ -130,8 +131,8 @@ char show_title(void) {
   OS.sdlst = dlist;
 
   /* Set character set */
-  OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
-  POKE(0x600, OS.chbas + 2);
+  OS.chbas = (unsigned char) ((unsigned int) fonttext_data / 256);
+  POKE(0x600, (unsigned char) ((unsigned int) fontshap_data / 256));
 
   /* Set color palette */
   OS.color0 = 0x52;

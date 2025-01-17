@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2025-01-15
+  2023-08-15 - 2025-01-17
 */
 
 #include <atari.h>
@@ -23,7 +23,8 @@
 #define EXIT_CNT 3
 
 /* External memory pointers we need */
-extern unsigned char font1_data[];
+extern unsigned char fonttext_data[];
+extern unsigned char fontshap_data[];
 extern unsigned char levels_data[];
 extern unsigned char scr_mem[];
 extern unsigned char * dlist;
@@ -578,7 +579,7 @@ void setup_game_screen(void) {
 
   dlist[8] = DL_DLI(DL_BLK1);
 
-  scr_adr = scr_mem + 60;
+  scr_adr = (int) scr_mem + 60;
   idx = 9;
   for (i = 0; i < 11; i++) {
     dlist[idx++] = DL_DLI(DL_GRAPHICS1);
@@ -595,9 +596,9 @@ void setup_game_screen(void) {
   OS.sdlst = dlist;
 
   /* Set up color & font values for DLI */
-  OS.chbas = (unsigned char) ((unsigned int) font1_data / 256);
+  OS.chbas = (unsigned char) ((unsigned int) fonttext_data / 256);
 
-  POKE(0x600, OS.chbas + 2);
+  POKE(0x600, (unsigned char) ((unsigned int) fontshap_data / 256));
 
   OS.color0 = 0x52;
   OS.color1 = 0x14;
