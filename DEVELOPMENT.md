@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2024-01-15
+Developed 2023-08-13 - 2024-01-17
 
 ------------------------------------------------------------------------
 
@@ -39,56 +39,103 @@ also began adding the in-game objects.
 
 ## Graphics
 
-I opted to use ANTIC mode 7 (aka `GRAPHICS 2`), the mode with very large text
-(20 characters tall by 12 characters wide), where each character is a single
-color, with one of our colors possible, depending on the two high-bits of the
-screen data.  This means only 64 shapes are available.  No inverse-video
-(inverted pixels) are possible, either.  (Compare to regular 40 by 24 text mode
-(aka `GRAHICS 0`), which allows for 128 shapes, plus inverse-video versions.)
+### Tile Graphics
 
-However, when setting the `CHBASE` register (or the OS's `CHBAS` shadow) to
-tell the Atari where in memory to look for character graphics (the "font"),
+Originally, I opted to use mode 7 of the Atari's ANTIC graphics processor
+(aka `GRAPHICS 2`).  This mode generates very large text -- 20 characters wide
+by 12 characters tall -- with each character being 8x8 pixels of a single color,
+with one of four colors possible, depending on the two high-bits of the screen data.
+
+Since 256 ÷ 4 = 64, this means only 64 shapes (of the 128 possible in a charater
+set) are available to use in a mode 7 line.  (No inverse-video (inverted pixels)
+are possible, either.  Compare this to ANTIC mode 2, the regular 40 by 24 text mode
+(aka `GRAHICS 0`), which allows for 128 shapes, plus inverse-video versions,
+but no colors.)
+
+However, when setting the ANTIC chip's `CHBASE` register (or the OS's `CHBAS` shadow
+register) to tell the Atari where in memory to look for character graphics (the "font"),
 it is possible to offset the character set page by two, which causes the
-ANTIC 7 parts of the screen to use the *latter* half of the character set.
-The small text, ANTIC mode 2 (aka `GRAPHICS 0`) continues to use the full set.
-Therefore, while I'm limited to only uppercase characters the small mode 2 text,
-and no text at all (only game tile shapes) in the large mode 7 text, this means
-I can get away with only a *single* 1KB character set for all of my needs!
+ANTIC 7 (as well as ANTIC 6, aka `GRAPHICS 1`) parts of the screen to use
+the *latter* half of the character set.  The small text modes, such as
+ANTIC mode 2 (aka `GRAPHICS 0`), continue to use the full character set.
 
-In reality, I have two character sets, and flip between them every few frames
-(screen refreshes) to get some animation -- fire burning, gas leaks and
-water spraying, and workers flailng their limbs.  So in the end, 2KB of space
-is used for all of the character data.  (See the `fire1.fnt` and `fire2.fnt`
-files in the [`fonts/`](fonts/) subdirectory.)
+Therefore, in the earlier releases of the game, although I was limited to only
+uppercase characters for the small mode 2 text, and no alphanumeric characters at all
+(only game tile shapes) in the large mode 7 text, this meant I was able to get
+away with only a *single* 1KB character set for all of my needs!  (Actually, a pair
+of them; see below.)
 
-You'll notice large mode 7 text used to display the "FIREFIGHTER" title at the
-top (and other messages between levels during the game).  This is acheived by
-_not_ offsetting the character set at first.  Instead, it happens during a
-Display List Interrupt (DLI) routine, which also changes some colors in the
-palette.  The font animation happens here, as well -- so any game loop slowdown
-that may happen has no effect on these things.
+### Higher Resolution Via ANTIC Tricks
 
-One byte in Page 6 is used to tell the DLI routine where the font's base is
-(there may be a better way of handling this?), and it uses the `RTCLOK` timer
-register, which is updated by the OS during each Vertical Blank Interrupt (VBI),
-to flip between the two character sets, and hence cause the shapes to animate.
+However, I later decided to change the game screen to ANTIC mode 6 (aka `GRAPHICS 1`),
+which is very similar but each line is half as tall, resulting in twice as
+many lines (i.e., a screen that is 20 characters wide by 24 characters tall).
+By using *two* rows of text per row of the game map, this allowed for the
+shapes to be composed to twice as many pixels: 8x16 instead of 8x8.
+
+Since this requires twice as many characters, but only 64 are available,
+I use Display List Interrupt (DLI) routines, along with *two* character
+sets -- one for the top half of the tile shapes, and one for the bottom -- and
+switching between them every other row.
+
+Also, twice as many rows of tiles will require twice as much screen memory, as
+well as having to write two bytes every time a shape must be drawn onto the map.
+However, the characters on even rows must be identical to the characters
+on the odd rows above them, for the two halves of the tiles to appear
+correctly; they must be the two halves of the *same* tile.
+
+This allowed me to take advantage of the ANTIC Display List's "Load Memory Scan"
+(LMS) instruction, instructing it to reload the same row of screen data
+every other line.  In other words, every row of the map data appears twice in a
+row on the screen: rows 1 and 2 of the screen both show row 1 of the map; rows
+3 and 4 of the screen both show row 2 of the map; etc.
+
+By combining alternating character sets (via DLI) and repeating screen
+data (via LMS), every odd row shows the "top half" of a tile shape, and
+every even row shows the "bottom half".  Only 20 * 11 bytes of screen
+memory are needed, and the game logic continues to only need concern itself
+with a map that's 20x11 tiles in size.
+
+The Atari's powerful ANTIC graphics chip does the heavy lifting to display
+the tile shapes with greater detail than a plain ANTIC mode 7 display could.
+Basically, the game went from looking like it was made of 160x96 pixels, to
+looking like it was 160x192!
+
+You might notice that the large mode 7 text used to display the "FIREFIGHTER"
+title at the top (and other messages between levels during the game) also uses
+the game's special font, but alphanumeric symbols appear (rather than random
+tile shapes from the game).  This is acheived by _not_ offsetting the character
+set at first; it first happens during the initial DLI routine. (That DLI routine
+also also changes some colors in the palette.)
+
+### Display List Interrupt (DLI) Chaining (and Rainbow Fire)
+
+The game in fact contains three DLI routines; the first one changes the color
+palette and changes the character set, and then chains to a second
+DLI routine (by altering the Display List Interrupt Vector, `VDSLST`).
+The second DLI routine set the character set to the one containing the top half
+of the tile set, and also alters one of the color registers every few scan lines,
+to create the "Atari Rainbow" effect for the fire and gas leaks.  It then chains
+to a third DLI routine, which is nearly identical to the second one, but with
+the bottom half of the tile set.  It chains back to the second DLI routine.
+
+In reality, I have two sets of tile shapes, and flip between them every
+few frames (screen refreshes) to get some animation -- fire burning,
+gas leaks and water spraying, and workers flailng their limbs.
+(See the files and documentation in the [`fonts/`](fonts/) subdirectory.)
+
+### Animation and Color Palette
+
+The font animation is handled during a Vertical Blank Interurpt (VBI) routine,
+meaning any game loop slowdown that may happen will have no effect on the
+animation effect.  It does this by setting some bytes (in Page 6 memory)
+which the DLI routines use to decide which character sets to display.
+It also resets the DLI Vector to point to the first DLI.
 
 Another byte in Page 6 is used to let the DLI change the background color of
 the game area, based on events (e.g., flashing when an oil barrel explodes).
 (See [`dli.c`](src/dli.c).  Note: This is among the only hand-coded
 6502 assembly language in this game.  Almost everything else is in straight C.)
-
-A second DLI routine exists which simply alters the color of the fire once
-every few scanlines (changing the `COLPF0` register, and then hitting the
-`WSYNC` register to wait for a horizontal sync), which gives the flames and
-gas leaks on the screen the "Atari Rainbow" effect.
-
-At the very end of the first DLI routine, the Display List Interrupt
-routine vector (`VDSLST`) is updated to point to the second DLI routine.
-The game has its own small Vertical Blank Interrupt (VBI) exists which
-simply sets the DLI vector back to the first DLI routine before the screen
-refreshes from the top, so the main color register and character set
-animation effect takes place.
 
 Note: Currently, no Player/Missile Graphics ("sprites") are used in the game.
 (They are used in the splash screen.)
