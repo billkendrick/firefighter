@@ -348,6 +348,7 @@ void show_high_score_table(char highlight) {
   unsigned char i;
 
   OS.sdmctl = 0;
+  while (ANTIC.vcount < 124);
 
   bzero(scr_mem, 1024);
 

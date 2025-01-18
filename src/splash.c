@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-09-19 - 2023-12-26
+  2023-09-19 - 2025-01-17
 */
 
 #include <atari.h>
@@ -53,6 +53,7 @@ void main(void) {
   int ply;
 
   OS.sdmctl = 0;
+  while (ANTIC.vcount < 124);
   OS.gprior = 0b01000000;
   OS.color4 = 0x30;
 
@@ -196,6 +197,7 @@ T2 = S2, S3, S4, S6
 
   /* Blank the screen (and unset GRAPHICS 9 ANTIC mode), and exit */
   OS.sdmctl = 0;
+  while (ANTIC.vcount < 124);
   OS.gprior = 0;
 
   GTIA_WRITE.gractl = 0;

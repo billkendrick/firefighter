@@ -60,21 +60,21 @@ void title_dlist = {
 
   DL_GRAPHICS0, // Item Row 1 Desc
   DL_DLI(DL_BLK2),
-  DL_GRAPHICS1, // Item Row 1 Images
+  DL_DLI(DL_GRAPHICS1), // Item Row 1 Images
   DL_LMS(DL_GRAPHICS1),
   (scr_mem + LINE_HELP_1 + 40),
   DL_BLK6,
 
   DL_GRAPHICS0, // Item Row 2 Desc
   DL_DLI(DL_BLK2),
-  DL_GRAPHICS1, // Item Row 2 Images
+  DL_DLI(DL_GRAPHICS1), // Item Row 2 Images
   DL_LMS(DL_GRAPHICS1),
   (scr_mem + LINE_HELP_2 + 40),
   DL_BLK6,
 
   DL_GRAPHICS0, // Item Row 3 Desc
   DL_DLI(DL_BLK2),
-  DL_GRAPHICS1, // Item Row 3 Images
+  DL_DLI(DL_GRAPHICS1), // Item Row 3 Images
   DL_LMS(DL_GRAPHICS1),
   (scr_mem + LINE_HELP_3 + 40),
   DL_BLK6,
@@ -123,6 +123,7 @@ char show_title(void) {
   /* FIXME: Screen setup could be moved to a function -bjk 2023.08.22 */
 
   OS.sdmctl = 0;
+  while (ANTIC.vcount < 124);
 
   bzero(scr_mem, 1024);
 
@@ -434,6 +435,15 @@ char show_title(void) {
     }
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && cmd == CMD_PLAY);
 
+  /* Disable DLI & VBI */
+  OS.sdmctl = 0;
+  while (ANTIC.vcount < 124);
+  ANTIC.nmien = NMIEN_VBI;
+
+  OS.critic = 1;
+  OS.vvblkd = OLDVEC;
+  OS.critic = 0;
+
 #if defined(DISK) || defined(FUJINET)
   /* Save current config (disk & fujinet), and high score (fujinet) */
   save_config();
@@ -449,14 +459,6 @@ char show_title(void) {
   POKEY_WRITE.audf2 = 0;
   POKEY_WRITE.audf3 = 0;
   POKEY_WRITE.audf4 = 0;
-
-  /* Disable DLI & VBI */
-  OS.sdmctl = 0;
-  ANTIC.nmien = NMIEN_VBI;
-
-  OS.critic = 1;
-  OS.vvblkd = OLDVEC;
-  OS.critic = 0;
 
   /* (Eat any input) */
   do {

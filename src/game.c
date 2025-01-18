@@ -501,6 +501,7 @@ void start_game(void) {
 
   /* Disable DLI & VBI */
   OS.sdmctl = 0;
+  while (ANTIC.vcount < 124);
   ANTIC.nmien = NMIEN_VBI;
 
   OS.critic = 1;
@@ -561,7 +562,9 @@ unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) 
 void setup_game_screen(void) {
   unsigned char i, idx;
   int scr_adr;
+
   OS.sdmctl = 0;
+  while (ANTIC.vcount < 124);
 
   bzero(scr_mem, 1024);
 
@@ -573,17 +576,17 @@ void setup_game_screen(void) {
   dlist[3] = DL_LMS(DL_GRAPHICS2);
   dlist[4] = (int) scr_mem & 0xFF;
   dlist[5] = (int) scr_mem >> 8;
-  dlist[6] = DL_BLK1;
+  dlist[6] = DL_DLI(DL_BLK1);
 
   dlist[7] = DL_GRAPHICS0;
 
-  dlist[8] = DL_DLI(DL_BLK1);
+  dlist[8] = DL_BLK1;
 
   scr_adr = (int) scr_mem + 60;
   idx = 9;
   for (i = 0; i < 11; i++) {
     dlist[idx++] = DL_DLI(DL_GRAPHICS1);
-    dlist[idx++] = DL_LMS(DL_GRAPHICS1);
+    dlist[idx++] = DL_DLI(DL_LMS(DL_GRAPHICS1));
     dlist[idx++] = scr_adr & 0xFF;
     dlist[idx++] = scr_adr >> 8;
     scr_adr += 20;
