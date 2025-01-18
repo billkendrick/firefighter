@@ -389,7 +389,7 @@ void start_game(void) {
     if (bonus_tick == 50 && bonus > 0) {
       bonus_tick = 0;
       bonus -= 100;
-      draw_score();
+      draw_number(bonus, 6, scr_mem + 20 + 29);
     }
 
     /* Tick down civilian death grace period */
@@ -515,19 +515,20 @@ void start_game(void) {
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 }
 
-/* Draw a water spray, if possible. If touching fire,
-   the fire will be diminished. Return whether or not
-   we drew anything (each spray is made of a narrow
-   tip shape near the player, and three other shapes
-   beyond that; we'll avoid drawing those other three
-   if the first part failed to draw, to avoid being
-   able to spray through solid objects!i
-
-   @param unsigned char x - X position to [attempt to] draw
-   @param unsigned char y - Y position to [attempt to] draw
-   @param unsigned char want_shape - water shape to [attempt to] draw
-   @return boolean 1 if it was drawn, 0 otherwise (e.g., obstacle, fire, etc.)
-*/
+/**
+ * Draw a water spray, if possible. If touching fire,
+ * the fire will be diminished. Return whether or not
+ * we drew anything (each spray is made of a narrow
+ * tip shape near the player, and three other shapes
+ * beyond that; we'll avoid drawing those other three
+ * if the first part failed to draw, to avoid being
+ * able to spray through solid objects!i
+ *
+ * @param unsigned char x - X position to [attempt to] draw
+ * @param unsigned char y - Y position to [attempt to] draw
+ * @param unsigned char want_shape - water shape to [attempt to] draw
+ * @return boolean 1 if it was drawn, 0 otherwise (e.g., obstacle, fire, etc.)
+ */
 unsigned char spray(unsigned char x, unsigned char y, unsigned char want_shape) {
   unsigned char shape;
 
@@ -800,14 +801,15 @@ void cellular_automata(void) {
   }
 }
 
-/* Given a broken pipe at a position on the screen,
-   [attempt to] draw a gas leak shape, or a blank,
-   depending on the state of all valves on the screen.
-
-   @param signed char x - X position to [attempt to] draw/erase gas leak
-   @param signed char y - Y position to [attempt to] draw/erase gas leak
-   @param char shape - gas leak shape to [attempt to] draw there
-*/
+/**
+ * Given a broken pipe at a position on the screen,
+ * [attempt to] draw a gas leak shape, or a blank,
+ * depending on the state of all valves on the screen.
+ *
+ * @param signed char x - X position to [attempt to] draw/erase gas leak
+ * @param signed char y - Y position to [attempt to] draw/erase gas leak
+ * @param char shape - gas leak shape to [attempt to] draw there
+ */
 void broken_pipe(signed char x, signed char y, char shape) {
   char c;
 
@@ -853,12 +855,13 @@ char pipe_corner[16] = {
 };
 
 
-/* Create an explosion of fire at the given position
-   (occurs when fire touches oil barrels or gas leaks)
-
-   @param char x - X position for explosion
-   @param char y - Y position for explosion
-*/
+/**
+ * Create an explosion of fire at the given position
+ * (occurs when fire touches oil barrels or gas leaks)
+ *
+ * @param char x - X position for explosion
+ * @param char y - Y position for explosion
+ */
 void explode(char x, char y) {
   char shape, flam;
 
@@ -906,14 +909,15 @@ void explode(char x, char y) {
   exploding = 15;
 }
 
-/* Determines whether moving a given direction from
-   a particular position is still in-bounds
-
-   @param unsigned char x - X position from which to test
-   @param unsigned char y - Y position from which to test
-   @param unsigned char dir - direction (0-7; see dir_x[] & dir_y[]) to test
-   @return unsigned char boolean whether the new position is in bounds
-*/
+/**
+ * Determines whether moving a given direction from
+ * a particular position is still in-bounds
+ * 
+ * @param unsigned char x - X position from which to test
+ * @param unsigned char y - Y position from which to test
+ * @param unsigned char dir - direction (0-7; see dir_x[] & dir_y[]) to test
+ * @return unsigned char boolean whether the new position is in bounds
+ */
 unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir) {
   signed char dx, dy;
 
@@ -925,15 +929,16 @@ unsigned char valid_dir(unsigned char x, unsigned char y, unsigned char dir) {
       (dy == 1 && y == (LEVEL_H - 1)));
 };
 
-/* Return the flammability of an object; used to determine
-   how (and if) fire spreads
-
-   @param unsigned char c - Object shape to test for flammability
-   @param unsigned char - Fire shape to draw on the screen
-     (FIRE_SM, FIRE_MD, or FIRE_LG),
-     or FIRE_INFLAM if the shape is not flammable (don't spread fire),
-     or FIRE_XLG if the shape is explosive
-*/
+/**
+ * Return the flammability of an object; used to determine
+ * how (and if) fire spreads
+ *
+ * @param unsigned char c - Object shape to test for flammability
+ * @param unsigned char - Fire shape to draw on the screen
+ *   (FIRE_SM, FIRE_MD, or FIRE_LG),
+ *   or FIRE_INFLAM if the shape is not flammable (don't spread fire),
+ *   or FIRE_XLG if the shape is explosive
+ */
 unsigned char flammable(unsigned char c) {
   if (c == OIL || c == GASLEAK_RIGHT || c == GASLEAK_LEFT || c == GASLEAK_UP || c == GASLEAK_DOWN) {
     /* Oil barrel and gas leaks cause an explosion */
@@ -974,16 +979,17 @@ unsigned char flammable(unsigned char c) {
   }
 }
 
-/* Set sound parameters
-   @param char p - Starting pitch (0-255)
-   @param char pch - Pitch delta
-     (negative for higher, positive for lower, zero for no change)
-   @param char dist - Distortion (as high nybble)
-     (e.g., (10<<4) aka 160 aka 0xA0 for 'pure' tone (square wave)
-   @param char vol - Starting volume (0-15)
-   @param char volch - Volume change; how fast to decrease volume
-     (note: always _positive_)
-*/
+/**
+ * Set sound parameters
+ * @param char p - Starting pitch (0-255)
+ * @param char pch - Pitch delta
+ *   (negative for higher, positive for lower, zero for no change)
+ * @param char dist - Distortion (as high nybble)
+ *   (e.g., (10<<4) aka 160 aka 0xA0 for 'pure' tone (square wave)
+ * @param char vol - Starting volume (0-15)
+ * @param char volch - Volume change; how fast to decrease volume
+ *   (note: always _positive_)
+ */
 void set_sound(char p, char pch, char dist, char vol, char volch) {
   hit_pitch = p;
   hit_pitch_change = pch;
@@ -1040,7 +1046,8 @@ void level_end_bonus(void) {
 
     draw_text("SAFETY BONUS: ------", scr_mem);
     draw_number(bonus, 6, scr_mem + 14);
-    draw_score();
+    draw_number(score, 6, scr_mem + 20 + 16);
+    draw_number(bonus, 6, scr_mem + 20 + 29);
     flash();
     pause();
 
@@ -1082,7 +1089,7 @@ void pause(void) {
 /* Notes to play in a scale for the tally sound effect.
    (https://www.atarimagazines.com/compute/issue34/112_1_16-BIT_ATARI_MUSIC.php)
 */
-unsigned char tally_sound_notes[22] = {
+unsigned char tally_sound_notes[15] = {
   243, // C (octave 3)
   217, // D
   193, // E
@@ -1098,6 +1105,7 @@ unsigned char tally_sound_notes[22] = {
   72,  // A
   64,  // B
   60,  // C (octave 5)
+/*
   53,  // D
   47,  // E
   45,  // F
@@ -1105,12 +1113,14 @@ unsigned char tally_sound_notes[22] = {
   35,  // A
   31,  // B
   30,  // C (octave 6)
+*/
 };
 
-/* Bonus score tally sequence (used by end-of-level bonus sequence)
-   @param int x - X position to draw bonus score for countdown effect
-   @param int deduct - How quickly to deduct points from bonus during tally
-*/
+/**
+ * Bonus score tally sequence (used by end-of-level bonus sequence)
+ * @param int x - X position to draw bonus score for countdown effect
+ * @param int deduct - How quickly to deduct points from bonus during tally
+ */
 void bonus_tally(int x) {
   int deduct;
   unsigned char snd_count;
@@ -1123,17 +1133,16 @@ void bonus_tally(int x) {
   while (bonus >= deduct) {
     bonus = bonus - deduct;
     score = score + deduct;
-    draw_score();
     draw_number(bonus, 6, scr_mem + x);
+    draw_number(score, 6, scr_mem + 20 + 16);
+    draw_number(bonus, 6, scr_mem + 20 + 29);
 
     POKEY_WRITE.audf1 = tally_sound_notes[snd_count];
-    POKEY_WRITE.audc1 = 0xA0 + (OS.rtclok[3] & 0x0F);
-    POKEY_WRITE.audf2 = tally_sound_notes[snd_count] + 1;
-    POKEY_WRITE.audc2 = 0xA0 + ((OS.rtclok[3] & 0x0F) >> 1);
+    POKEY_WRITE.audc1 = 0xAA;
+//    POKEY_WRITE.audf2 = tally_sound_notes[snd_count] + 1;
+//    POKEY_WRITE.audc2 = 0xA4;
 
     snd_count++;
-
-    while (ANTIC.vcount < 124);
   }
   quiet();
 
@@ -1142,7 +1151,8 @@ void bonus_tally(int x) {
   bonus = 0;
 
   // Show the final score, and zeroed-out bonus
-  draw_score();
+  draw_number(score, 6, scr_mem + 20 + 16);
+  draw_number(bonus, 6, scr_mem + 20 + 29);
   draw_text("000000", scr_mem + x);
 }
 
@@ -1158,17 +1168,18 @@ void quiet(void) {
   POKEY_WRITE.audc4 = 0;
 }
 
-/* Reduce count of civilians.  If it drops to zero, then show
-   a hint to the player to go to the exit and push into it.
-
-   @param char why reason the civilian is gone (rescued, or died)
-*/
+/**
+ * Reduce count of civilians.  If it drops to zero, then show
+ * a hint to the player to go to the exit and push into it.
+ *
+ * @param char why reason the civilian is gone (rescued, or died)
+ */
 void drop_civilians(char why) {
   civilians_remaining--;
 
   if (why == CIVILIAN_DIED) {
     civilians_died++;
-    draw_score();
+    draw_number(civilians_died, 1, scr_mem + 20 + 38);
   }
 
   /* NOTE: If this is changed, update the README.md! */
@@ -1185,17 +1196,18 @@ void drop_civilians(char why) {
   }
 }
 
-/* Try moving, breaking things, or pushing things based on
-   controller input.  If we do not succeed, the caller
-   will try other variations, permitting e.g., a down+right
-   push into the top of a horizontal wall to act as a rightward
-   movement along the wall; "sliding" across it, in other words.
-
-   @param unsigned char want_x - X of player positon we're trying to move into
-   @param unsigned char want_y - Y of {ditto}
-   @param unsigned char push_x - X of position ahead of user, for pushing objects
-   @param unsinged char push_y - Y of {ditto}
-   @return unsigned char boolean - did the attempt succeed?
+/**
+ * Try moving, breaking things, or pushing things based on
+ * controller input.  If we do not succeed, the caller
+ * will try other variations, permitting e.g., a down+right
+ * push into the top of a horizontal wall to act as a rightward
+ * movement along the wall; "sliding" across it, in other words.
+ *
+ * @param unsigned char want_x - X of player positon we're trying to move into
+ * @param unsigned char want_y - Y of {ditto}
+ * @param unsigned char push_x - X of position ahead of user, for pushing objects
+ * @param unsinged char push_y - Y of {ditto}
+ * @return unsigned char boolean - did the attempt succeed?
 */
 unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char push_x, unsigned char push_y) {
   unsigned char shape, shape2;
@@ -1218,7 +1230,7 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
       POKE(scr_mem + 0, ']' + 32);
       set_sound(20, 0, 0xA0, 14, 2);
       score += SCORE_AX_COLLECT;
-      draw_score();
+      draw_number(score, 6, scr_mem + 20 + 16);
     }
   } else if (shape == CRATE || shape == CRATE_BROKEN || shape == OIL || shape == CIVILIAN) {
     /* Hitting a crate, oil barrel, or civilian */
@@ -1233,7 +1245,7 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
       } else {
         score = 0;
       }
-      draw_score();
+      draw_number(score, 6, scr_mem + 20 + 16);
     } else {
       /* No ax, or not a crate? See whether we can push it */
 
@@ -1273,7 +1285,7 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
     if (score >= SCORE_PIPE_BREAK_DEDUCTION) {
       score -= SCORE_PIPE_BREAK_DEDUCTION;
     }
-    draw_score();
+    draw_number(score, 6, scr_mem + 20 + 16);
     set_sound(2, 0, 0xA0, 6, 3);
   } else if (shape == DOOR || shape == EXIT1 || shape == EXIT2) {
     /* Door or exit */
@@ -1287,7 +1299,7 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
         if (shape_at(x, y) == CIVILIAN) {
           set_shape(x, y, BLANK);
           score = score + SCORE_CIVILIAN_RESCUE;
-          draw_score();
+          draw_number(score, 6, scr_mem + 20 + 16);
           drop_civilians(CIVILIAN_SAVED);
           set_sound(50, -2, 0xA0, 15, 3);
         }
@@ -1313,7 +1325,7 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
 /**
  * Ask the user whether they want to abort (quit) the game.
  *
-   @return unsigned char boolean - do they want to quit?
+ * @return unsigned char boolean - do they want to quit?
  */
 unsigned char confirm_done() {
   unsigned char abort = 0, done = 0, old_abort;

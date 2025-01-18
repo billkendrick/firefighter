@@ -305,7 +305,7 @@ char show_title(void) {
 
   /* Title screen main loop: */
   do {
-    OS.color0 = OS.rtclok[2];
+    OS.color0 = ((OS.rtclok[2] >> 2) & 0x0F) | 0x40;
 
     /* Handle siren sound effect */
     siren_ctr1++;

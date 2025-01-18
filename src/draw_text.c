@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2024-07-17
+  2023-08-13 - 2025-01-17
 */
 
 #include <peekpoke.h>
@@ -69,9 +69,12 @@ void draw_text_inv(char * str, unsigned char * dest) {
      (expected to within src_mem[]!!!)
 */
 void draw_number(unsigned long int n, signed char digits, unsigned char * dest) {
+  unsigned char * ddest;
+  ddest = dest + digits - 1;
   do {
-    POKE(dest + digits - 1, (n % 10) + 16);
+    POKE(ddest, (n % 10) + 16);
     n = n / 10;
     digits--;
+    ddest--;
   } while (digits > 0);
 }
