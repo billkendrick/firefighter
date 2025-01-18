@@ -34,6 +34,7 @@ void dli(void) {
   asm("lsr");
   asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
   asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
+  asm("lda $600");
   asm("adc #2");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.chbase);
@@ -90,6 +91,7 @@ void dli1(void) {
   asm("lsr");
   asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
   asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
+  asm("lda $600");
   asm("adc #2");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.chbase);
@@ -159,7 +161,8 @@ void dli2(void) {
   asm("lsr");
   asm("and $606"); // Truncate all but "4" bit (0x04 in normal situations)
   asm("adc $600"); // Add the character set base (is there a better way of doing this? -bjk 2023.08.13)
-  asm("adc #2"); // FIXME
+  asm("lda $600");
+  asm("adc #6"); // FIXME
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.chbase);
 

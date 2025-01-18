@@ -42,19 +42,33 @@ for ($y = 0; $y < 64; $y++) {
 }
 */
 
-for ($set = 0; $set < 2; $set++) {
-  $ffi = fopen("firetext.fnt", "rb");
-  fwrite($fo, fread($ffi, 512));
-  fclose($ffi);
+/*
+  Scan through the bitmap like so:
 
-  for ($row = 0; $row < 2; $row++) {
-    for ($x = 0; $x < 32; $x++) {
-      for ($y = 0; $y < 8; $y++) {
-        $o = $font[($set * 32) + ($row * 16) + $y][$x];
-        fputs($fo, chr($o));
-        // printf("%08s\n", decbin($o));
+   + Rows 00 - 07 -- top half of first chunk of first frame
+   + Rows 16 - 23 -- top half of second chunk of first frame
+   + Rows 08 - 15 -- bottom half of first chunk of first frame
+   + Rows 24 - 31 -- bottom half of second chunk of first frame
+   + Rows 32 - 39 -- top half of first chunk of second frame
+   + Rows 48 - 55 -- top half of second chunk of second frame
+   + Rows 40 - 47 -- bottom half of first chunk of second frame
+   + Rows 56 - 63 -- bottom half of second chunk of second frame
+*/
+for ($frame = 0; $frame < 2; $frame++) {
+  for ($half = 0; $half < 2; $half++) {
+    $ffi = fopen("firetext.fnt", "rb");
+    fwrite($fo, fread($ffi, 512));
+    fclose($ffi);
+
+    for ($chunk = 0; $chunk < 2; $chunk++) {
+      $yy = ($frame * 32) + ($chunk * 16) + ($half * 8);
+
+      for ($x = 0; $x < 32; $x++) {
+        for ($y = 0; $y < 8; $y++) {
+          $o = $font[$yy + $y][$x];
+          fputs($fo, chr($o));
+        }
       }
-      // echo "\n";
     }
   }
 }

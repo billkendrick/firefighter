@@ -573,14 +573,14 @@ void setup_game_screen(void) {
   dlist[1] = DL_BLK8;
   dlist[2] = DL_BLK4;
 
-  dlist[3] = DL_LMS(DL_GRAPHICS2);
+  dlist[3] = DL_LMS(DL_DLI(DL_GRAPHICS2));
   dlist[4] = (int) scr_mem & 0xFF;
   dlist[5] = (int) scr_mem >> 8;
-  dlist[6] = DL_DLI(DL_BLK1);
+  dlist[6] = DL_BLK1;
 
   dlist[7] = DL_GRAPHICS0;
 
-  dlist[8] = DL_BLK1;
+  dlist[8] = DL_DLI(DL_BLK1);
 
   scr_adr = (int) scr_mem + 60;
   idx = 9;
