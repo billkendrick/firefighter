@@ -5,8 +5,11 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-01-15
+  2023-08-13 - 2025-01-17
 */
+
+#define ANIM_ENABLE 8
+#define ANIM_DISABLE 0
 
 extern void * OLDVEC;
 

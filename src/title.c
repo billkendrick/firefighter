@@ -148,7 +148,7 @@ char show_title(void) {
 
   POKE(0x605, 0x0F); // enable fire flicker
 
-  POKE(0x606, 0x04); // enable animation
+  POKE(0x606, ANIM_ENABLE); // enable animation
 
   /* Enable DLI rotuine */
   ANTIC.nmien = NMIEN_VBI;

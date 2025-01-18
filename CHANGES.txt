@@ -10,17 +10,15 @@ http://www.newbreedsoftware.com/firefighter/
    * Walking sound effect (uses GTIA)
    * Aborting (via [Start] or [Esc]) will now
      prompt for confirmation first.
-   * Game over and pause screens stop animation.
-   * Game over screen turns red.
    * Fixed bug in high score initial entry;
      it was ignoring fire button input.
  * Levels:
    * Two more levels
  * Graphics:
    * WIP Higher resolution graphics
-   * TODO Lowercase text
    * Nicer looking fire / gas leak flame color effect
-   * Screen tints red when the "Abort" prompt is up
+   * Screen tints red on game over & abort screens.
+   * Game over, pause, and abort screens stop animation.
  * Help screen / README:
    * Inverse video for some text (e.g. key controls)
    * Updated some out-of-date game UI descriptions

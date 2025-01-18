@@ -444,7 +444,7 @@ void start_game(void) {
 
       POKE(0x605, 0x01); // reduce fire flicker
 
-      POKE(0x606, 0x00); // disable animation
+      POKE(0x606, ANIM_DISABLE); // disable animation
 
       quiet();
 
@@ -463,7 +463,7 @@ void start_game(void) {
 
       POKE(0x605, 0x0F); // enable fire flicker
 
-      POKE(0x606, 0x04); // enable animation
+      POKE(0x606, ANIM_ENABLE); // enable animation
 
       OS.ch = KEY_NONE;
     }
@@ -488,7 +488,7 @@ void start_game(void) {
 
     POKE(0x605, 0x01); // reduce fire flicker
 
-    POKE(0x606, 0x00); // disable animation
+    POKE(0x606, ANIM_DISABLE); // disable animation
 
     /* Eat any input */
     do {
@@ -1320,7 +1320,7 @@ unsigned char confirm_done() {
   unsigned char line_snapshot[20];
 
   quiet();
-  POKE(0x606, 0x00); // disable animation
+  POKE(0x606, ANIM_DISABLE); // disable animation
 
   // Red tint everything
   OS.color0 = 0x42;
@@ -1402,7 +1402,7 @@ unsigned char confirm_done() {
 
   POKE(0x605, 0x0F); // enable fire flicker
 
-  POKE(0x606, 0x04); // enable animation
+  POKE(0x606, ANIM_ENABLE); // enable animation
 
   return abort;
 }
