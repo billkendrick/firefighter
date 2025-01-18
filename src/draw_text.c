@@ -28,13 +28,14 @@ void draw_text(char * str, unsigned char * dest) {
   for (i = 0; str[i] != '\0'; i++) {
     ch = str[i];
 
-    if (ch < 32 || (ch >= 128 && ch < 128 + 32)) {
+    if ((ch & 127) < 32) {
       ch = ch + 64;
-    } else if (ch < 96 || (ch >= 128 && ch < 128 + 96)) {
+    } else if ((ch & 127) < 96) {
       ch = ch - 32;
     }
 
-    POKE((unsigned int) (dest + i), ch);
+    *dest = ch;
+    dest++;
   }
 }
 
@@ -48,16 +49,17 @@ void draw_text_inv(char * str, unsigned char * dest) {
   unsigned char ch;
   unsigned int i;
 
-  for (i = 0; str[i] != '\0'; i++) {
+  for (i = 0; str[i]; i++) {
     ch = str[i];
 
-    if (ch < 32 || (ch >= 128 && ch < 128 + 32)) {
+    if ((ch & 127) < 32) {
       ch = ch + 64;
-    } else if (ch < 96 || (ch >= 128 && ch < 128 + 96)) {
+    } else if ((ch & 127) < 96) {
       ch = ch - 32;
     }
 
-    POKE((unsigned int) (dest + i), ch + 128);
+    *dest = (ch | 128);
+    dest++;
   }
 }
 
@@ -72,9 +74,9 @@ void draw_number(unsigned long int n, signed char digits, unsigned char * dest) 
   unsigned char * ddest;
   ddest = dest + digits - 1;
   do {
-    POKE(ddest, (n % 10) + 16);
+    *ddest = (n % 10) + 16;
     n = n / 10;
     digits--;
     ddest--;
-  } while (digits > 0);
+  } while (digits);
 }
