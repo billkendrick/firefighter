@@ -7,7 +7,7 @@ firefighting action game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Documented 2023-09-25.
+Documented 2023-09-25 - 2025-01-18.
 
 ------------------------------------------------------------------------
 
@@ -15,11 +15,21 @@ This folder contains the two fonts (character sets, aka tile graphics)
 used by this game.  Please see the [Development Docs](../DEVELOPMENT.md)
 for additional details.
 
-The two fonts are nearly identical; some shapes differ to provide
-two frames of animation to certain shapes: fire, water spray,
-gas leaks, the exit sign, and workers.
+Originally, the game used just two character sets, with a few shapes
+that different to provide two frames of animation (fire, water spray,
+gas leaks, the exit sign, and workers).
 
-![Screenshot of the font from 2023-09-25](fire1-fnt-20230925.png)
+-![Screenshot of the font from 2024-01-18](firetext-20250118.png)  
+Earlier font, with 8x8 tile graphics from earlier beta releases of the game.
+
+Later, a larger set of tiles were created that allow for higher resolution
+shapes in the game (8x16 pixels, rather than 8x8 pixels, while taking
+up the same amount of space on a 20x11 map of tiles).  A simple PHP
+script, [`shape_pbm_to_fnt.php`](shape_pbm_to_fnt.php), was created that
+generates four full fonts based on the text font, and a bitmap graphic.
+
+-![Screenshot of the high-resolution tile graphics from 2024-01-18](firefite-hirez-font-20250118.png)  
+High resolution (8x16) tile graphics now used in the game.
 
 The numerals, punctuation, and uppercase characters are meant to
 evoke the letters seen on the side of a firetruck in the US.
