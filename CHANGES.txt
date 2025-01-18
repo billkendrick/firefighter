@@ -15,7 +15,7 @@ http://www.newbreedsoftware.com/firefighter/
  * Levels:
    * Two more levels
  * Graphics:
-   * WIP Higher resolution graphics
+   * Higher resolution graphics
    * Nicer looking fire / gas leak flame color effect
    * Screen tints red on game over & abort screens.
    * Game over, pause, and abort screens stop animation.
