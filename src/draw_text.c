@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-01-17
+  2023-08-13 - 2025-01-18
 */
 
 #include <peekpoke.h>
@@ -22,15 +22,16 @@ extern unsigned char scr_mem[];
      (expected to be within src_mem[]!!!)
 */
 void draw_text(char * str, unsigned char * dest) {
-  unsigned char ch;
+  unsigned char ch, ch2;
   unsigned int i;
 
   for (i = 0; str[i] != '\0'; i++) {
     ch = str[i];
+    ch2 = ch & 127;
 
-    if ((ch & 127) < 32) {
-      ch = ch + 64;
-    } else if ((ch & 127) < 96) {
+    if (ch2 < 32) {
+      ch |= 64;
+    } else if (ch2 < 96) {
       ch = ch - 32;
     }
 
@@ -46,15 +47,16 @@ void draw_text(char * str, unsigned char * dest) {
      (expected to be within src_mem[]!!!)
 */
 void draw_text_inv(char * str, unsigned char * dest) {
-  unsigned char ch;
+  unsigned char ch, ch2;
   unsigned int i;
 
   for (i = 0; str[i]; i++) {
     ch = str[i];
+    ch2 = ch & 127;
 
-    if ((ch & 127) < 32) {
-      ch = ch + 64;
-    } else if ((ch & 127) < 96) {
+    if (ch2 < 32) {
+      ch |= 64;
+    } else if (ch2 < 96) {
       ch = ch - 32;
     }
 
