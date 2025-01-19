@@ -4,14 +4,13 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-10 (2025-01-17):
+0.1-beta-10 (2025-01-18):
  * Gameplay:
+   * Reduced slow-down when many civilians on the screen
    * In-game pause (press [Space] or [P])
    * Walking sound effect (uses GTIA)
-   * Aborting (via [Start] or [Esc]) will now
-     prompt for confirmation first.
-   * Fixed bug in high score initial entry;
-     it was ignoring fire button input.
+   * Aborting (via [Start] or [Esc]) will now prompt for confirmation first.
+   * Fixed bug in high score initial entry; it was ignoring fire button input.
  * Levels:
    * Two more levels
  * Graphics:
@@ -41,9 +40,8 @@ http://www.newbreedsoftware.com/firefighter/
 
 0.1-beta-8 (2023-09-26):
  * Misc:
-   * Stand-alone (non-disk) XEX version with support
-     for reading/writing settings and high score to a
-     FujiNet device's App Key storage
+   * Stand-alone (non-disk) XEX version with support for reading/writing
+     settings and high score to a FujiNet device's App Key storage
    * Added 2019-era design doc scribbles.
    * Added some documentation to the "fonts" folder.
  * Building:

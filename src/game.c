@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2025-01-17
+  2023-08-15 - 2025-01-18
 */
 
 #include <atari.h>
@@ -700,7 +700,7 @@ void draw_score(void) {
    in a checkerboard fashion.)
 */
 void cellular_automata(void) {
-  char x, y;
+  char x, y, nx, ny;
   unsigned shape, shape2, ignited_shape, dir, rand, any_fire;
 
   any_fire = 0;
@@ -722,12 +722,14 @@ void cellular_automata(void) {
         /* Large fire tries to spread */
         dir = POKEY_READ.random % 8;
         if (valid_dir(x, y, dir)) {
-          shape2 = shape_at(x + dir_x[dir], y + dir_y[dir]);
+          nx = x + dir_x[dir];
+          ny = y + dir_y[dir];
+          shape2 = shape_at(nx, ny);
           ignited_shape = flammable(shape2);
           if (ignited_shape == FIRE_XLG) {
-            explode(x + dir_x[dir], y + dir_y[dir]);
+            explode(nx, ny);
           } else if (ignited_shape != FIRE_INFLAM) {
-            set_shape(x + dir_x[dir], y + dir_y[dir], ignited_shape);
+            set_shape(nx, ny, ignited_shape);
           }
         }
         any_fire++;
@@ -735,17 +737,21 @@ void cellular_automata(void) {
         /* Erase water */
         set_shape(x, y, BLANK);
       } else if (shape == CIVILIAN) {
-        signed char want_dir, dist;
+        signed char want_dir;
+        signed char dx, dy;
 
         /* Civilian */
 
         /* If we're near the player, walk towards him */
         want_dir = -1;
-        for (dist = 3; dist >= 2; dist--) {
+        dx = x - ply_x;
+        dy = y - ply_y;
+        if (dx >= -2 && dx <= 2 && dy >= -2 && dy <= 2) {
           for (dir = 0; dir < 8; dir++) {
             if ((x + dir_x[dir] == ply_x || x + dir_x[dir] * 2 == ply_x) &&
                 (y + dir_y[dir] == ply_y || y + dir_y[dir] * 2 == ply_y)) {
               want_dir = dir;
+              break;
             }
           }
         }
