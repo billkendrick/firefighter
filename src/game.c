@@ -1140,8 +1140,8 @@ void bonus_tally(int x) {
     bonus = bonus - deduct;
     score = score + deduct;
     draw_number(bonus, 6, scr_mem + x);
+    memcpy(scr_mem + 20 + 29, scr_mem + x, 6); // draw_number(bonus, 6, scr_mem + 20 + 29);
     draw_number(score, 6, scr_mem + 20 + 16);
-    draw_number(bonus, 6, scr_mem + 20 + 29);
 
     POKEY_WRITE.audf1 = tally_sound_notes[snd_count];
     POKEY_WRITE.audc1 = 0xAA;
@@ -1158,8 +1158,8 @@ void bonus_tally(int x) {
 
   // Show the final score, and zeroed-out bonus
   draw_number(score, 6, scr_mem + 20 + 16);
-  draw_number(bonus, 6, scr_mem + 20 + 29);
   draw_text("000000", scr_mem + x);
+  memcpy(scr_mem + 20 + 29, scr_mem + x, 6); // draw_number(bonus, 6, scr_mem + 20 + 29);
 }
 
 /* Silence all sound channels: */

@@ -76,9 +76,12 @@ void draw_number(unsigned long int n, signed char digits, unsigned char * dest) 
   unsigned char * ddest;
   ddest = dest + digits - 1;
   do {
-    *ddest = (n % 10) + 16;
-    n = n / 10;
+    *ddest = (n % 10) | 16;
+
     digits--;
-    ddest--;
+    if (digits) {
+      n = (n * 0xCCCD) >> 19; /* n = n / 10 */
+      ddest--;
+    }
   } while (digits);
 }

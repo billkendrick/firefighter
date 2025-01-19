@@ -25,7 +25,7 @@ http://www.newbreedsoftware.com/firefighter/
  * Title:
    * Improved title screen
  * Under the hood:
-   * WIP Faster routines to draw text & numbers
+   * Faster routines to draw text & numbers
 
 0.1-beta-9 (2023-10-17):
  * Gameplay:
