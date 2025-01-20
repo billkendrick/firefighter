@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 http://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-10 (2025-01-18):
+0.1-beta-10 (2025-01-20):
  * Gameplay:
    * Reduced slow-down when many civilians on the screen
    * In-game pause (press [Space] or [P])
