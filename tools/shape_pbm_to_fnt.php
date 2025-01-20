@@ -1,8 +1,42 @@
 #!/usr/bin/php
 <?php
+/*
+  Convert a PBM bitmap image into an Atari character set font
 
-$fi = fopen("firefite-hirez-font.pbm", "rb");
-$fo = fopen("fireshap.fnt", "wb");
+  Firefighting game for the Atari 8-bit
+  Bill Kendrick <bill@newbreedsoftware.com>
+  http://www.newbreedsoftware.com/firefighter/
+
+  TODO: Update script so we can use it to generate `firetext.fnt`
+  based on `firetext.pbm`, too.  (Currently only used to create
+  `fireshape.fnt` based on `firefite-hirez-font.pbm` + `firefnt.txt`.)
+
+  Last updated: 2025-01-20
+*/
+
+if ($argc < 3) {
+  fprintf(STDERR, "Usage: %s input.pbm output.fnt [prefix.fnt]\n", $argv[0]);
+  exit(1);
+}
+
+$in_file = $argv[1];
+$out_file = $argv[2];
+if ($argc == 4) {
+  $prefix_file = $argv[3];
+} else {
+  $prefix_file = "";
+}
+
+$fi = fopen($in_file, "rb");
+if ($fi == NULL) {
+  fprintf(STDERR, "Cannot open input file \"%s\"\n", $in_file);
+  exit(1);
+}
+$fo = @fopen($out_file, "wb");
+if ($fo == NULL) {
+  fprintf(STDERR, "Cannot open output file \"%s\"\n", $out_file);
+  exit(1);
+}
 
 $str = fgets($fi);
 $str = fgets($fi);
@@ -56,9 +90,16 @@ for ($y = 0; $y < 64; $y++) {
 */
 for ($frame = 0; $frame < 2; $frame++) {
   for ($half = 0; $half < 2; $half++) {
-    $ffi = fopen("firetext.fnt", "rb");
-    fwrite($fo, fread($ffi, 512));
-    fclose($ffi);
+    if ($prefix_file != "") {
+      $ffi = fopen($prefix_file, "rb");
+      if ($ffi == NULL) {
+        fprintf(STDERR, "Cannot open prefix file (for input) \"%s\"\n", $prefix_file);
+        exit(1);
+      }
+
+      fwrite($fo, fread($ffi, 512));
+      fclose($ffi);
+    }
 
     for ($chunk = 0; $chunk < 2; $chunk++) {
       $yy = ($frame * 32) + ($chunk * 16) + ($half * 8);

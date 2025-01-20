@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2025-01-17
+# 2023-08-13 - 2025-01-20
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -74,6 +74,7 @@ clean-intermediate:
 	-rm data/levels_cmp.dat
 	-rm data/title.gr9
 	-rm data/silh.dat
+	-rm fonts/fireshap.fnt
 	-rm firefths.xex
 	-rm splash.xex
 	-rm firefite-nohighscore.atr
@@ -287,4 +288,9 @@ data/title.gr9:	img-src/title.pgm tools/pgm2gr9.php
 
 data/silh.dat:	img-src/silh.pbm tools/pbm2pmg.php
 	tools/pbm2pmg.php
+
+# Font:
+# -----
+fonts/fireshap.fnt: fonts/firefite-hirez-font.pbm fonts/firetext.fnt tools/shape_pbm_to_fnt.php
+	tools/shape_pbm_to_fnt.php fonts/firefite-hirez-font.pbm fonts/fireshap.fnt fonts/firetext.fnt
 
