@@ -9,7 +9,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 
-# Last updated 2023-09-25
+# Last updated 2025-01-20
 
 # Confirm that we've tagged with the same version
 # number we're bulding it as.  (Makefile "VERSION"
@@ -17,7 +17,7 @@
 
 MAKE_VERSION=`grep "^VERSION=" Makefile | cut -d '=' -f 2`
 README_VERSION=`grep "^### Version: " README.md | cut -d ' ' -f 3`
-TAG=`git tag | tail -1 | sed -e "s/[a-z]/\U&/g"`
+TAG=`git tag | tail -1 | sort -V | sed -e "s/[a-z]/\U&/g"`
 echo "Version in Makefile:  $MAKE_VERSION"
 echo "Version in README.md: $README_VERSION"
 echo "Latest git repo tag:  $TAG"
