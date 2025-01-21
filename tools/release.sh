@@ -17,7 +17,7 @@
 
 MAKE_VERSION=`grep "^VERSION=" Makefile | cut -d '=' -f 2`
 README_VERSION=`grep "^### Version: " README.md | cut -d ' ' -f 3`
-TAG=`git tag | tail -1 | sort -V | sed -e "s/[a-z]/\U&/g"`
+TAG=`git tag | sort -V | tail -1 | sed -e "s/[a-z]/\U&/g"`
 echo "Version in Makefile:  $MAKE_VERSION"
 echo "Version in README.md: $README_VERSION"
 echo "Latest git repo tag:  $TAG"
