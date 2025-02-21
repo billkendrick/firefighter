@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2024-01-17
+Developed 2023-08-13 - 2025-02-20
 
 ------------------------------------------------------------------------
 
@@ -352,6 +352,14 @@ tool to convert to HTML, then the [`w3m`](https://w3m.sourceforge.net/)
 text-based web browser, in `-dump` mode, to convert to 40-column text,
 and finally the [`tr`](https://www.gnu.org/software/coreutils/tr) tool
 to convert Unix end-of-line (EOL) characters to ATASCII.
+
+Although the help text is read from a file on disk, "Firefighter"
+allows you to paginate backwards; that is, navigate to previous pages.
+The "note" and "point" DOS (disk operating system) commands are utilized
+to make this possible.  As each new page is read, the starting location
+of that part of the text is recorded in an array, via "note".  If you
+want to go to a previous page, the "point" operation is used to seek
+to that part of the file, and that page (screen-full) of text is re-read.
 
 ## Splash Screen
 
