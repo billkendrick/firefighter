@@ -361,11 +361,23 @@ on the title screen).  This contains exactly the same content
 as [`README.md`](README.md), but it has been converted from
 Markdown to 40 column plain ATASCII text.
 
+### Markdown to ATASCII
+
 This is done using the [`markdown`](https://daringfireball.net/projects/markdown/)
 tool to convert to HTML, then the [`w3m`](https://w3m.sourceforge.net/)
-text-based web browser, in `-dump` mode, to convert to 40-column text,
-and finally the [`tr`](https://www.gnu.org/software/coreutils/tr) tool
-to convert Unix end-of-line (EOL) characters to ATASCII.
+text-based web browser, in `-dump` mode, to convert to 40-column text.
+
+Text marked as code, using the "\`" (backtick) symbol, appears as
+inverse video text on the Atari.  This is done by first pre-processing
+`README.md` (using the [`tr`](https://www.gnu.org/software/coreutils/tr) tool)
+to convert all backticks to an otherwise unused symbol, "~" (tilde).
+That prevents the code from appearing as `<code>...</code>` in the resulting
+HTML, and instead as `~...~`.  That appears in the final ASCII text file
+as well, which is then processed by the small
+[`tools/txt2atascii.php`](tools/txt2atascii.php) which both converts
+Unix end-of-line (EOL) characters to ATASCII, and manages inverse video.
+
+### Paging Backwards
 
 Although the help text is read from a file on disk, "Firefighter"
 allows you to paginate backwards; that is, navigate to previous pages.
