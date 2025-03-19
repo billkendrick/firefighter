@@ -1,14 +1,14 @@
-# Makefile for firefight
+# Makefile for Firefighter
 #
 # Firefighting game for the Atari 8-bit
 # Bill Kendrick <bill@newbreedsoftware.com>
 # http://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2025-01-20
+# 2023-08-13 - 2025-03-19
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA10
+VERSION=0.1-BETA11
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,

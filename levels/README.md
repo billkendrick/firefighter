@@ -7,7 +7,7 @@ for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Documented 2023.08.18 - 2023.08.22
+Documented 2023-08-18 - 2025-03-19
 
 ------------------------------------------------------------------------
 
@@ -63,10 +63,10 @@ description.
 
 ### Curved
 
- * `{` (open curly brace) -- `PIPE_DOWN_RIGHT` - Pipe corner, connecting down to right
- * `}` (close curly brace) -- `PIPE_DOWN_LEFT` - Pipe corner, connecting down to left
- * `[` (open curly bracket) -- `PIPE_UP_RIGHT` - Pipe corner, connecting up to right
- * `]` (close square bracket) -- `PIPE_UP_LEFT` - Pipe corner, connecting up to left
+ * `{` (open curly brace) -- `PIPE_DOWN_RIGHT` - Pipe corner, connecting down to right (┌)
+ * `}` (close curly brace) -- `PIPE_DOWN_LEFT` - Pipe corner, connecting down to left (┐)
+ * `[` (open curly bracket) -- `PIPE_UP_RIGHT` - Pipe corner, connecting up to right (└)
+ * `]` (close square bracket) -- `PIPE_UP_LEFT` - Pipe corner, connecting up to left (┘)
 
 ### Valves
 
@@ -109,6 +109,7 @@ game.)
  * Broken crates can be destroyed, if you *do* have the ax
  * Regular left/right (horizontal) and up/down (vertical) pipes will
    be broken if you *do* have the ax
+ * Pipes can be broken, if you have the ax
  * Valves can be opened/closed by pushing into them
  * Workers escape if they are adjacent to the firefighter when player pushes
    into a door or exit sign block
@@ -142,3 +143,30 @@ F  #          #OOOO
 
 There is a [level template](LEVEL-TEMPLATE.txt) you can use as a starting
 point.
+
+------------------------------------------------------------------------
+
+# Building Levels:
+
+## Text to Data
+
+All level text files (`levelNNN.txt`) in this directory are read,
+converted to binary data, and assembled into a single file,
+`data/levels.dat`, by the [`level_to_dat.php`](../tools/level_to_dat.php)
+script.
+
+This is handled by the `make` process (via the [`Makefile`](../Makefile)).
+Note: The `LEVEL_FILES` variable in the `Makefile` is used to specify which
+files to include.  In version `0.1-BETA10`, for example, there were only
+12 levels, despite there being level files up to `level050.txt`; 13 through 50
+were placeholders.
+
+## Compression
+
+Then, that file is read and the simple compression process
+(a form of [run-length encoding (RLE)](https://en.wikipedia.org/wiki/Run-length_encoding))
+is applied by the [`level_compress.php`](../tools/level_compress.php) script.
+This results in `data/levels_cmp.dat`, which is what's built
+into the final executable program.
+
+(This step, too, is handled by the `make` process & `Makefile`.)

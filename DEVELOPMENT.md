@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2025-02-20
+Developed 2023-08-13 - 2025-03-18
 
 ------------------------------------------------------------------------
 
@@ -18,15 +18,15 @@ cross development package for 6502-based systems, such as the Atari 8-bit.
 ## Inspiration
 
 In 2019 my children were playing a lot of _Real Heroes: Firefighter_ on
-the Wii.  In the game you navigate (in a 3D first-person perspective), equip
-yourself with tools (ax, hose, etc.), put out fires, and save civilians.
-It inspired me to design a game with similar concepts, but as a top-down
-twin-stick "shooter", like _Robotron: 2084_.  I have a very nice arcade-style
-controller (from Edladdin Controllers) that I use for the Atari 8-bit port
-of that game, and needed an excuse to write a twin-stick game.
-(Also, this isn't my first fire firefighting game; as a kid back in the
-1980s I wrote a game in Atari BASIC where you use a helicopter to put
-out a fire on a skyscraper.)
+the Nintendo Wii game console.  In the game you navigate (in a 3D
+first-person perspective), equip yourself with tools (ax, hose, etc.),
+put out fires, and save civilians.  It inspired me to design a game with
+similar concepts, but as a top-down twin-stick "shooter", like
+_Robotron: 2084_.  I have a very nice arcade-style controller (from
+Edladdin Controllers) that I use for the Atari 8-bit port of that game,
+and needed an excuse to write a twin-stick game. (Also, this isn't my
+first fire firefighting game; as a kid back in the 1980s I wrote a game
+in Atari BASIC where you use a helicopter to put out a fire on a skyscraper.)
 
 Four years later I happened across my copious notes (including some hand-drawn
 pixel art) and decided to finally take a stab at it.  Scans of, and notes about,
@@ -41,16 +41,21 @@ also began adding the in-game objects.
 
 ### Tile Graphics
 
-Originally, I opted to use mode 7 of the Atari's ANTIC graphics processor
-(aka `GRAPHICS 2`).  This mode generates very large text -- 20 characters wide
-by 12 characters tall -- with each character being 8x8 pixels of a single color,
-with one of four colors possible, depending on the two high-bits of the screen data.
+Originally (as seen in the first few beta versions of the game), I opted to use
+mode 7 of the Atari's [ANTIC graphics processor](https://en.wikipedia.org/wiki/ANTIC),
+aka `GRAPHICS 2` in Atari BASIC.
+
+This mode generates very large text -- 20 characters wide by 12 characters tall --
+with each character being 8x8 pixels of a single color.  That totals 160x96 pixels
+on the screen, and hence an appearance similar to ANTIC mode 13 ($D), aka
+`GRAPHICS 7`.  Each character may be one of four colors, based on the two high-bits
+of the screen data.
 
 Since 256 ÷ 4 = 64, this means only 64 shapes (of the 128 possible in a charater
 set) are available to use in a mode 7 line.  (No inverse-video (inverted pixels)
 are possible, either.  Compare this to ANTIC mode 2, the regular 40 by 24 text mode
 (aka `GRAHICS 0`), which allows for 128 shapes, plus inverse-video versions,
-but no colors.)
+but characters may only be a single color.)
 
 However, when setting the ANTIC chip's `CHBASE` register (or the OS's `CHBAS` shadow
 register) to tell the Atari where in memory to look for character graphics (the "font"),
@@ -72,17 +77,20 @@ which is very similar but each line is half as tall, resulting in twice as
 many lines (i.e., a screen that is 20 characters wide by 24 characters tall).
 By using *two* rows of text per row of the game map, this allowed for the
 shapes to be composed to twice as many pixels: 8x16 instead of 8x8.
+(This gives a 160x192 pixel appearance, similar to ANTIC mode 14 ($E),
+known in the Atari 400/800 era as `GRAPHICS 7+` or `GRAPHICS 7½`, and
+in the XL/XE era available as `GRAPHICS 15`.)
 
 Since this requires twice as many characters, but only 64 are available,
 I use Display List Interrupt (DLI) routines, along with *two* character
 sets -- one for the top half of the tile shapes, and one for the bottom -- and
-switching between them every other row.
+switch between them every other row.
 
-Also, twice as many rows of tiles will require twice as much screen memory, as
-well as having to write two bytes every time a shape must be drawn onto the map.
-However, the characters on even rows must be identical to the characters
-on the odd rows above them, for the two halves of the tiles to appear
-correctly; they must be the two halves of the *same* tile.
+Twice as many rows of tiles should require twice as much screen memory, and
+the game would have to write two bytes every time a shape must be drawn onto
+the screen.  However, keep in mind that the characters on even rows must be
+identical to the characters on the odd rows above them (for the two halves of
+the tiles to appear correctly) -- they must be the two halves of the *same* tile.
 
 This allowed me to take advantage of the ANTIC Display List's "Load Memory Scan"
 (LMS) instruction, instructing it to reload the same row of screen data
@@ -119,12 +127,12 @@ to create the "Atari Rainbow" effect for the fire and gas leaks.  It then chains
 to a third DLI routine, which is nearly identical to the second one, but with
 the bottom half of the tile set.  It chains back to the second DLI routine.
 
+### Animation and Color Palette
+
 In reality, I have two sets of tile shapes, and flip between them every
 few frames (screen refreshes) to get some animation -- fire burning,
 gas leaks and water spraying, and workers flailng their limbs.
 (See the files and documentation in the [`fonts/`](fonts/) subdirectory.)
-
-### Animation and Color Palette
 
 The font animation is handled during a Vertical Blank Interurpt (VBI) routine,
 meaning any game loop slowdown that may happen will have no effect on the
@@ -138,7 +146,7 @@ the game area, based on events (e.g., flashing when an oil barrel explodes).
 6502 assembly language in this game.  Almost everything else is in straight C.)
 
 Note: Currently, no Player/Missile Graphics ("sprites") are used in the game.
-(They are used in the splash screen.)
+(They *are* used in the splash screen.)
 
 ## Sound
 
@@ -155,12 +163,16 @@ are audible!
 
 ### General Game Sounds
 
-Various game sounds are played on one of the Atari's four "voices",
-and is handled by a number of variables used to set the pitch,
-initial volume, pitch change (if any), and speed of volume decrease.
-The pitch (if applicable) and volume change once per game loop.
+Various game sounds are played on one of the Atari's
+[POKEY chip](https://en.wikipedia.org/wiki/POKEY)'s four "voices"
+(channels), and is handled by a number of variables used to set the
+pitch, initial volume, pitch change (if any), and speed of volume
+decrease.  The pitch change (if applicable) and volume change occur
+once per game loop.  (Currently, they are not part of the VBI routine,
+which is common for sound and music routines.)
 
-This system is used for the majority of events, which are:
+This system is used for the majority of events that cause
+sound effects.  They are:
 
  * Collecting the ax
  * Pushing crates/oil barrels
@@ -190,8 +202,8 @@ This is a totally random noise sound played on its own dedicated
 ### Footsteps
 
 The footstep sound is handled separately from the POKEY chip voices,
-and is instead generated by the GTIA chip (so on an Atari 400 or 800
-the sound would come from the internal speaker, rather than the
+and is instead generated by the [GTIA chip](https://en.wikipedia.org/wiki/CTIA_and_GTIA)
+(so on an Atari 400 or 800 the sound would come from the internal speaker, rather than the
 TV or monitor).
 
 ## Gameplay
@@ -272,7 +284,8 @@ shapes possible in the game.
 
 See the [levels documentation](levels/README.md) for details.
 
-The script [`level_to_dat.php`](tools/level_to_dat.php) reads the
+The script [`level_to_dat.php`](tools/level_to_dat.php),
+written in [PHP](https://en.wikipedia.org/wiki/PHP), reads the
 individual ASCII text files in the [`levels/`](levels/) directory and
 generates a binary file containing the game's internal representation
 (aka the screen character bytes) of all of the levels.  (A single byte
@@ -282,13 +295,13 @@ starting position is to be.)
 
 ### Level Compression
 
-On the screen shapes that appear also include color data in their highest
-two bits).  However, we never use the same shape in multiple colors;
-e.g., pipes are always green, brick walls and boxes are always red, etc.
+The shapes that appear on the screen also include color data in their
+highest two bits.  However, this game never use the same shape in different
+colors; e.g., pipes are always green, brick walls and boxes are always red, etc.
 
 Also, while we have 64 shapes in our character set to work with
 (in up to 4 colors each) in reality many shapes are not part of the
-level map.  (Half of the 32 characters in the set are used for the
+level map.  (Half of the 64 characters in the set are used for the
 various directions of water spray shapes!)
 
 Therefore, we can strip the highest bits of the level data,
@@ -306,7 +319,8 @@ creates a compressed file.  (As before, a single byte at the
 beginning indicates how many levels there are.  That is followed
 by four-byte sequences for each level, indicating the firefighter's
 starting position, and the offset within the compressed level data
-that each level starts -- they are of course different lengths!)
+that each level starts -- they are of course different lengths!
+Finally, all of the compressed level data follows.)
 
 ## High Score
 
@@ -320,14 +334,14 @@ to write to and read from a simple high score file, "`highscor.dat`".
 
 However, by default the game stores the high score table directly
 onto a pre-defined sector of the disk.  This means there's no "file"
-attached to the data, however, it allow one to easily extract the
-data from the disk image.  (You always look at the same sector,
-in this case 720, and don't need to worry about it moving around
-between releases and dealing with the filesystem; the
-Volume Table of Contents (VTOC).)
+attached to the data.  However, this allows one to easily extract the
+data from the disk image; you always look at the same sector --
+in this case 720 -- and don't need to worry about it moving around
+between releases and dealing with the filesystem (the
+[Volume Table of Contents (VTOC)](https://www.atariarchives.org/iad/chapter2.php))
 
-Why? So the high score table may be "shared" by many players
-over the Internet! If the game disk image is made available to
+Why bother? So that the high score table may be "shared" by multiple
+players over the Internet! If the game disk image is made available to
 users who use a [FujiNet](https://fujinet.online/) device, the
 TNFS server hosting it can be told to grant players write-access
 to *just* the sector containing the high score table (the rest
@@ -379,12 +393,11 @@ by the script [`pgm2gr9.php`](tools/pgm2gr9.php).
 Additionally, the darkest pixels from the image are extracted
 to be used as the firefighter's silhouette, and stored in a
 binary data file.  It is used to create a set of Player/Missile
-Graphics (PMG) objects (aka "sprites") to add a 17th color to the
-splash screen.
+Graphics (PMG) objects (aka "sprites") that appear on the left side
+of the screen, and thus adding a 17th color to the splash screen.
 
 A tiny program acts as the splash screen, loading and displaying
 this picture.  I take advantage of MyDOS's ability to chain
 multiple "autorun" programs (aka `AUTORUN.SYS` in Atari DOS) by
 having it load the splash first (`SPLASH.AR0`), followed by
 the game itself second (`FIREFITE.AR1`).
-
