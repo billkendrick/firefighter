@@ -218,8 +218,17 @@ obj/sio.o:  src/sio.s
 
 # Help Text:
 # ----------
+# * Convert `code` to ~code~, which will become Inverse ATASCII text
+# * Convert ASCII EOL to ATASCII EOL
+# * Convert " * " and " o " bullet glyphs to ATASCII control characters
+#   (circle and diamond graphics, respectively)
 disk/README.txt:	README.md tools/txt2atascii.php
-	cat README.md | tr "\`" "\~" | ${MARKDOWN2HTML} > ${TMP}; ${HTML2TXT} ${TMP} | tools/txt2atascii.php > disk/README.txt
+	cat README.md | tr "\`" "\~" | ${MARKDOWN2HTML} > ${TMP}; \
+		${HTML2TXT} ${TMP} \
+		| tools/txt2atascii.php \
+		| sed -e "s/ \* / \x14 /g" \
+		| sed -e "s/ o / \x60 /g" \
+		> disk/README.txt
 	-rm ${TMP}
 
 
