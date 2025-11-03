@@ -167,11 +167,11 @@ char show_title(void) {
   draw_text("@ FIREFIGHTER! @", scr_mem + 40 + 2);
 
   draw_text("bill kendrick", scr_mem + LINE_BY_1 + 1);
-  /* "2024" */
+  /* "2025" */
   POKE(scr_mem + LINE_BY_1 + 15, 2 + 16 + 64);
   POKE(scr_mem + LINE_BY_1 + 16, 0 + 16 + 64);
   POKE(scr_mem + LINE_BY_1 + 17, 2 + 16 + 64);
-  POKE(scr_mem + LINE_BY_1 + 18, 4 + 16 + 64);
+  POKE(scr_mem + LINE_BY_1 + 18, 5 + 16 + 64);
 
   draw_text(additional_levels[0], scr_mem + LINE_BY_2);
 
