@@ -1,6 +1,6 @@
 # Firefighter
 
-### Version: 0.1-BETA10
+### Version: 0.1-BETA11
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
@@ -29,7 +29,7 @@ A twin-stick firefighting action game for the Atari 8-bit.
 >
 > Level 7 by Edward
 
-Developed 2023-08-13 - 2025-01-15
+Developed 2023-08-13 - 2025-11-03
 
 ------------------------------------------------------------------------
 
@@ -141,7 +141,7 @@ Developed 2023-08-13 - 2025-01-15
 > > > you will leave the room to safety.  (This is the goal of the game!)
 > > >
 > > > Once all workers have left the room (or perished), you can push into
-> > > a door or exit leave the room yourself, and thus end the level.
+> > > a door or exit to leave the room yourself, and thus end the level.
 > > > (See "Completing a Level", below.)
 > >
 > > ### C. Gas Pipes and Valves
@@ -167,7 +167,7 @@ Developed 2023-08-13 - 2025-01-15
 > ## 3. Movable and Destroyable Objects
 >
 > > There are some objects which you may be able to push around the room.
-> > Walk up and push into them any of eight directions and, if there is
+> > Walk up and push into them in any of eight directions and, if there is
 > > nothing in that direction -- it must be a blank space, there may not
 > > be fire, gas leaks, or workers -- it will move to that position
 > > (you will stay in the same spot for a moment).
@@ -205,7 +205,7 @@ Developed 2023-08-13 - 2025-01-15
 >
 > ## 5. Ax
 >
-> > The ax is a collectible object that appear on some levels.
+> > The ax is a collectible object that appears on some levels.
 > > (You start each level without the ax.)  When you touch it, it
 > > will disappear from the room, you'll hear a chime, you'll
 > > receive some points, and an ax icon will appear at the top left.
