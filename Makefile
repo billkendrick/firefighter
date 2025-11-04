@@ -41,10 +41,10 @@ CC65_FLAGS=-O -Os -Oi -Or --static-locals --add-source
 LEVEL_FILES=$(shell seq -f "levels/level%03g.txt" 1 12)
 
 ## Objects
-OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o obj/dli.o
-OBJECTS=obj/firefite.o obj/title.o obj/score.o obj/config.o ${OBJECTS_SHARED}
-OBJECTS_DISK=obj/firefite_disk.o obj/title_disk.o obj/score_disk.o obj/config_disk.o obj/help.o ${OBJECTS_SHARED}
-OBJECTS_FUJINET=obj/firefite_fujinet.o obj/title_fujinet.o obj/score.o obj/config_fujinet.o obj/app_key.o obj/sio.o ${OBJECTS_SHARED}
+OBJECTS_SHARED=obj/segments.o obj/game.o obj/shapes.o obj/draw_text.o
+OBJECTS=obj/firefite.o obj/title.o obj/score.o obj/config.o obj/dli.o ${OBJECTS_SHARED}
+OBJECTS_DISK=obj/firefite_disk.o obj/title_disk.o obj/score_disk.o obj/config_disk.o obj/dli_disk.o obj/help.o ${OBJECTS_SHARED}
+OBJECTS_FUJINET=obj/firefite_fujinet.o obj/title_fujinet.o obj/score.o obj/dli.o obj/config_fujinet.o obj/app_key.o obj/sio.o ${OBJECTS_SHARED}
 
 TMP=tmp-README.html
 
@@ -263,6 +263,12 @@ obj/dli.o:  asm/dli.s
 
 asm/dli.s:  src/dli.c src/dli.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/dli.c -o asm/dli.s
+
+obj/dli_disk.o:  asm/dli_disk.s
+	${CA65} -I "${CC65_ASMINC}" -t atari asm/dli_disk.s -o obj/dli_disk.o
+
+asm/dli_disk.s:  src/dli.c src/dli.h
+	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D DISK src/dli.c -o asm/dli_disk.s
 
 # Data segments:
 # --------------

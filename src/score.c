@@ -29,7 +29,7 @@
   saving the single high score & name (along with settings)
   to a FujiNet AppKey.
 
-  2023-08-27 - 2025-01-17
+  2023-08-27 - 2025-11-04
 */
 
 #include <string.h>
@@ -38,6 +38,7 @@
 
 #ifdef DISK
 #include <stdio.h>
+#include "dli.h"
 #endif
 
 #include "game.h"
@@ -358,7 +359,7 @@ void show_high_score_table(char highlight) {
      other necessary things will be added directly below.
      Unlike other parts of the game, we're not recording
      the whole Display List as an array) */
-  memset(dlist + 7, DL_GRAPHICS0, 22);
+  memset(dlist + 7, DL_DLI(DL_GRAPHICS0), 22);
 
   POKE(dlist, DL_BLK8);
   POKE(dlist + 1, DL_BLK8);
@@ -385,6 +386,12 @@ void show_high_score_table(char highlight) {
 
   OS.chbas = 0xE0; // OS ROM default character set
   OS.chbas = (unsigned char) ((unsigned int) fonttext_data / 256);
+
+  /* Enable DLI rotuine */
+  ANTIC.nmien = NMIEN_VBI;
+  while (ANTIC.vcount < 124);
+  OS.vdslst = (void *) hs_dli;
+  ANTIC.nmien = NMIEN_VBI | NMIEN_DLI;
 
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 

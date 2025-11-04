@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-01-17
+  2023-08-13 - 2025-11-04
 */
 
 #define ANIM_ENABLE 8
@@ -15,3 +15,8 @@ extern void * OLDVEC;
 
 void dli(void);
 void dli_vbi(void);
+
+#ifdef DISK
+void hs_dli(void);
+#endif
+

@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-01-17
+  2023-08-13 - 2025-11-04
 */
 
 #include <atari.h>
@@ -179,4 +179,40 @@ void dli_vbi(void) {
 
   asm("jmp (%v)", OLDVEC);
 }
+
+#ifdef DISK
+
+/* High score table DLI */
+void hs_dli(void) {
+  asm("pha");
+
+  asm("lda #10");
+
+  asm("sta %w", (unsigned)&ANTIC.wsync);
+  asm("sta %w", (unsigned)&GTIA_WRITE.colpf1);
+  asm("adc #2");
+
+  asm("sta %w", (unsigned)&ANTIC.wsync);
+  asm("sta %w", (unsigned)&GTIA_WRITE.colpf1);
+  asm("adc #2");
+
+  asm("sta %w", (unsigned)&ANTIC.wsync);
+  asm("sta %w", (unsigned)&GTIA_WRITE.colpf1);
+  asm("sbc #2");
+
+  asm("sta %w", (unsigned)&ANTIC.wsync);
+  asm("sta %w", (unsigned)&ANTIC.wsync);
+  asm("sta %w", (unsigned)&GTIA_WRITE.colpf1);
+  asm("sbc #2");
+
+  asm("sta %w", (unsigned)&ANTIC.wsync);
+  asm("sta %w", (unsigned)&ANTIC.wsync);
+  asm("sta %w", (unsigned)&GTIA_WRITE.colpf1);
+  asm("sbc #2");
+
+  asm("pla");
+  asm("rti");
+}
+
+#endif
 
