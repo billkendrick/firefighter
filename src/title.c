@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   http://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-01-17
+  2023-08-13 - 2026-02-09
 */
 
 #include <atari.h>
@@ -167,11 +167,11 @@ char show_title(void) {
   draw_text("@ FIREFIGHTER! @", scr_mem + 40 + 2);
 
   draw_text("bill kendrick", scr_mem + LINE_BY_1 + 1);
-  /* "2025" */
+  /* "2026" */
   POKE(scr_mem + LINE_BY_1 + 15, 2 + 16 + 64);
   POKE(scr_mem + LINE_BY_1 + 16, 0 + 16 + 64);
   POKE(scr_mem + LINE_BY_1 + 17, 2 + 16 + 64);
-  POKE(scr_mem + LINE_BY_1 + 18, 5 + 16 + 64);
+  POKE(scr_mem + LINE_BY_1 + 18, 6 + 16 + 64);
 
   draw_text(additional_levels[0], scr_mem + LINE_BY_2);
 

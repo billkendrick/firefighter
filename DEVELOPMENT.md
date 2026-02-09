@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 http://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2025-03-18
+Developed 2023-08-13 - 2026-02-09
 
 ------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ mode 7 of the Atari's [ANTIC graphics processor](https://en.wikipedia.org/wiki/A
 aka `GRAPHICS 2` in Atari BASIC.
 
 This mode generates very large text -- 20 characters wide by 12 characters tall --
-with each character being 8x8 pixels of a single color.  That totals 160x96 pixels
+with each character being 8×8 pixels of a single color.  That totals 160×96 pixels
 on the screen, and hence an appearance similar to ANTIC mode 13 ($D), aka
 `GRAPHICS 7`.  Each character may be one of four colors, based on the two high-bits
 of the screen data.
@@ -76,8 +76,8 @@ However, I later decided to change the game screen to ANTIC mode 6 (aka `GRAPHIC
 which is very similar but each line is half as tall, resulting in twice as
 many lines (i.e., a screen that is 20 characters wide by 24 characters tall).
 By using *two* rows of text per row of the game map, this allowed for the
-shapes to be composed to twice as many pixels: 8x16 instead of 8x8.
-(This gives a 160x192 pixel appearance, similar to ANTIC mode 14 ($E),
+shapes to be composed of twice as many pixels: 8×16 instead of 8×8.
+(This gives a 160×192 pixel appearance, similar to ANTIC mode 14 ($E),
 known in the Atari 400/800 era as `GRAPHICS 7+` or `GRAPHICS 7½`, and
 in the XL/XE era available as `GRAPHICS 15`.)
 
@@ -102,12 +102,12 @@ By combining alternating character sets (via DLI) and repeating screen
 data (via LMS), every odd row shows the "top half" of a tile shape, and
 every even row shows the "bottom half".  Only 20 * 11 bytes of screen
 memory are needed, and the game logic continues to only need concern itself
-with a map that's 20x11 tiles in size.
+with a map that's 20×11 tiles in size.
 
 The Atari's powerful ANTIC graphics chip does the heavy lifting to display
 the tile shapes with greater detail than a plain ANTIC mode 7 display could.
-Basically, the game went from looking like it was made of 160x96 pixels, to
-looking like it was 160x192!
+Basically, the game went from looking like it was made of 160×96 pixels, to
+looking like it was 160×192!
 
 You might notice that the large mode 7 text used to display the "FIREFIGHTER"
 title at the top (and other messages between levels during the game) also uses
@@ -121,7 +121,7 @@ also also changes some colors in the palette.)
 The game in fact contains three DLI routines; the first one changes the color
 palette and changes the character set, and then chains to a second
 DLI routine (by altering the Display List Interrupt Vector, `VDSLST`).
-The second DLI routine set the character set to the one containing the top half
+The second DLI routine sets the character set to the one containing the top half
 of the tile set, and also alters one of the color registers every few scan lines,
 to create the "Atari Rainbow" effect for the fire and gas leaks.  It then chains
 to a third DLI routine, which is nearly identical to the second one, but with
@@ -140,13 +140,25 @@ animation effect.  It does this by setting some bytes (in Page 6 memory)
 which the DLI routines use to decide which character sets to display.
 It also resets the DLI Vector to point to the first DLI.
 
-Another byte in Page 6 is used to let the DLI change the background color of
-the game area, based on events (e.g., flashing when an oil barrel explodes).
+Another byte in Page 6 is used to let the DLI change which colors are used
+in game area, based on events (e.g., flashing the background when an oil barrel
+explodes, or greying out all colors while the game is paused).
 (See [`dli.c`](src/dli.c).  Note: This is among the only hand-coded
 6502 assembly language in this game.  Almost everything else is in straight C.)
 
 Note: Currently, no Player/Missile Graphics ("sprites") are used in the game.
-(They *are* used in the splash screen.)
+(They *are* used in the splash screen; see below.)
+
+### Screen Shake
+
+When an explosion is occurring, a countdown timer is used to handle
+both the screen background flash (described above), explosion sound
+effect volume (see below), and to enable a screen shake effect.
+
+ANTIC provides various instructions to display between 1 and 8 blank
+scanlines.  The shaking is handled by simply setting changing one
+line of the Display List (in the screen border area above the top of
+the game area) to a random blank-scanline(s) instruction.
 
 ## Sound
 
@@ -168,8 +180,9 @@ Various game sounds are played on one of the Atari's
 (channels), and is handled by a number of variables used to set the
 pitch, initial volume, pitch change (if any), and speed of volume
 decrease.  The pitch change (if applicable) and volume change occur
-once per game loop.  (Currently, they are not part of the VBI routine,
-which is common for sound and music routines.)
+once per game loop.  (Note: Currently, they are *not* part of the VBI
+routine.  Typically, games place their sound and music routines within
+the VBI.)
 
 This system is used for the majority of events that cause
 sound effects.  They are:
@@ -192,19 +205,29 @@ water in any direction.
 The fire sound is a random, low-pitched sound played on its own dedicated
 "voice", and its volume is based on how much fire is on the screen.
 (A counter ticks up each time fire is observed during the cellular
-automaton routine.  That routine actually sets the sound registers.)
+automaton routine; see below.  That routine does the work of setting the
+fire channel's sound registers.)
 
 ### Explosion Sound
 
 This is a totally random noise sound played on its own dedicated
-"voice", controlled by a countdown timer that sets its volume.
+"voice", controlled by a countdown timer that affects its volume.
+When something explodes, the timer is (re)set to its maximum,
+and hence highest volume.
 
 ### Footsteps
 
-The footstep sound is handled separately from the POKEY chip voices,
-and is instead generated by the [GTIA chip](https://en.wikipedia.org/wiki/CTIA_and_GTIA)
-(so on an Atari 400 or 800 the sound would come from the internal speaker, rather than the
-TV or monitor).
+The footstep sound is handled separately from the POKEY
+chip voices, and is instead generated by using the
+[GTIA chip](https://en.wikipedia.org/wiki/CTIA_and_GTIA)'s `CONSOL`
+register, which basically acts as a 1-bit sound register.
+(It's what the Atari uses to produce keyclick sounds when you type
+on the keyboard, and the `[Control]`+`[2]` (`CHR$(125)`) buzzer
+sound effect.
+
+On an Atari 400 or 800, this sound is produced by an internal speaker.
+In the XL and XE models, it is combined with the POKEY's output
+and goes to your TV/monitor's speaker.
 
 ## Gameplay
 
@@ -223,13 +246,17 @@ of growing into a medium fire.  Similarly, a medium fire has a chance
 to become a large fire.  A cell containing a large fire has a random
 chance of spreading (creating a new small fire) in a random direction.
 
+When spreading, if there's a worker (see below), they will perish.
+If there's a gas leak or oil barrel, the spreading fire will will cause
+an explosion (creating up to 4 large fires around the destroyed object).
+
 #### Workers
 
 The workers are also treated as cells.  They "move" by placing a blank
 shape in their current cell, and a worker in an adjacent cell.
 They first observe nearby adjacent cells to see whether the firefighter
 is nearby.  If so, they will go that direction; otherwise, they will
-pick a random direction.
+pick a random direction (possibly staying put).
 
 #### Gas Leaks
 
@@ -242,7 +269,8 @@ broken pipes.  If no valves are open, any gas leaks will be removed.
 
 During the cellular automaton phase, any water on the level is
 erased.  This means the main loop only needs to worry about
-drawing it while the joystick is being pushed.
+drawing new water if the player is pushing the spray joystick
+(or `[Fire]` plus the main joystick).
 
 ### Water Spray
 
@@ -258,7 +286,7 @@ of the spray.  For the four cardinal directions, the wide spray
 is drawn as three vertical or three horizontal shapes in a row.
 For the four diagonal directions, the middle of the wide part
 continues in the direction of spray, and the two ends appear
-perpendicular to it (forming a 2x2 square of shapes).
+perpendicular to it (forming a 2×2 square of shapes).
 
 Examples:
 
@@ -304,29 +332,35 @@ Also, while we have 64 shapes in our character set to work with
 level map.  (Half of the 64 characters in the set are used for the
 various directions of water spray shapes!)
 
-Therefore, we can strip the highest bits of the level data,
+Therefore, we can strip the highest *three* bits of the level data,
 and use those bits to indicate how many times the characters
 repeat (once, twice, three times, four times, etc.).  Since we often
 have the same character appear many times in a row (e.g., a row of
 bricks, or a large blank area in a room), this allows us to store
 one byte in the place of multiple bytes for the same level layout.
+This is a form of
+[run-length encoding](https://en.wikipedia.org/wiki/Run-length_encoding)
+(RLE).
 
 The script [`level_compress.php`](tools/level_compress.php) reads
 the binary level data file (created by the tool above), which in
 early beta versions was used directly (and level data in the game
 executable was simply copied directly to screen memory) and
-creates a compressed file.  (As before, a single byte at the
-beginning indicates how many levels there are.  That is followed
-by four-byte sequences for each level, indicating the firefighter's
-starting position, and the offset within the compressed level data
-that each level starts -- they are of course different lengths!
-Finally, all of the compressed level data follows.)
+creates a compressed file.
+
+As before, a single byte at the beginning indicates how many levels
+there are.  That is followed by four-byte sequences for each level,
+indicating the firefighter's starting position, and the offset within
+the compressed level data that each level starts -- they are of course
+different lengths depending on the compression!  Finally, all of the
+compressed level data follows.
 
 ## High Score
 
 The game records a top score, and allows the user to enter their
 initials at the end of the game.  The disk-based version provides
-a top-10 high score table, which it saves to disk.
+a top-10 high score table, which persists between sessions, as
+it is saved-to and loaded-from the disk.
 
 Code exists (in [`score.c`](src/score.c)) to use standard C file
 input/output (I/O) functions -- `fopen()`, `fread()`, etc. --
@@ -347,10 +381,10 @@ TNFS server hosting it can be told to grant players write-access
 to *just* the sector containing the high score table (the rest
 of the disk image will be read-only).
 
-This is implemented using three unused bytes in
-the ATR disk image file format's header.  The script
-[`high_score_atr.php`](tools/high_score_atr.php) handles this modification.
-(See the FujiNet project's
+This feature of the TNFS server is implemented by using three
+otherwise-unused bytes in the ATR disk image file format's header.
+The script [`high_score_atr.php`](tools/high_score_atr.php) handles
+this modification.  (See the FujiNet project's
 ["High Score storage for Legacy Games" page](https://github.com/FujiNetWIFI/fujinet-platformio/wiki/High-Score-storage-for-Legacy-Games)
 for further information.)
 
@@ -359,7 +393,8 @@ for further information.)
 The disk version offers a help screen (press `[?]` or `[Help]`
 on the title screen).  This contains exactly the same content
 as [`README.md`](README.md), but it has been converted from
-Markdown to 40 column plain ATASCII text.
+[Markdown](https://en.wikipedia.org/wiki/Markdown) to 40 column plain
+ATASCII text.
 
 ### Markdown to ATASCII
 
@@ -373,7 +408,7 @@ inverse video text on the Atari.  This is done by first pre-processing
 to convert all backticks to an otherwise unused symbol, "~" (tilde).
 That prevents the code from appearing as `<code>...</code>` in the resulting
 HTML, and instead as `~...~`.  That appears in the final ASCII text file
-as well, which is then processed by the small
+that `w3m` generates as well, which is then processed by the small
 [`tools/txt2atascii.php`](tools/txt2atascii.php) which both converts
 Unix end-of-line (EOL) characters to ATASCII, and manages inverse video.
 
@@ -399,7 +434,7 @@ down in both size and color palette (remapped) using
 
 The resulting file, a [NetPBM](https://netpbm.sourceforge.net/)
 Portable Gray Map (PGM), is converted to binary data suitable
-for display in Atari GTIA "`GRAPHICS 9`" 16-greyscale mode (80x192 pixels)
+for display in Atari GTIA "`GRAPHICS 9`" 16-greyscale mode (80×192 pixels)
 by the script [`pgm2gr9.php`](tools/pgm2gr9.php).
 
 Additionally, the darkest pixels from the image are extracted
