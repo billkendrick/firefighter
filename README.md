@@ -6,7 +6,7 @@ A twin-stick firefighting action game for the Atari 8-bit.
 
 ## Credits
 > By Bill Kendrick <bill@newbreedsoftware.com>  
-> http://www.newbreedsoftware.com/firefighter/
+> https://www.newbreedsoftware.com/firefighter/
 >
 > Inspired by [_Real Heroes: Firefighter_](https://en.wikipedia.org/wiki/Real_Heroes:_Firefighter)
 > (Wii; Conspiracy Entertainment, 2012),

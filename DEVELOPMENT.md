@@ -5,7 +5,7 @@ game for the Atari 8-bit.
 
 ## Credits
 By Bill Kendrick <bill@newbreedsoftware.com>  
-http://www.newbreedsoftware.com/firefighter/
+https://www.newbreedsoftware.com/firefighter/
 
 Developed 2023-08-13 - 2026-02-09
 
