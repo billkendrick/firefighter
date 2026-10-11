@@ -56,7 +56,8 @@ Developed 2023-08-13 - 2026-10-11
 > are close by to guide them.  They can perish if they end up too close to a
 > large fire!
 >
-> Lose three (3) workers, and the game ends.
+> Lose three (3) workers, and the game ends.  Your firefighter is
+> impervious to the fire.
 >
 > Some rooms contain crates and/or barrels which you can push out of
 > your way if they block your path.  Be careful how you move them, though;
@@ -69,7 +70,8 @@ Developed 2023-08-13 - 2026-10-11
 >
 > If there's an ax, you can pick it up.  Instead of pushing crates, you
 > will destroy them (they may take two hits).  Be careful navigating near
-> pipes once you have the ax, as you will damage them!
+> pipes once you have the ax, as you will damage the pipes and cause more
+> gas leaks.
 >
 > When fire spreads to oil barrels or gas leaking from pipes it will
 > cause an explosion, spreading even more fire.  Beware of chain reactions!
@@ -255,10 +257,10 @@ Developed 2023-08-13 - 2026-10-11
 
 # VII. Scoring
 
-* Picking up an ax: 15 points
-* Breaking or destroying a crate: -1 point
-* Breaking a pipe: -5 points
-* Saving a worker: 100 points
-* Ending a level with no fire or gas leaks remaining: 1,000 points
-* Time bonus: Scoring potental starts at 1,000 x Level # (max 10,000)
+* Picking up an ax: `15 points`
+* Breaking or destroying a crate: `-1 point`
+* Breaking a pipe: `-5 points`
+* Saving a worker: `100 points`
+* Safety bonus -- ending a level with no fire or gas leaks remaining: `1,000 points`
+* Time bonus: Scoring potential starts at 1,000 x Level # (max 10,000)
 
