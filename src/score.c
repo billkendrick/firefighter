@@ -3,7 +3,7 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/firefighter/
+  https://www.newbreedsoftware.com/firefighter/
 
   If "DISK" is defined, the game will support 10 high scores
   and save the results to disk.  Otherwise, it will keep a
@@ -29,7 +29,7 @@
   saving the single high score & name (along with settings)
   to a FujiNet AppKey.
 
-  2023-08-27 - 2025-11-04
+  2023-08-27 - 2026-10-11
 */
 
 #include <string.h>

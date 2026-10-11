@@ -3,14 +3,15 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/firefighter/
+  https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-15 - 2025-01-18
+  2023-08-15 - 2026-10-11
 */
 
 #include <atari.h>
 #include <peekpoke.h>
 #include <string.h>
+#include "page6.h"
 #include "game.h"
 #include "shapes.h"
 #include "draw_text.h"
@@ -358,7 +359,7 @@ void start_game(void) {
 
     if (exploding) {
       /* Explosion sound & visual effect */
-      POKE(0x601, exploding);
+      PAGE6.color_bak = exploding;
       exploding--;
       if (exploding == 0)
         POKE(dlist + 6, DL_BLK1);
@@ -368,12 +369,12 @@ void start_game(void) {
       POKEY_WRITE.audc4 = exploding;
     } else if (dying) {
       /* Dying visual effect (sfx handled by `set_sound()`) */
-      POKE(0x601, 0x40 + dying);
+      PAGE6.color_bak = 0x40 + dying;
       dying--;
       dying--;
     } else {
       /* Nothing else happening */
-      POKE(0x601, 0x00);
+      PAGE6.color_bak = 0x00;
     }
 
     /* Action sound effects */
@@ -437,39 +438,38 @@ void start_game(void) {
       OS.color2 = 0x08;
       OS.color3 = 0x06;
 
-      POKE(0x601, 0); // black background
-      POKE(0x602, 0); // grey the fire
-      POKE(0x603, 0x0A); // grey the green 
-      POKE(0x604, 0x06); // grey the blue
+      PAGE6.color_bak = 0; // black background
+      PAGE6.color_fire = 0; // grey the fire
+      PAGE6.color_green = 0x0A; // grey the green 
+      PAGE6.color_blue = 0x06; // grey the blue
 
-      POKE(0x605, 0x01); // reduce fire flicker
+      PAGE6.fire_flicker = 0x01; // reduce fire flicker
 
-      POKE(0x606, ANIM_DISABLE); // disable animation
+      PAGE6.anim = ANIM_DISABLE; // disable animation
 
       quiet();
 
       do {
       } while (OS.ch != KEY_SPACE && OS.ch != KEY_P);
 
-      /* FIXME: Modularize */
-      OS.color0 = 0x52;
-      OS.color1 = 0x14;
-      OS.color2 = 0xA8;
-      OS.color3 = 0x46;
+      OS.color0 = DEF_TITLE_TEXT;
+      OS.color1 = 0x14; // FIXME
+      OS.color2 = 0xA8; // FIXME
+      OS.color3 = 0x46; // FIXME
 
-      POKE(0x602, 0x20); // fire yellow
-      POKE(0x603, 0xCA); // medium green 
-      POKE(0x604, 0x86); // medium blue
+      PAGE6.color_fire = DEF_COLOR_FIRE; // fire yellow
+      PAGE6.color_green = DEF_COLOR_GREEN; // medium green
+      PAGE6.color_blue = DEF_COLOR_BLUE; // medium blue
 
-      POKE(0x605, 0x0F); // enable fire flicker
+      PAGE6.fire_flicker = 0x0F; // enable fire flicker
 
-      POKE(0x606, ANIM_ENABLE); // enable animation
+      PAGE6.anim = ANIM_ENABLE; // enable animation
 
       OS.ch = KEY_NONE;
     }
   } while (!game_over && !done);
 
-  POKE(0x601, 0); // black background
+  PAGE6.color_bak = 0; // black background
   OS.ch = KEY_NONE;
 
   quiet();
@@ -482,13 +482,13 @@ void start_game(void) {
     OS.color2 = 0x48;
     OS.color3 = 0x46;
 
-    POKE(0x602, 0x40);
-    POKE(0x603, 0x4A);
-    POKE(0x604, 0x46);
+    PAGE6.color_fire = 0x40;
+    PAGE6.color_green = 0x4A;
+    PAGE6.color_blue = 0x46;
 
-    POKE(0x605, 0x01); // reduce fire flicker
+    PAGE6.fire_flicker = 0x01; // reduce fire flicker
 
-    POKE(0x606, ANIM_DISABLE); // disable animation
+    PAGE6.anim = ANIM_DISABLE; // disable animation
 
     /* Eat any input */
     do {
@@ -602,11 +602,11 @@ void setup_game_screen(void) {
   /* Set up color & font values for DLI */
   OS.chbas = (unsigned char) ((unsigned int) fonttext_data / 256);
 
-  POKE(0x600, (unsigned char) ((unsigned int) fontshap_data / 256));
+  PAGE6.font = (unsigned char) ((unsigned int) fontshap_data / 256);
 
-  OS.color0 = 0x52;
-  OS.color1 = 0x14;
-  OS.color2 = 0xA8;
+  OS.color0 = DEF_TITLE_TEXT;
+  OS.color1 = 0x14; // FIXME
+  OS.color2 = 0xA8; // FIXME
 
   /* Enable DLI */
   ANTIC.nmien = NMIEN_VBI;
@@ -1074,7 +1074,7 @@ void flash(void) {
   for (i = 0; i < 32; i++) {
     j = 15 - (i >> 1);
     OS.color4 = j;
-    POKE(0x601, j);
+    PAGE6.color_bak = j;
 
     POKEY_WRITE.audf1 = 10;
     POKEY_WRITE.audc1 = j;
@@ -1338,7 +1338,7 @@ unsigned char confirm_done() {
   unsigned char line_snapshot[20];
 
   quiet();
-  POKE(0x606, ANIM_DISABLE); // disable animation
+  PAGE6.anim = ANIM_DISABLE; // disable animation
 
   // Red tint everything
   OS.color0 = 0x42;
@@ -1346,10 +1346,10 @@ unsigned char confirm_done() {
   OS.color2 = 0x48;
   OS.color3 = 0x46;
 
-  POKE(0x601, 0x40); // redden background
-  POKE(0x602, 0x40); // redden the fire
-  POKE(0x603, 0x4A); // redden the green 
-  POKE(0x604, 0x46); // redden the blue
+  PAGE6.color_bak = 0x40; // redden background
+  PAGE6.color_fire = 0x40; // redden the fire
+  PAGE6.color_green = 0x4A; // redden the green 
+  PAGE6.color_blue = 0x46; // redden the blue
 
   memcpy(line_snapshot, scr_mem, 20);
   draw_text("ABORT?  YES >NO<", scr_mem + 2);
@@ -1408,19 +1408,18 @@ unsigned char confirm_done() {
 
   memcpy(scr_mem, line_snapshot, 20);
 
-  /* FIXME: Modularize */
-  OS.color0 = 0x52;
-  OS.color1 = 0x14;
-  OS.color2 = 0xA8;
-  OS.color3 = 0x46;
+  OS.color0 = DEF_TITLE_TEXT;
+  OS.color1 = 0x14; // FIXME
+  OS.color2 = 0xA8; // FIXME
+  OS.color3 = 0x46; // FIXME
 
-  POKE(0x602, 0x20); // fire yellow
-  POKE(0x603, 0xCA); // medium green 
-  POKE(0x604, 0x86); // medium blue
+  PAGE6.color_fire = DEF_COLOR_FIRE;
+  PAGE6.color_green = DEF_COLOR_GREEN;
+  PAGE6.color_blue = DEF_COLOR_BLUE;
 
-  POKE(0x605, 0x0F); // enable fire flicker
+  PAGE6.fire_flicker = 0x0F; // enable fire flicker
 
-  POKE(0x606, ANIM_ENABLE); // enable animation
+  PAGE6.anim = ANIM_ENABLE; // enable animation
 
   return abort;
 }

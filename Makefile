@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # https://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2025-11-03
+# 2023-08-13 - 2026-10-11
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -150,7 +150,7 @@ asm/firefite_fujinet.s:  src/firefite.c src/title.h src/game.h src/score.h
 obj/title.o:  asm/title.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/title.s -o obj/title.o
 
-asm/title.s:  src/title.c src/title.h src/shapes.h src/dli.h src/draw_text.h Makefile
+asm/title.s:  src/title.c src/title.h src/shapes.h src/page6.h src/dli.h src/draw_text.h Makefile
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari -D VERSION=\"${VERSION}\" -D DATE=\"${DATE}\" src/title.c -o asm/title.s
 
 obj/title_disk.o:  asm/title_disk.s
@@ -237,7 +237,7 @@ disk/README.txt:	README.md tools/txt2atascii.php
 obj/game.o:  asm/game.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/game.s -o obj/game.o
 
-asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/draw_text.h src/score.h src/config.h
+asm/game.s:  src/game.c src/game.h src/shapes.h src/dli.h src/page6.h src/draw_text.h src/score.h src/config.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/game.c -o asm/game.s
 
 # Shape table
@@ -261,7 +261,7 @@ asm/draw_text.s:  src/draw_text.c src/draw_text.h
 obj/dli.o:  asm/dli.s
 	${CA65} -I "${CC65_ASMINC}" -t atari asm/dli.s -o obj/dli.o
 
-asm/dli.s:  src/dli.c src/dli.h
+asm/dli.s:  src/dli.c src/dli.h src/page6.h
 	${CC65} ${CC65_FLAGS} -I "${CC65_INC}" -t atari src/dli.c -o asm/dli.s
 
 obj/dli_disk.o:  asm/dli_disk.s

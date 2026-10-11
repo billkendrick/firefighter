@@ -3,14 +3,15 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/firefighter/
+  https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2026-02-09
+  2023-08-13 - 2026-10-11
 */
 
 #include <atari.h>
 #include <peekpoke.h>
 #include <string.h>
+#include "page6.h"
 #include "title.h"
 #include "shapes.h"
 #include "draw_text.h"
@@ -133,22 +134,22 @@ char show_title(void) {
 
   /* Set character set */
   OS.chbas = (unsigned char) ((unsigned int) fonttext_data / 256);
-  POKE(0x600, (unsigned char) ((unsigned int) fontshap_data / 256));
+  PAGE6.font = (unsigned char) ((unsigned int) fontshap_data / 256);
 
   /* Set color palette */
-  OS.color0 = 0x52;
+  OS.color0 = DEF_TITLE_TEXT;
   OS.color1 = 0xCA;
   OS.color2 = 0x02;
   OS.color3 = 0x46;
   OS.color4 = 0x02;
 
-  POKE(0x602, 0x20); // fire yellow
-  POKE(0x603, 0xCA); // medium green
-  POKE(0x604, 0x86); // medium blue
+  PAGE6.color_fire = 0x20; // fire yellow
+  PAGE6.color_green = 0xCA; // medium green
+  PAGE6.color_blue = 0x86; // medium blue
 
-  POKE(0x605, 0x0F); // enable fire flicker
+  PAGE6.fire_flicker = 0x0F;
 
-  POKE(0x606, ANIM_ENABLE); // enable animation
+  PAGE6.anim = ANIM_ENABLE; // enable animation
 
   /* Enable DLI rotuine */
   ANTIC.nmien = NMIEN_VBI;

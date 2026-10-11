@@ -3,9 +3,9 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/firefighter/
+  https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2025-11-04
+  2023-08-13 - 2026-10-11
 */
 
 #define ANIM_ENABLE 8

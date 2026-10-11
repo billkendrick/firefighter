@@ -4,12 +4,14 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 https://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-11 (2026-02-09) WIP:
+0.1-beta-11 (2026-10-11) WIP:
  * Documentation:
    * Technical/Design Docs improved & extended somewhat
    * README / Help screen clean-up
  * High score table:
    * Added color gradient effect
+ * Under the hood:
+   * Replaced hard-coded page 6 variable locations with a struct
 
 0.1-beta-10 (2025-01-20):
  * Gameplay:
