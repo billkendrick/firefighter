@@ -9,5 +9,3 @@ https://www.newbreedsoftware.com/firefighter/
  * More levels
 
  * Splash screen music
-
- * Don't hard-code common color values

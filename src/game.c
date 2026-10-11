@@ -79,6 +79,8 @@ void quiet(void);
 void drop_civilians(char why);
 unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char push_x, unsigned char push_y);
 unsigned char confirm_done();
+void red_tint(void);
+void default_colors_enable_anim(void);
 
 /* High score (external b/c shared by title screen) */
 extern unsigned long int high_score;
@@ -452,18 +454,7 @@ void start_game(void) {
       do {
       } while (OS.ch != KEY_SPACE && OS.ch != KEY_P);
 
-      OS.color0 = DEF_TITLE_TEXT;
-      OS.color1 = 0x14; // FIXME
-      OS.color2 = 0xA8; // FIXME
-      OS.color3 = 0x46; // FIXME
-
-      PAGE6.color_fire = DEF_COLOR_FIRE; // fire yellow
-      PAGE6.color_green = DEF_COLOR_GREEN; // medium green
-      PAGE6.color_blue = DEF_COLOR_BLUE; // medium blue
-
-      PAGE6.fire_flicker = 0x0F; // enable fire flicker
-
-      PAGE6.anim = ANIM_ENABLE; // enable animation
+      default_colors_enable_anim();
 
       OS.ch = KEY_NONE;
     }
@@ -476,19 +467,8 @@ void start_game(void) {
 
   /* Are we done because of Game Over?  Wait for input before proceeding */
   if (game_over) {
-    /* Shades of red... */
-    OS.color0 = 0x42;
-    OS.color1 = 0x44;
-    OS.color2 = 0x48;
-    OS.color3 = 0x46;
-
-    PAGE6.color_fire = 0x40;
-    PAGE6.color_green = 0x4A;
-    PAGE6.color_blue = 0x46;
-
+    red_tint();
     PAGE6.fire_flicker = 0x01; // reduce fire flicker
-
-    PAGE6.anim = ANIM_DISABLE; // disable animation
 
     /* Eat any input */
     do {
@@ -605,8 +585,8 @@ void setup_game_screen(void) {
   PAGE6.font = (unsigned char) ((unsigned int) fontshap_data / 256);
 
   OS.color0 = DEF_TITLE_TEXT;
-  OS.color1 = 0x14; // FIXME
-  OS.color2 = 0xA8; // FIXME
+  OS.color1 = DEF_COLOR_GOLD;
+  OS.color2 = DEF_COLOR_CYAN;
 
   /* Enable DLI */
   ANTIC.nmien = NMIEN_VBI;
@@ -1329,6 +1309,24 @@ unsigned char try_move(unsigned char want_x, unsigned char want_y, unsigned char
 
 
 /**
+ * Tint the color palettes red
+ */
+void red_tint(void) {
+  PAGE6.anim = ANIM_DISABLE; // disable animation
+
+  // Red tint everything
+  OS.color1 = 0x44;
+  OS.color2 = 0x48;
+  OS.color3 = 0x46;
+
+  PAGE6.color_bak = 0x40; // redden background
+  PAGE6.color_fire = 0x40; // redden the fire
+  PAGE6.color_green = 0x4A; // redden the green 
+  PAGE6.color_blue = 0x46; // redden the blue
+}
+
+
+/**
  * Ask the user whether they want to abort (quit) the game.
  *
  * @return unsigned char boolean - do they want to quit?
@@ -1338,18 +1336,9 @@ unsigned char confirm_done() {
   unsigned char line_snapshot[20];
 
   quiet();
-  PAGE6.anim = ANIM_DISABLE; // disable animation
 
-  // Red tint everything
-  OS.color0 = 0x42;
-  OS.color1 = 0x44;
-  OS.color2 = 0x48;
-  OS.color3 = 0x46;
-
-  PAGE6.color_bak = 0x40; // redden background
-  PAGE6.color_fire = 0x40; // redden the fire
-  PAGE6.color_green = 0x4A; // redden the green 
-  PAGE6.color_blue = 0x46; // redden the blue
+  red_tint();
+  OS.color0 = 0x42; // also background
 
   memcpy(line_snapshot, scr_mem, 20);
   draw_text("ABORT?  YES >NO<", scr_mem + 2);
@@ -1408,19 +1397,24 @@ unsigned char confirm_done() {
 
   memcpy(scr_mem, line_snapshot, 20);
 
+  default_colors_enable_anim();
+
+  return abort;
+}
+
+void default_colors_enable_anim(void) {
   OS.color0 = DEF_TITLE_TEXT;
-  OS.color1 = 0x14; // FIXME
-  OS.color2 = 0xA8; // FIXME
-  OS.color3 = 0x46; // FIXME
+  OS.color1 = DEF_COLOR_GOLD;
+  OS.color2 = DEF_COLOR_CYAN;
+  OS.color3 = DEF_COLOR_RED;
 
   PAGE6.color_fire = DEF_COLOR_FIRE;
   PAGE6.color_green = DEF_COLOR_GREEN;
   PAGE6.color_blue = DEF_COLOR_BLUE;
+  PAGE6.color_bak = 0;
 
   PAGE6.fire_flicker = 0x0F; // enable fire flicker
 
   PAGE6.anim = ANIM_ENABLE; // enable animation
-
-  return abort;
 }
 

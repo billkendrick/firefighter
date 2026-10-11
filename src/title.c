@@ -138,14 +138,15 @@ char show_title(void) {
 
   /* Set color palette */
   OS.color0 = DEF_TITLE_TEXT;
-  OS.color1 = 0xCA;
-  OS.color2 = 0x02;
-  OS.color3 = 0x46;
-  OS.color4 = 0x02;
+  OS.color1 = DEF_COLOR_GREEN;
+  OS.color2 = DEF_COLOR_GREY;
+  OS.color3 = DEF_COLOR_RED;
+  OS.color4 = DEF_COLOR_GREY;
 
-  PAGE6.color_fire = 0x20; // fire yellow
-  PAGE6.color_green = 0xCA; // medium green
-  PAGE6.color_blue = 0x86; // medium blue
+  PAGE6.color_bak = 0;
+  PAGE6.color_fire = DEF_COLOR_FIRE; // fire yellow
+  PAGE6.color_green = DEF_COLOR_GREEN; // medium green
+  PAGE6.color_blue = DEF_COLOR_BLUE; // medium blue
 
   PAGE6.fire_flicker = 0x0F;
 
