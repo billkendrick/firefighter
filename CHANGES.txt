@@ -19,6 +19,7 @@ https://www.newbreedsoftware.com/firefighter/
  * Documentation:
    * Technical/Design Docs improved & extended somewhat
    * README / Help screen clean-up
+   * Documented how music was added to splash in DEVELOPMENT docs
  * High score table:
    * Added color gradient effect
  * Under the hood:

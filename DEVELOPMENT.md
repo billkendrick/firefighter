@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 https://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2026-02-09
+Developed 2023-08-13 - 2026-10-12
 
 ------------------------------------------------------------------------
 
@@ -424,6 +424,8 @@ to that part of the file, and that page (screen-full) of text is re-read.
 
 ## Splash Screen
 
+### Splash Graphics
+
 The splash screen (disk version) is comprised of a pair of public
 domain images, and text rendered in two fonts released under the SIL
 Open Font License.  They can be found in the [`img-src` folder](img-src/).
@@ -448,3 +450,49 @@ this picture.  I take advantage of MyDOS's ability to chain
 multiple "autorun" programs (aka `AUTORUN.SYS` in Atari DOS) by
 having it load the splash first (`SPLASH.AR0`), followed by
 the game itself second (`FIREFITE.AR1`).
+
+### Splash Music
+
+Raster Music Tracker (http://raster.atariportal.cz/rmt/rmt.htm)
+is a popular music tracker created by Radek Sterba (RASTER/C.P.U.)
+between 2003 and his untimely death in 2011.  Since then, others
+(e.g., VinsCool: https://github.com/VinsCool/RASTER-Music-Tracker)
+have continued development.
+
+Daniel Serpell (dmsc) created a C interface to RMT, as well as
+a tool to convert an `.rmt` music file into a block of assembly
+language code that can be assembled into an object and linked to
+a program.  (https://github.com/dmsc/rmt-cc65/)
+
+I utilized this set of tools to add music to the splash screen
+in late 2026.  The build process is:
+
+ 1. convert the RMT music file to assembly code
+    * `./mkreloc TUNE.rmt > TUNE.asm`
+ 2. assemble the music into an object
+    * `ca65 -t atari TUNE.asm -o TUNE.o`
+ 3. assemble the RMT player (Raster's original code) and
+    RMT C wrapper assembly source into a objects
+    * `ca65 -t atari rmt-c.asm -o rmt-c.o`
+    * The RMT C wrapper `.include`'s `rmtplayr.asm`, which in
+      turn `.include`'s `rmt_feat.asm` which defines the features
+      that should be built.
+ 4. link the RMT player object and the music object, along with
+    everything else, into the splash screen executable program
+    * `ld65 ... -o splash.xex ... splash.o rmt-c.o TUNE.o ...`
+
+The splash screen source code only required the following to
+just play the tune:
+
+ * `#include "rmt-c.h"` -- Include the RMT C wrapper header
+ * `extern char rmt_song_data[];` -- Access to the data in `TUNE.o`
+ * `rmt_init(rmt_song_data, ...);` -- Initialize the player
+ * `rmt_start();` to start music, `rmt_stop();` to stop it
+ * With `FEAT_GLOBALVOLUMEFADE` enabled in `rmt_feat.s`, it's
+   possible to fade out music (and any sound effects), by setting
+   `rmt_global_volume_fade` to a value between 0 (no fade) to
+   255 (silence), which I did while adjusting the color palette
+   as a transition from the splash screen to a simple
+   "Loading..." message.  (`rmt_wait_vbi()` is used within the
+   loop to run the effect at a steady speed.)
+
