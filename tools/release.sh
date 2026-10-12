@@ -7,9 +7,9 @@
 #
 # Firefighting game for the Atari 8-bit
 # Bill Kendrick <bill@newbreedsoftware.com>
-# http://www.newbreedsoftware.com/firefight/
+# https://www.newbreedsoftware.com/firefight/
 
-# Last updated 2025-01-20
+# Last updated 2026-10-12
 
 # Confirm that we've tagged with the same version
 # number we're bulding it as.  (Makefile "VERSION"

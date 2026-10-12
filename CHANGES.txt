@@ -4,7 +4,18 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 https://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-11 (2026-10-11) WIP:
+0.1-beta-11 (2026-10-12) WIP:
+ * Splash:
+   * Music on the splash screen
+     + Raster Music Tracker (RMT) player (`rmtplayr.asm`)
+       by Radek Sterba, Raster/C.P.U., 2002 - 2009
+     + Converter (`mkreloc.c`) & RMT C interface (`rmt-c.asm`)
+       GPL v2, copyright (C) 2019-2020 by Daniel Serpell (dmsc)
+       (https://github.com/dmsc/rmt-cc65/)
+     + Music TBD
+       by TBD
+   * Fade-out effect when dismissing splash screen
+   * Shows a "LOADING..." screen after splash dismissed & game starts loading
  * Documentation:
    * Technical/Design Docs improved & extended somewhat
    * README / Help screen clean-up

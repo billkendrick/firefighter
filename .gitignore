@@ -1,4 +1,4 @@
-*.s
+asm/*.s
 *.o
 *.xex
 *.atr
@@ -13,3 +13,4 @@ disk/README.txt
 disk/TITLE.GR9
 disk/SILH.DAT
 fonts/fireshap.fnt
+tools/mkreloc

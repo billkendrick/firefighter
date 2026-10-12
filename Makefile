@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # https://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2026-10-11
+# 2023-08-13 - 2026-10-12
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -61,7 +61,7 @@ run-fujinet:	fireftfn.xex
 run-disk:	firefite.atr
 	atari800 -nobasic firefite.atr
 
-clean:	clean-intermediate
+clean:	clean-intermediate clean-tools
 	-rm firefite.xex
 	-rm fireftfn.xex
 	-rm firefite.atr
@@ -82,6 +82,9 @@ clean-intermediate:
 	-rm disk/FIREFITE.AR1
 	-rm disk/README.txt
 	-rm disk/TITLE.GR9
+
+clean-tools:
+	-rm tools/mkreloc
 
 
 ## Files to generate:
@@ -117,11 +120,11 @@ fireftfn.xex:	${OBJECTS_FUJINET} src/atari.cfg
 		${MAP_ARGS} \
 		${OBJECTS_FUJINET} atari.lib
 
-splash.xex:	obj/splash.o obj/segments-splash.o src/atari-splash.cfg
+splash.xex:	obj/splash.o obj/segments-splash.o obj/rmt-c.o obj/tune.o src/atari-splash.cfg
 	${LD65} --lib-path "${CC65_LIB}" \
 		-o splash.xex \
 		-C src/atari-splash.cfg \
-		obj/splash.o obj/segments-splash.o atari.lib
+		obj/splash.o obj/segments-splash.o obj/rmt-c.o obj/tune.o atari.lib
 
 ## Source code to compile and/or assemble:
 
@@ -286,6 +289,17 @@ asm/splash.s:  src/splash.c
 obj/segments-splash.o:     src/segments-splash.s
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments-splash.s -o obj/segments-splash.o
 
+# (Splash Music):
+# ---------------
+obj/rmt-c.o:	src/rmt-c.s src/rmt-c.h src/rmtplayr.s src/rmt_feat.s
+	${CA65} -I "${CC65_ASMINC}" -I src/ -t atari src/rmt-c.s -o obj/rmt-c.o
+
+obj/tune.o:	asm/tune.s
+	${CA65} -t atari asm/tune.s -o obj/tune.o
+
+asm/tune.s:	music/tune.rmt tools/mkreloc
+	tools/mkreloc music/tune.rmt > asm/tune.s
+
 ## Data files to build:
 
 # Levels:
@@ -308,4 +322,10 @@ data/silh.dat:	img-src/silh.pbm tools/pbm2pmg.php
 # -----
 fonts/fireshap.fnt: fonts/firefite-hirez-font.pbm fonts/firetext.fnt tools/shape_pbm_to_fnt.php
 	tools/shape_pbm_to_fnt.php fonts/firefite-hirez-font.pbm fonts/fireshap.fnt fonts/firetext.fnt
+
+
+# Compiled (vs Script) Tools:
+# ---------------------------
+tools/mkreloc:	tools/mkreloc.c
+	$(CC) tools/mkreloc.c -o tools/mkreloc
 
