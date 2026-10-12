@@ -6,9 +6,9 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/firefighter/
+  https://www.newbreedsoftware.com/firefighter/
 
-  2023-09-19 - 2023-12-26
+  2023-09-19 - 2026-10-12
 */
 
 $INFILE = "img-src/title.pgm";

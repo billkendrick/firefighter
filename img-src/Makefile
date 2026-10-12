@@ -2,9 +2,9 @@
 #
 # Firefighting game for the Atari 8-bit
 # Bill Kendrick <bill@newbreedsoftware.com>
-# http://www.newbreedsoftware.com/firefight/
+# https://www.newbreedsoftware.com/firefight/
 #
-# 2023-08-13 - 2023-12-26
+# 2023-08-13 - 2026-10-12
 
 all:	title.pgm silh.pbm
 

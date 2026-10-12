@@ -5,9 +5,9 @@ firefighting action game for the Atari 8-bit.
 
 ## Credits
 By Bill Kendrick <bill@newbreedsoftware.com>  
-http://www.newbreedsoftware.com/firefighter/
+https://www.newbreedsoftware.com/firefighter/
 
-Documented 2023-09-25 - 2025-01-20.
+Documented 2023-09-25 - 2026-10-12
 
 ------------------------------------------------------------------------
 

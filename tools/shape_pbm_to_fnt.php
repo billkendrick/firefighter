@@ -5,13 +5,13 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/firefighter/
+  https://www.newbreedsoftware.com/firefighter/
 
   TODO: Update script so we can use it to generate `firetext.fnt`
   based on `firetext.pbm`, too.  (Currently only used to create
   `fireshape.fnt` based on `firefite-hirez-font.pbm` + `firefnt.txt`.)
 
-  Last updated: 2025-01-20
+  Last updated: 2026-10-12
 */
 
 if ($argc < 3) {

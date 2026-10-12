@@ -5,9 +5,9 @@
 
   Firefighting game for the Atari 8-bit
   Bill Kendrick <bill@newbreedsoftware.com>
-  http://www.newbreedsoftware.com/firefighter/
+  https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-26 - 2023-08-27
+  2023-08-26 - 2026-10-12
 
   Compresses level data by stripping two high bits
   (used for color in ANTIC Mode 7 (GRAPHICS 2),

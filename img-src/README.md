@@ -5,9 +5,9 @@ for the Atari 8-bit.
 
 ## Credits
 By Bill Kendrick <bill@newbreedsoftware.com>  
-http://www.newbreedsoftware.com/firefighter/
+https://www.newbreedsoftware.com/firefighter/
 
-Documented 2023.09.19 - 2023.12.26
+Documented 2023-09-19 - 2026-10-12
 
 ------------------------------------------------------------------------
 
