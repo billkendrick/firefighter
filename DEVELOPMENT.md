@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 https://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2026-10-12
+Developed 2023-08-13 - 2026-10-21
 
 ------------------------------------------------------------------------
 
@@ -22,20 +22,21 @@ the Nintendo Wii game console.  In the game you navigate (in a 3D
 first-person perspective), equip yourself with tools (ax, hose, etc.),
 put out fires, and save civilians.  It inspired me to design a game with
 similar concepts, but as a top-down twin-stick "shooter", like
-_Robotron: 2084_.  I have a very nice arcade-style controller (from
-Edladdin Controllers) that I use for the Atari 8-bit port of that game,
-and needed an excuse to write a twin-stick game. (Also, this isn't my
+[_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084).
+I have a very nice arcade-style controller (from Edladdin Controllers) that I
+use for the Atari 8-bit computer and Atari 7800 ports of that game,
+and wanted an excuse to write a twin-stick game. (Also, this isn't my
 first fire firefighting game; as a kid back in the 1980s I wrote a game
 in Atari BASIC where you use a helicopter to put out a fire on a skyscraper.)
 
-Four years later I happened across my copious notes (including some hand-drawn
-pixel art) and decided to finally take a stab at it.  Scans of, and notes about,
-the [original design docs](design-docs/) are available.
+Four years later (in 2023) I happened across my copious notes (including some
+hand-drawn pixel art) and decided to finally take a stab at it.  Scans of,
+and notes about, the [original design docs](design-docs/) are available.
 
-I fired up _Envision_ font editor on Linux, and immediately spent too
-much time designing the shape of the text characters used in the game,
-based on the fonts seen on the sides of firetrucks in the US.  I finally
-also began adding the in-game objects.
+I fired up [_Envision_ font editor](https://atari.miribilist.com/envision/)
+on Linux, and immediately spent too much time designing the shape of the
+text characters used in the game, based on the fonts seen on the sides of
+firetrucks in the US.  I finally also began adding the in-game objects.
 
 ## Graphics
 
@@ -68,7 +69,7 @@ Therefore, in the earlier releases of the game, although I was limited to only
 uppercase characters for the small mode 2 text, and no alphanumeric characters at all
 (only game tile shapes) in the large mode 7 text, this meant I was able to get
 away with only a *single* 1KB character set for all of my needs!  (Actually, a pair
-of them; see below.)
+of them, for animation; see below.)
 
 ### Higher Resolution Via ANTIC Tricks
 
@@ -81,10 +82,10 @@ shapes to be composed of twice as many pixels: 8×16 instead of 8×8.
 known in the Atari 400/800 era as `GRAPHICS 7+` or `GRAPHICS 7½`, and
 in the XL/XE era available as `GRAPHICS 15`.)
 
-Since this requires twice as many characters, but only 64 are available,
-I use Display List Interrupt (DLI) routines, along with *two* character
-sets -- one for the top half of the tile shapes, and one for the bottom -- and
-switch between them every other row.
+Since this requires twice as many characters, but only 64 are available, I use
+[Display List Interrupt (DLI)](https://www.atariarchives.org/search.php?q=display+list+interrupts)
+routines, along with *two* character sets -- one for the top half of the tile
+shapes, and one for the bottom -- and switch between them every other row.
 
 Twice as many rows of tiles should require twice as much screen memory, and
 the game would have to write two bytes every time a shape must be drawn onto
@@ -92,17 +93,20 @@ the screen.  However, keep in mind that the characters on even rows must be
 identical to the characters on the odd rows above them (for the two halves of
 the tiles to appear correctly) -- they must be the two halves of the *same* tile.
 
-This allowed me to take advantage of the ANTIC Display List's "Load Memory Scan"
-(LMS) instruction, instructing it to reload the same row of screen data
-every other line.  In other words, every row of the map data appears twice in a
-row on the screen: rows 1 and 2 of the screen both show row 1 of the map; rows
-3 and 4 of the screen both show row 2 of the map; etc.
+This allowed me to take advantage of the ANTIC Display List's
+["Load Memory Scan" (LMS) instruction](https://en.wikipedia.org/wiki/ANTIC#Load_memory_scan),
+instructing it to reload the same row of screen data every other line.  In other
+words, every row of the map data appears twice in a row on the screen: rows 1
+and 2 of the screen both show row 1 of the map; rows 3 and 4 of the screen both
+show row 2 of the map; etc.
 
 By combining alternating character sets (via DLI) and repeating screen
 data (via LMS), every odd row shows the "top half" of a tile shape, and
-every even row shows the "bottom half".  Only 20 * 11 bytes of screen
+every even row shows the "bottom half".  Only 20 * 11 = 220 bytes of screen
 memory are needed, and the game logic continues to only need concern itself
-with a map that's 20×11 tiles in size.
+with a map that's 20×11 tiles in size.  (Note: In _Firefighter_, the game
+area is only 11 tiles high; there is a title and status line at the top of
+the screen.)
 
 The Atari's powerful ANTIC graphics chip does the heavy lifting to display
 the tile shapes with greater detail than a plain ANTIC mode 7 display could.
@@ -114,7 +118,7 @@ title at the top (and other messages between levels during the game) also uses
 the game's special font, but alphanumeric symbols appear (rather than random
 tile shapes from the game).  This is acheived by _not_ offsetting the character
 set at first; it first happens during the initial DLI routine. (That DLI routine
-also also changes some colors in the palette.)
+also also changes some colors in the palette, at the top of the game area.)
 
 ### Display List Interrupt (DLI) Chaining (and Rainbow Fire)
 
@@ -134,11 +138,12 @@ few frames (screen refreshes) to get some animation -- fire burning,
 gas leaks and water spraying, and workers flailng their limbs.
 (See the files and documentation in the [`fonts/`](fonts/) subdirectory.)
 
-The font animation is handled during a Vertical Blank Interurpt (VBI) routine,
-meaning any game loop slowdown that may happen will have no effect on the
-animation effect.  It does this by setting some bytes (in Page 6 memory)
-which the DLI routines use to decide which character sets to display.
-It also resets the DLI Vector to point to the first DLI.
+The font animation is handled during a
+[Vertical Blank Interurpt (VBI)](https://www.atariarchives.org/search.php?q=vertical+blank+interrupt)
+routine, meaning any game loop slowdown that may happen will have no effect on
+the animation frame rate.  It does this by setting some bytes (in Page 6 memory;
+see [`page6.h`](src/page6.h)) which the DLI routines use to decide which character
+sets to display.  It also resets the DLI Vector to point to the first DLI.
 
 Another byte in Page 6 is used to let the DLI change which colors are used
 in game area, based on events (e.g., flashing the background when an oil barrel
@@ -147,7 +152,7 @@ explodes, or greying out all colors while the game is paused).
 6502 assembly language in this game.  Almost everything else is in straight C.)
 
 Note: Currently, no Player/Missile Graphics ("sprites") are used in the game.
-(They *are* used in the splash screen; see below.)
+(They *are* used in the splash screen, though; see below.)
 
 ### Screen Shake
 
@@ -155,10 +160,11 @@ When an explosion is occurring, a countdown timer is used to handle
 both the screen background flash (described above), explosion sound
 effect volume (see below), and to enable a screen shake effect.
 
-ANTIC provides various instructions to display between 1 and 8 blank
-scanlines.  The shaking is handled by simply setting changing one
+ANTIC provides various Display List instructions that will create between 1 and
+8 blank scanlines.  The shaking is handled by simply setting changing one
 line of the Display List (in the screen border area above the top of
-the game area) to a random blank-scanline(s) instruction.
+the game area) to a random blank-scanline(s) instruction.  (That is, the
+Atari's hardware vertical fine scrolling functionality is _not_ used.)
 
 ## Sound
 
@@ -167,7 +173,8 @@ the game area) to a random blank-scanline(s) instruction.
 The title screen has a timer that increments each frame.  During some
 parts of its count, it will play an oscillating siren tone that
 increases in volume (and pitch), then decreases in volume (and pitch).
-(Yes, I made a vague attemt at a "firetruck speeding by" Doppler effect.)
+(Yes, I made a vague attemt at a "firetruck speeding by"
+[Doppler effect](https://en.wikipedia.org/wiki/Doppler_effect).)
 
 Easter egg: If you push either stick in any direction on the title
 screen, you can cause a firetruck horn blaring noise while the sirens
@@ -223,7 +230,7 @@ chip voices, and is instead generated by using the
 register, which basically acts as a 1-bit sound register.
 (It's what the Atari uses to produce keyclick sounds when you type
 on the keyboard, and the `[Control]`+`[2]` (`CHR$(125)`) buzzer
-sound effect.
+sound effect.)
 
 On an Atari 400 or 800, this sound is produced by an internal speaker.
 In the XL and XE models, it is combined with the POKEY's output
@@ -236,19 +243,19 @@ and goes to your TV/monitor's speaker.
 The game is driven by a
 [cellular Automaton](https://en.wikipedia.org/wiki/Cellular_automaton)
 routine.  The screen memory of the game area is treated as individual
-cells.  Certain kinds of cells have behaviors which can affect their
-cell and/or the cells next to them.
+cells.  Certain cell contents have behaviors which can affect their
+own cell and/or the cells next to them.
 
 #### Fire
 
-For example, a cell that contains a small fire has a random chance
-of growing into a medium fire.  Similarly, a medium fire has a chance
-to become a large fire.  A cell containing a large fire has a random
-chance of spreading (creating a new small fire) in a random direction.
+A cell that contains a small fire has a random chance of growing into
+a medium fire.  Similarly, a medium fire has a chance to become a
+large fire.  A cell containing a large fire has a random chance of
+spreading (creating a new small fire) in a random direction.
 
 When spreading, if there's a worker (see below), they will perish.
 If there's a gas leak or oil barrel, the spreading fire will will cause
-an explosion (creating up to 4 large fires around the destroyed object).
+an explosion (creating up to 4 large fires surrounding the destroyed object).
 
 #### Workers
 
@@ -280,7 +287,7 @@ character set (so we're using half of the game tile portion of
 our character set just for water spray!  It *is* an important
 aspect of the game, however!)
 
-The sprays consists of a narrow point placed directly adjacent
+The sprays consist of a narrow point placed directly adjacent
 to the firefighter, plus three more that represent the wide end
 of the spray.  For the four cardinal directions, the wide spray
 is drawn as three vertical or three horizontal shapes in a row.
@@ -301,6 +308,9 @@ Examples:
 If the initial (narrow, adjacent) shape hits an obstacle, or
 fire, the other three shapes will not be drawn (and, hence, not
 have any affect on fire beyond the position adjacent to the player).
+
+When water spray hits fire, it reduces the fire's intensity
+(large to medium to small) over time.
 
 ## Levels
 
@@ -358,9 +368,10 @@ compressed level data follows.
 ## High Score
 
 The game records a top score, and allows the user to enter their
-initials at the end of the game.  The disk-based version provides
-a top-10 high score table, which persists between sessions, as
-it is saved-to and loaded-from the disk.
+initials at the end of the game.  The disk-based version (see
+the "Builds" section, below) provides a top-10 high score table,
+which persists between sessions, as it is saved-to and loaded-from
+the disk.
 
 Code exists (in [`score.c`](src/score.c)) to use standard C file
 input/output (I/O) functions -- `fopen()`, `fread()`, etc. --
@@ -387,6 +398,10 @@ The script [`high_score_atr.php`](tools/high_score_atr.php) handles
 this modification.  (See the FujiNet project's
 ["High Score storage for Legacy Games" page](https://github.com/FujiNetWIFI/fujinet-platformio/wiki/High-Score-storage-for-Legacy-Games)
 for further information.)
+
+A non-disk-based stand-alone build, with additional functionality
+for FujiNet owners, stores a single high score directly onto an
+SD storage card within a FujiNet (see "Builds", below).
 
 ## Help Screen
 
@@ -446,7 +461,7 @@ Graphics (PMG) objects (aka "sprites") that appear on the left side
 of the screen, and thus adding a 17th color to the splash screen.
 
 A tiny program acts as the splash screen, loading and displaying
-this picture.  I take advantage of MyDOS's ability to chain
+this picture.  I take advantage of _MyDOS_'s ability to chain
 multiple "autorun" programs (aka `AUTORUN.SYS` in Atari DOS) by
 having it load the splash first (`SPLASH.AR0`), followed by
 the game itself second (`FIREFITE.AR1`).
@@ -456,7 +471,8 @@ the game itself second (`FIREFITE.AR1`).
 Raster Music Tracker (http://raster.atariportal.cz/rmt/rmt.htm)
 is a popular music tracker created by Radek Sterba (RASTER/C.P.U.)
 between 2003 and his untimely death in 2011.  Since then, others
-(e.g., VinsCool: https://github.com/VinsCool/RASTER-Music-Tracker)
+(e.g., VinsCool: https://github.com/VinsCool/RASTER-Music-Tracker
+and Gianluca GP Renzi: https://github.com/gianlucarenzi/RITMO-Music-Tracker/)
 have continued development.
 
 Daniel Serpell (dmsc) created a C interface to RMT, as well as
@@ -467,17 +483,17 @@ a program.  (https://github.com/dmsc/rmt-cc65/)
 I utilized this set of tools to add music to the splash screen
 in late 2026.  The build process is:
 
- 1. convert the RMT music file to assembly code
+ 1. Convert the RMT music file to assembly code
     * `./mkreloc TUNE.rmt > TUNE.asm`
- 2. assemble the music into an object
+ 2. Assemble the music into an object
     * `ca65 -t atari TUNE.asm -o TUNE.o`
- 3. assemble the RMT player (Raster's original code) and
-    RMT C wrapper assembly source into a objects
+ 3. Assemble the RMT player (Raster's original code) and
+    RMT C wrapper, both 6502 assembly source codes, into an object
     * `ca65 -t atari rmt-c.asm -o rmt-c.o`
     * The RMT C wrapper `.include`'s `rmtplayr.asm`, which in
       turn `.include`'s `rmt_feat.asm` which defines the features
       that should be built.
- 4. link the RMT player object and the music object, along with
+ 4. Link the RMT player object and the music object, along with
     everything else, into the splash screen executable program
     * `ld65 ... -o splash.xex ... splash.o rmt-c.o TUNE.o ...`
 
@@ -495,4 +511,25 @@ just play the tune:
    as a transition from the splash screen to a simple
    "Loading..." message.  (`rmt_wait_vbi()` is used within the
    loop to run the effect at a steady speed.)
+
+## Builds
+
+There are three builds that the [`Makefile`](Makefile) can create
+(its primary "`all`" target builds all three by default):
+
+ * `firefite.atr` -- A disk image containing a copy of
+   [_MyDOS_](https://www.mathyvannisselroy.nl/mydos.htm),
+   the splash screen program and data (graphics and music),
+   the main game program, the help text file, and a high score table
+   file.  The game program is built to support the top-10 high score
+   table, and read the help text.  It is constructed using the
+   `dir2atr` tool from HiassofT's
+   [_AtariSIO driver and utilities_ collection](https://github.com/HiassofT/AtariSIO)
+ * `firefite.xex` -- A stand-alone executable version of the game,
+   with no splash, no help screen, and no high score table;
+   it records a single high score in memory.
+ * `fireftfn.xex` -- Identical to the stand-alone version, but which uses
+   [FujiNet AppKey storage](https://github.com/FujiNetWIFI/fujinet-firmware/wiki/SIO-Command-%24DC-Open-App-Key)
+   to persistently record a single high score, as well as game configuration
+   (joystick preferences), to the FujiNet itself.
 
