@@ -5,5 +5,5 @@
 _scr_mem:
 
 	.export		_rmt_module
-.segment	"RMT_SONG_DATA"
-_rmt_module:
+.import		RMT_SONG_DATA
+_rmt_module = RMT_SONG_DATA
