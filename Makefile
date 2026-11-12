@@ -227,7 +227,8 @@ obj/sio.o:  src/sio.s
 # * Convert " * " and " o " bullet glyphs to ATASCII control characters
 #   (circle and diamond graphics, respectively)
 disk/README.txt:	README.md tools/txt2atascii.php
-	cat README.md | tr "\`" "\~" | ${MARKDOWN2HTML} > ${TMP}; \
+	( cat README.md ; echo ; echo "End of help text." ) \
+		| tr "\`" "\~" | ${MARKDOWN2HTML} > ${TMP}; \
 		${HTML2TXT} ${TMP} \
 		| tools/txt2atascii.php \
 		| sed -e "s/ \* / \x14 /g" \

@@ -4,38 +4,6 @@
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
-## Credits
-> By Bill Kendrick <bill@newbreedsoftware.com>  
-> https://www.newbreedsoftware.com/firefighter/
->
-> Inspired by [_Real Heroes: Firefighter_](https://en.wikipedia.org/wiki/Real_Heroes:_Firefighter)
-> (Wii; Conspiracy Entertainment, 2012),
-> [_Brave Firefighters_](https://www.arcade-museum.com/game_detail.php?game_id=7212)
-> (arcade; SEGA, 1999),
-> [_Boulderdash_](https://en.wikipedia.org/wiki/Boulder_Dash_%28video_game%29)
-> (Atari 8-bit and other platforms; First Star Software, 1985),
-> [_Dandy_](https://en.wikipedia.org/wiki/Dandy_%28video_game%29)
-> (Atari 8-bit; John Howard Palevich, 1983),
-> and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
-> (arcade; Williams Electronics, 1982).
-> See the [development docs](DEVELOPMENT.md).
->
-> _Raster Music Tracker_ playback routine from
-> [_RITMO Music Tracker_](https://github.com/gianlucarenzi/RITMO-Music-Tracker),
-> by Gianluca Renzi, based on _Raster Music Tracker_ originally by
-> Radek Sterba (RIP) with updates from Vin Samuel & Peter Dell.
->
-> Splash screen photo: "Firefighter: Fireman in Action"
-> by Jean Beaufort (Public Domain).
->
-> Splash screen firefighter badge: From "First Responders Three"
-> by Byron Songer (Public Domain).
->
-> Splash screen fonts: "Echotopia" by Erik Kirtley
-> and "K.O. Activista" by deFharo (both SIL Open Font License).
->
-> Level 7 by Edward
-
 Developed 2023-08-13 - 2026-11-12
 
 ------------------------------------------------------------------------
@@ -270,4 +238,38 @@ Developed 2023-08-13 - 2026-11-12
 * Saving a worker: `100 points`
 * Safety bonus -- ending a level with no fire or gas leaks remaining: `1,000 points`
 * Time bonus: Scoring potential starts at 1,000 x Level # (max 10,000)
+
+------------------------------------------------------------------------
+
+## Credits
+> By Bill Kendrick <bill@newbreedsoftware.com>  
+> https://www.newbreedsoftware.com/firefighter/
+>
+> Inspired by [_Real Heroes: Firefighter_](https://en.wikipedia.org/wiki/Real_Heroes:_Firefighter)
+> (Wii; Conspiracy Entertainment, 2012),
+> [_Brave Firefighters_](https://www.arcade-museum.com/game_detail.php?game_id=7212)
+> (arcade; SEGA, 1999),
+> [_Boulderdash_](https://en.wikipedia.org/wiki/Boulder_Dash_%28video_game%29)
+> (Atari 8-bit and other platforms; First Star Software, 1985),
+> [_Dandy_](https://en.wikipedia.org/wiki/Dandy_%28video_game%29)
+> (Atari 8-bit; John Howard Palevich, 1983),
+> and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
+> (arcade; Williams Electronics, 1982).
+> See the [development docs](DEVELOPMENT.md).
+>
+> _Raster Music Tracker_ playback routine from
+> [_RITMO Music Tracker_](https://github.com/gianlucarenzi/RITMO-Music-Tracker),
+> by Gianluca Renzi, based on _Raster Music Tracker_ originally by
+> Radek Sterba (RIP) with updates from Vin Samuel & Peter Dell.
+>
+> Splash screen photo: "Firefighter: Fireman in Action"
+> by Jean Beaufort (Public Domain).
+>
+> Splash screen firefighter badge: From "First Responders Three"
+> by Byron Songer (Public Domain).
+>
+> Splash screen fonts: "Echotopia" by Erik Kirtley
+> and "K.O. Activista" by deFharo (both SIL Open Font License).
+>
+> Level 7 by Edward
 

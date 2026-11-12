@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2026-10-11
+  2023-08-22 - 2026-11-12
 */
 
 #include <atari.h>
@@ -150,7 +150,7 @@ void show_help(void) {
         cmd = HELP_CMD_EXIT;
       }
 
-      if (OS.stick0 == 14 || OS.stick1 == 14 || OS.ch == KEY_DASH || OS.ch == (KEY_DASH | KEY_CTRL)) {
+      if (OS.stick0 == 14 || OS.stick1 == 14 || OS.ch == KEY_DASH || OS.ch == (KEY_DASH | KEY_CTRL) || OS.ch == (KEY_DELETE)) {
         /* Go back a page */
         if (cur_page > 1) {
           cmd = HELP_CMD_PREV;
