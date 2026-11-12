@@ -1,10 +1,10 @@
-# Makefile for firefight's title screen data
+# Makefile for firefighter's title screen data
 #
 # Firefighting game for the Atari 8-bit
 # Bill Kendrick <bill@newbreedsoftware.com>
-# https://www.newbreedsoftware.com/firefight/
+# https://www.newbreedsoftware.com/firefighter/
 #
-# 2023-08-13 - 2026-10-12
+# 2023-08-13 - 2026-11-12
 
 all:	title.pgm silh.pbm
 

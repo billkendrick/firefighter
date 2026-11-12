@@ -2,9 +2,9 @@
 #
 # Firefighting game for the Atari 8-bit
 # Bill Kendrick <bill@newbreedsoftware.com>
-# https://www.newbreedsoftware.com/firefight/
+# https://www.newbreedsoftware.com/firefighter/
 #
-# 2023-08-13 - 2026-10-12
+# 2023-08-13 - 2026-11-12
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -68,6 +68,8 @@ clean:	clean-intermediate clean-tools
 
 clean-intermediate:
 	-rm obj/*.o
+	-rm obj/*.obx
+	-rm obj/player.sym
 	-rm asm/*.s
 	# -rm firefite.map
 	-rm data/levels.dat
@@ -84,7 +86,7 @@ clean-intermediate:
 	-rm disk/TITLE.GR9
 
 clean-tools:
-	-rm tools/mkreloc
+	# no-op
 
 
 ## Files to generate:
@@ -120,11 +122,9 @@ fireftfn.xex:	${OBJECTS_FUJINET} src/atari.cfg
 		${MAP_ARGS} \
 		${OBJECTS_FUJINET} atari.lib
 
-splash.xex:	obj/splash.o obj/segments-splash.o obj/rmt-c.o obj/tune.o src/atari-splash.cfg
-	${LD65} --lib-path "${CC65_LIB}" \
-		-o splash.xex \
-		-C src/atari-splash.cfg \
-		obj/splash.o obj/segments-splash.o obj/rmt-c.o obj/tune.o atari.lib
+splash.xex:	obj/splash1.xex obj/player.obx
+		cat obj/splash1.xex obj/player.obx > splash.xex
+
 
 ## Source code to compile and/or assemble:
 
@@ -289,16 +289,41 @@ asm/splash.s:  src/splash.c
 obj/segments-splash.o:     src/segments-splash.s
 	${CA65} -I "${CC65_ASMINC}" -t atari src/segments-splash.s -o obj/segments-splash.o
 
+obj/splash1.xex:	obj/splash.o obj/segments-splash.o obj/rmt.o obj/tune.o src/atari-splash.cfg
+	${LD65} --lib-path "${CC65_LIB}" \
+		-o obj/splash1.xex \
+		-C src/atari-splash.cfg \
+		obj/splash.o obj/segments-splash.o obj/rmt.o obj/tune.o atari.lib
+
+
 # (Splash Music):
 # ---------------
-obj/rmt-c.o:	src/rmt-c.s src/rmt-c.h src/rmtplayr.s src/rmt_feat.s
-	${CA65} -I "${CC65_ASMINC}" -I src/ -t atari src/rmt-c.s -o obj/rmt-c.o
+obj/rmt.o:	src/3rdparty/ritmo/cc65/rmt.s src/3rdparty/ritmo/cc65/rmt.h
+	${CA65} -I "${CC65_ASMINC}" -I src/ -t atari src/3rdparty/ritmo/cc65/rmt.s -o obj/rmt.o
 
-obj/tune.o:	asm/tune.s
-	${CA65} -t atari asm/tune.s -o obj/tune.o
+obj/tune.o:	music/tune.asm
+	${CA65} -t atari music/tune.asm -o obj/tune.o
 
-asm/tune.s:	music/tune.rmt tools/mkreloc
-	tools/mkreloc music/tune.rmt > asm/tune.s
+obj/player.obx:	src/3rdparty/ritmo/ca65/Patch-16/rmtplayer.s \
+		src/3rdparty/ritmo/ca65/Patch-16/rmtplayr.s \
+		src/3rdparty/ritmo/ca65/Patch-16/rmt_feat.s \
+		src/3rdparty/ritmo/ca65/Patch-16/rmtdata.s \
+		src/3rdparty/ritmo/ca65/obx.sh
+	OBX_SYMBOLS=RASTERMUSICTRACKER src/3rdparty/ritmo/ca65/obx.sh \
+		obj/player.obx \
+		src/3rdparty/ritmo/ca65/Patch-16/rmtplayr.s \
+		-D FEAT_IS_TRACKER=0 \
+		-D FEAT_IS_SIMPLEP=1 \
+		-D EXPORTXEX=0 \
+		-D EXPORTSAP=0 \
+		-D TABLES=\$$3A00 \
+		-D STEREOMODE=0 \
+		-D FEAT_GLOBALVOLUMEFADE \
+		> obj/player.sym
+	awk '$$1 == "OBX_SYMBOL" { print "RMT_PLAYER = $$" $$3 }' \
+		obj/player.sym \
+		> src/player.inc
+
 
 ## Data files to build:
 
@@ -326,6 +351,6 @@ fonts/fireshap.fnt: fonts/firefite-hirez-font.pbm fonts/firetext.fnt tools/shape
 
 # Compiled (vs Script) Tools:
 # ---------------------------
-tools/mkreloc:	tools/mkreloc.c
-	$(CC) tools/mkreloc.c -o tools/mkreloc
+#tools/mkreloc:	tools/mkreloc.c
+#	$(CC) tools/mkreloc.c -o tools/mkreloc
 

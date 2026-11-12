@@ -5,14 +5,14 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   https://www.newbreedsoftware.com/firefighter/
 
-  2023-09-19 - 2026-10-12
+  2023-09-19 - 2026-11-11
 */
 
 #include <atari.h>
 #include <peekpoke.h>
 #include <stdio.h>
 #include <string.h>
-#include "rmt-c.h"
+#include "3rdparty/ritmo/cc65/rmt.h"
 
 /* Display list (at the 1K boundary), followed by
    the first chunk of the graphics data up until the 4K boundary,
@@ -29,8 +29,8 @@ void eat_input(void);
 
 char loading_str[] = "LOADING FIREFIGHTER...";
 
-/* The song data (RMT -> ASM via dmsc's mkreloc) */
-extern char rmt_song_data[];
+/* The song data (RMT -> ASM via RITMO's Export -> "Relocatable ASM for RMTPlayer") */
+extern const unsigned char rmt_module[];
 
 
 /* Main loop! */
@@ -38,7 +38,7 @@ void main(void) {
   FILE * fi;
   int ply, i, x, l;
 
-  rmt_init(rmt_song_data, 2 /* FIXME: ??? */);
+  rmt_init(rmt_module);
 
   OS.sdmctl = 0;
   while (ANTIC.vcount < 124);
@@ -126,23 +126,28 @@ void main(void) {
   /* Show the screen, start the music, and wait for input before proceeding */
   OS.sdmctl = DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH | DMACTL_DMA_MISSILES | DMACTL_DMA_PLAYERS | DMACTL_PMG_SINGLELINE;
 
-  rmt_start();
+  rmt_vbi_on();
 
   eat_input();
   do {
   } while (OS.strig0 == 1 && OS.strig1 == 1 && OS.ch == 255 && GTIA_READ.consol == 7);
 
   for (i = 0; i < 16; i++) {
-      rmt_global_volume_fade = i << 4;
+      /* FIXME: Need to enable `FEAT_GLOBALVOLUMEFADE` feature -bjk 2026.11.11 */
+      /* rmt_global_volume_fade = i << 4; */
+
       OS.color4 = i;
       OS.pcolr0 = i;
       OS.pcolr1 = i;
       OS.pcolr2 = i;
       OS.pcolr3 = i;
-      rmt_wait_vbi();
+
+      /* Wait until the next VBI has occurred (throttle this for-loop) */
+      x = OS.rtclok[0];
+      do { } while (x == OS.rtclok[0]);
   }
 
-  rmt_stop();
+  rmt_vbi_off();
 
   eat_input();
 

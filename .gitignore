@@ -1,5 +1,6 @@
 asm/*.s
 *.o
+*.obx
 *.xex
 *.atr
 *.AR0
@@ -13,4 +14,5 @@ disk/README.txt
 disk/TITLE.GR9
 disk/SILH.DAT
 fonts/fireshap.fnt
-tools/mkreloc
+src/player.inc
+obj/player.sym

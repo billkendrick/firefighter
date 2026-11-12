@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 https://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2026-10-21
+Developed 2023-08-13 - 2026-11-12
 
 ------------------------------------------------------------------------
 
@@ -475,27 +475,7 @@ between 2003 and his untimely death in 2011.  Since then, others
 and Gianluca GP Renzi: https://github.com/gianlucarenzi/RITMO-Music-Tracker/)
 have continued development.
 
-Daniel Serpell (dmsc) created a C interface to RMT, as well as
-a tool to convert an `.rmt` music file into a block of assembly
-language code that can be assembled into an object and linked to
-a program.  (https://github.com/dmsc/rmt-cc65/)
-
-I utilized this set of tools to add music to the splash screen
-in late 2026.  The build process is:
-
- 1. Convert the RMT music file to assembly code
-    * `./mkreloc TUNE.rmt > TUNE.asm`
- 2. Assemble the music into an object
-    * `ca65 -t atari TUNE.asm -o TUNE.o`
- 3. Assemble the RMT player (Raster's original code) and
-    RMT C wrapper, both 6502 assembly source codes, into an object
-    * `ca65 -t atari rmt-c.asm -o rmt-c.o`
-    * The RMT C wrapper `.include`'s `rmtplayr.asm`, which in
-      turn `.include`'s `rmt_feat.asm` which defines the features
-      that should be built.
- 4. Link the RMT player object and the music object, along with
-    everything else, into the splash screen executable program
-    * `ld65 ... -o splash.xex ... splash.o rmt-c.o TUNE.o ...`
+FIXME - Update to reflect RITMO's `ca65` export...
 
 The splash screen source code only required the following to
 just play the tune:
@@ -511,6 +491,8 @@ just play the tune:
    as a transition from the splash screen to a simple
    "Loading..." message.  (`rmt_wait_vbi()` is used within the
    loop to run the effect at a steady speed.)
+
+FIXME - The above needs updating.
 
 ## Builds
 

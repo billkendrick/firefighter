@@ -1,15 +1,15 @@
 #!/bin/sh
 
-# "tools/release.sh" for firefight
+# "tools/release.sh" for firefighter
 #
 # A script to build the game files and roll the source &
 # game files into a release ZIP file.
 #
 # Firefighting game for the Atari 8-bit
 # Bill Kendrick <bill@newbreedsoftware.com>
-# https://www.newbreedsoftware.com/firefight/
+# https://www.newbreedsoftware.com/firefighter/
 
-# Last updated 2026-10-12
+# Last updated 2026-11-12
 
 # Confirm that we've tagged with the same version
 # number we're bulding it as.  (Makefile "VERSION"
