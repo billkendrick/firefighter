@@ -70,6 +70,7 @@ clean-intermediate:
 	-rm obj/*.o
 	-rm obj/*.obx
 	-rm obj/player.sym
+	-rm src/player.inc
 	-rm asm/*.s
 	# -rm firefite.map
 	-rm data/levels.dat
@@ -298,18 +299,19 @@ obj/splash1.xex:	obj/splash.o obj/segments-splash.o obj/rmt.o obj/tune.o src/ata
 
 # (Splash Music):
 # ---------------
-obj/rmt.o:	src/3rdparty/ritmo/cc65/rmt.s src/3rdparty/ritmo/cc65/rmt.h
+obj/rmt.o:	src/3rdparty/ritmo/cc65/rmt.s src/3rdparty/ritmo/cc65/rmt.h src/player.inc
 	${CA65} -I "${CC65_ASMINC}" -I src/ -t atari src/3rdparty/ritmo/cc65/rmt.s -o obj/rmt.o
 
 obj/tune.o:	music/tune.asm
 	${CA65} -t atari music/tune.asm -o obj/tune.o
 
-obj/player.obx:	src/3rdparty/ritmo/ca65/Patch-16/rmtplayer.s \
+obj/player.obx src/player.inc:	src/3rdparty/ritmo/ca65/Patch-16/rmtplayer.s \
 		src/3rdparty/ritmo/ca65/Patch-16/rmtplayr.s \
 		src/3rdparty/ritmo/ca65/Patch-16/rmt_feat.s \
 		src/3rdparty/ritmo/ca65/Patch-16/rmtdata.s \
 		src/3rdparty/ritmo/ca65/obx.sh
-	OBX_SYMBOLS=RASTERMUSICTRACKER src/3rdparty/ritmo/ca65/obx.sh \
+	OBX_SYMBOLS="RASTERMUSICTRACKER RMTGLOBALVOLUMEFADE" \
+		src/3rdparty/ritmo/ca65/obx.sh \
 		obj/player.obx \
 		src/3rdparty/ritmo/ca65/Patch-16/rmtplayr.s \
 		-D FEAT_IS_TRACKER=0 \
@@ -318,11 +320,14 @@ obj/player.obx:	src/3rdparty/ritmo/ca65/Patch-16/rmtplayer.s \
 		-D EXPORTSAP=0 \
 		-D TABLES=\$$3A00 \
 		-D STEREOMODE=0 \
-		-D FEAT_GLOBALVOLUMEFADE \
+		-D FEAT_GLOBALVOLUMEFADE=1 \
 		> obj/player.sym
-	awk '$$1 == "OBX_SYMBOL" { print "RMT_PLAYER = $$" $$3 }' \
+	awk '$$1 == "OBX_SYMBOL" && $$2 == "RASTERMUSICTRACKER" { print "RMT_PLAYER = $$" $$3 }' \
 		obj/player.sym \
 		> src/player.inc
+	awk '$$1 == "OBX_SYMBOL" && $$2 == "RMTGLOBALVOLUMEFADE" { print "RMT_GLOBALVOLUMEFADE = $$" $$3 }' \
+		obj/player.sym \
+		>> src/player.inc
 
 
 ## Data files to build:

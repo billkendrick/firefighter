@@ -24,6 +24,7 @@ https://www.newbreedsoftware.com/firefighter/
    * Added color gradient effect
  * Under the hood:
    * Replaced hard-coded page 6 variable locations with a struct
+   * h/t Gianluca Renzi for help getting Splash to build with RMT player
 
 0.1-beta-10 (2025-01-20):
  * Gameplay:

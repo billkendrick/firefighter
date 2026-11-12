@@ -33,6 +33,7 @@ char loading_str[] = "LOADING FIREFIGHTER...";
 extern const unsigned char rmt_module[];
 
 
+
 /* Main loop! */
 void main(void) {
   FILE * fi;
@@ -133,8 +134,9 @@ void main(void) {
   } while (OS.strig0 == 1 && OS.strig1 == 1 && OS.ch == 255 && GTIA_READ.consol == 7);
 
   for (i = 0; i < 16; i++) {
-      /* FIXME: Need to enable `FEAT_GLOBALVOLUMEFADE` feature -bjk 2026.11.11 */
-      /* rmt_global_volume_fade = i << 4; */
+      /* FIXME: How to make `RMT_GLOBALVOLUMEFADE = $3209` from `src/player.inc`
+         (generated when `obj/player.obj` is built) available to C code? -bjk 2026.11.12 */
+      /* rmt_global_volume_fade = (i << 4); */
 
       OS.color4 = i;
       OS.pcolr0 = i;
@@ -143,8 +145,8 @@ void main(void) {
       OS.pcolr3 = i;
 
       /* Wait until the next VBI has occurred (throttle this for-loop) */
-      x = OS.rtclok[0];
-      do { } while (x == OS.rtclok[0]);
+      x = OS.rtclok[2];
+      do { } while (x == OS.rtclok[2]);
   }
 
   rmt_vbi_off();

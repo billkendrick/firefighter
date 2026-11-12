@@ -14,9 +14,16 @@ A twin-stick firefighting action game for the Atari 8-bit.
 > (arcade; SEGA, 1999),
 > [_Boulderdash_](https://en.wikipedia.org/wiki/Boulder_Dash_%28video_game%29)
 > (Atari 8-bit and other platforms; First Star Software, 1985),
+> [_Dandy_](https://en.wikipedia.org/wiki/Dandy_%28video_game%29)
+> (Atari 8-bit; John Howard Palevich, 1983),
 > and [_Robotron: 2084_](https://en.wikipedia.org/wiki/Robotron:_2084)
 > (arcade; Williams Electronics, 1982).
 > See the [development docs](DEVELOPMENT.md).
+>
+> _Raster Music Tracker_ playback routine from
+> [_RITMO Music Tracker_](https://github.com/gianlucarenzi/RITMO-Music-Tracker),
+> by Gianluca Renzi, based on _Raster Music Tracker_ originally by
+> Radek Sterba (RIP) with updates from Vin Samuel & Peter Dell.
 >
 > Splash screen photo: "Firefighter: Fireman in Action"
 > by Jean Beaufort (Public Domain).
@@ -29,7 +36,7 @@ A twin-stick firefighting action game for the Atari 8-bit.
 >
 > Level 7 by Edward
 
-Developed 2023-08-13 - 2026-10-11
+Developed 2023-08-13 - 2026-11-12
 
 ------------------------------------------------------------------------
 
