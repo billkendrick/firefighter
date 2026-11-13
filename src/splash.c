@@ -134,9 +134,9 @@ void main(void) {
   } while (OS.strig0 == 1 && OS.strig1 == 1 && OS.ch == 255 && GTIA_READ.consol == 7);
 
   for (i = 0; i < 16; i++) {
-      /* FIXME: How to make `RMT_GLOBALVOLUMEFADE = $3209` from `src/player.inc`
-         (generated when `obj/player.obj` is built) available to C code? -bjk 2026.11.12 */
-      /* rmt_global_volume_fade = (i << 4); */
+      /* Fade the music out along with the screen
+         (`rmt.s` exports `RMT_GLOBALVOLUMEFADE` of `src/player.inc` as `rmt_global_volume_fade`) */
+      rmt_global_volume_fade = (i << 4);
 
       OS.color4 = i;
       OS.pcolr0 = i;
