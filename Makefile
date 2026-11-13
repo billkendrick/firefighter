@@ -4,7 +4,7 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # https://www.newbreedsoftware.com/firefighter/
 #
-# 2023-08-13 - 2026-11-12
+# 2023-08-13 - 2026-11-13
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
@@ -63,7 +63,7 @@ run-fujinet:	fireftfn.xex
 run-disk:	firefite.atr
 	atari800 -nobasic firefite.atr
 
-clean:	clean-intermediate clean-tools
+clean:	clean-intermediate
 	-rm firefite.xex
 	-rm fireftfn.xex
 	-rm firefite.atr
@@ -87,9 +87,6 @@ clean-intermediate:
 	-rm disk/FIREFITE.AR1
 	-rm disk/README.txt
 	-rm disk/TITLE.GR9
-
-clean-tools:
-	# no-op
 
 
 ## Files to generate:
@@ -355,10 +352,4 @@ data/silh.dat:	img-src/silh.pbm tools/pbm2pmg.php
 # -----
 fonts/fireshap.fnt: fonts/firefite-hirez-font.pbm fonts/firetext.fnt tools/shape_pbm_to_fnt.php
 	tools/shape_pbm_to_fnt.php fonts/firefite-hirez-font.pbm fonts/fireshap.fnt fonts/firetext.fnt
-
-
-# Compiled (vs Script) Tools:
-# ---------------------------
-#tools/mkreloc:	tools/mkreloc.c
-#	$(CC) tools/mkreloc.c -o tools/mkreloc
 
