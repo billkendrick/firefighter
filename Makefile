@@ -23,7 +23,9 @@ CC65BIN=/usr/bin
 CC65=${CC65BIN}/cc65
 CA65=${CC65BIN}/ca65
 LD65=${CC65BIN}/ld65
-DIR2ATR=/usr/local/bin/dir2atr -S -b MyDos4534
+# (dir2atr from the PATH, e.g. /usr/local/bin or ~/bin; /usr/local/bin if not found)
+DIR2ATR_BIN:=$(or $(shell command -v dir2atr),/usr/local/bin/dir2atr)
+DIR2ATR=${DIR2ATR_BIN} -S -b MyDos4534
 MARKDOWN2HTML=/usr/bin/markdown
 HTML2TXT=/usr/bin/w3m -dump -no-graph -cols 38 -o indent_incr=1
 

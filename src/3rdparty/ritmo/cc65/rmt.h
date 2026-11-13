@@ -13,4 +13,9 @@ void rmt_vbi_off(void);
 /* Frames played since rmt_vbi_on() (50 a second on PAL, 60 on NTSC). */
 extern volatile unsigned int rmt_frames;
 
+/* The global volume fade, subtracted from the volume of every channel in the high nibble: $00 full volume, $10 one
+   step lower, ... $F0 silent. Only with a player assembled with FEAT_GLOBALVOLUMEFADE=1, whose player.inc has
+   RMT_GLOBALVOLUMEFADE; without it, using the variable is an unresolved external for the linker. */
+extern volatile unsigned char rmt_global_volume_fade;
+
 #endif

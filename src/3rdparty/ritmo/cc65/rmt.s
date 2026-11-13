@@ -9,6 +9,14 @@
 
         .export _rmt_init, _rmt_vbi_on, _rmt_vbi_off, _rmt_frames
 
+; The global volume fade of a player assembled with FEAT_GLOBALVOLUMEFADE=1: player.inc then also has
+; RMT_GLOBALVOLUMEFADE, the address of the byte the player subtracts from every volume (the operand of a SBC in
+; the player's code). For C it is the variable rmt_global_volume_fade, at that address.
+.ifdef RMT_GLOBALVOLUMEFADE
+_rmt_global_volume_fade = RMT_GLOBALVOLUMEFADE
+        .export _rmt_global_volume_fade
+.endif
+
 SETVBV  = $E45C                 ; OS: set a VBI vector (A = 7 deferred, Y/X = address)
 XITVBV  = $E462                 ; OS: the end of the deferred VBI
 VVBLKD  = $0224                 ; the deferred VBI vector
