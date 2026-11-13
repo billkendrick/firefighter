@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 https://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2026-11-12
+Developed 2023-08-13 - 2026-11-13
 
 ------------------------------------------------------------------------
 
@@ -468,31 +468,255 @@ the game itself second (`FIREFITE.AR1`).
 
 ### Splash Music
 
-Raster Music Tracker (http://raster.atariportal.cz/rmt/rmt.htm)
-is a popular music tracker created by Radek Sterba (RASTER/C.P.U.)
-between 2003 and his untimely death in 2011.  Since then, others
-(e.g., VinsCool: https://github.com/VinsCool/RASTER-Music-Tracker
+_Raster Music Tracker_ (http://raster.atariportal.cz/rmt/rmt.htm)
+is a popular music tracker system for the Atari, originally created by
+Radek Sterba (RASTER/C.P.U.) between 2003 and his untimely death in 2011.
+Since then, others (e.g., VinsCool: https://github.com/VinsCool/RASTER-Music-Tracker
 and Gianluca GP Renzi: https://github.com/gianlucarenzi/RITMO-Music-Tracker/)
 have continued development.
 
-FIXME - Update to reflect RITMO's `ca65` export...
+_RITMO_ is a cross-platform, _Qt_-based fork, meaning I can use it with
+ease on my Linux development system.
 
-The splash screen source code only required the following to
-just play the tune:
+It offers a way of exporting an song module (`.rmt`) directly to
+assembly language (`.asm`), which can be assembled into an object file and
+linked to an executable program.
 
- * `#include "rmt-c.h"` -- Include the RMT C wrapper header
- * `extern char rmt_song_data[];` -- Access to the data in `TUNE.o`
- * `rmt_init(rmt_song_data, ...);` -- Initialize the player
- * `rmt_start();` to start music, `rmt_stop();` to stop it
- * With `FEAT_GLOBALVOLUMEFADE` enabled in `rmt_feat.s`, it's
-   possible to fade out music (and any sound effects), by setting
-   `rmt_global_volume_fade` to a value between 0 (no fade) to
-   255 (silence), which I did while adjusting the color palette
-   as a transition from the splash screen to a simple
-   "Loading..." message.  (`rmt_wait_vbi()` is used within the
-   loop to run the effect at a steady speed.)
+Starting with version 2.8, it can export code suitable for _CC65_'s `ca65` assembler.
+(It also supports _Atasm_ and _Xasm_ style -- including _MADS_ -- assemblers.)
+The _RITMO_ source code repository includes 6502 assembly code for an RMT playback
+routine that runs on the Atari, and _RITMO_'s manaul includes instructions on how
+to build it and combine it with a program written in C, along with examples.
 
-FIXME - The above needs updating.
+#### Calling the player from C
+
+The splash screen source code ([`splash.c`](src/splash.c)) itself
+only required the following additions:
+
+ * `#include "rmt.h"` -- Include the RMT C wrapper header, from _RITMO_
+ * `extern const unsigned char rmt_module[];` -- Access to the song data
+   (built from [`tune.asm`](music/tune.asm))
+ * `rmt_init(rmt_module);` -- Initialize the player
+ * `rmt_vbi_on();` to start music, `rmt_vbi_off();` to stop it
+ * With `RMT_GLOBALVOLUMEFADE` feature enabled, it's possible to fade out music
+   (and any sound effects), by setting `rmt_global_volume_fade` to a value
+   between 0 (no fade) and 255 (silence) (technically 240, aka `$F0` hex).
+   I do this in a loop while adjusting the color palette as a transition from
+   the splash screen to a simple "Loading..." message.
+   + To reduce DMA (direct memory access) by the ANTIC chip while loading,
+     the "Loading..." screen is mostly assembled of blank scanlines,
+     with a single `GRAPHICS 0` text line in the center.  The playfield
+     is also narrowed.
+
+#### Building the player, the music, and the splash executable:
+
+Along with the minor source code additions described above,
+_Firefighter_'s [`Makefile`](Makefile) was updated to build the music
+player and data into the splash screen executable:
+
+##### Build the song data as an object (`music/tune.asm` → `obj/tune.o`):
+
+Simply assemble it:
+
+> ```
+ca65 -t atari music/tune.asm -o obj/tune.o
+```
+
+##### Build the RMT player, and grab its exported symbols
+
+Use a shell script copied from the _RITMO_ source code repository
+(version 2.8), [`obx.sh`](src/3rdparty/ritmo/ca65/obx.sh) -- along with a
+linker configuration file (see below),
+[`obx.cfg`](src/3rdparty/ritmo/ca65/obx.cfg), and an include file,
+[`mads.inc`](src/3rdparty/ritmo/ca65/mads.inc) -- that invokes _CC65_'s
+`ca65` and `ld65` to assemble and link the RMT player source.
+
+The player source was also copied from _RITMO_'s version 2.8 repo -- in
+this case, the [`Patch16` version](src/3rdparty/ritmo/ca65/Patch-16/).
+(For info on the different versions, see
+https://github.com/gianlucarenzi/RITMO-Music-Tracker/blob/master/asm/README.md)
+
+The `obx.sh` script creates Atari binary file using _CC65_'s tools, but built
+the same way _MADS_ assembler does:
+
+> "assemble a ca65 source of asm/ca65 into an Atari binary file as MADS
+> does: two passes of ca65 (the first finds the empty segments, see mads.inc),
+> then ld65 with obx.cfg." -- _Comments at the top of `obx.sh`_
+
+The `Makefile` invokes it like so:
+
+> ```
+OBX_SYMBOLS="RASTERMUSICTRACKER RMTGLOBALVOLUMEFADE" \
+    src/3rdparty/ritmo/ca65/obx.sh \
+        obj/player.obx \
+        src/3rdparty/ritmo/ca65/Patch-16/rmtplayr.s \
+        -D FEAT_IS_TRACKER=0 \
+        -D FEAT_IS_SIMPLEP=1 \
+        -D EXPORTXEX=0 \
+        -D EXPORTSAP=0 \
+        -D TABLES=\$3A00 \
+        -D STEREOMODE=0 \
+        -D FEAT_GLOBALVOLUMEFADE=1 \
+    > obj/player.sym
+```
+
+The various `-D` symbol definitions specify which RMT features should
+be made available, among other things.  (`FEAT_GLOBALVOLUMEFADE=1` is
+what provides us with the `rmt_global_volume_fade` volume control variable,
+and the functionality itself; it's optional, and not included in the player
+if not requested.)
+
+Along with the binary object `player.obx`, the above command also
+captures the requested symbols (as specified by the `OBX_SYMBOLS` environment
+variable) into the file `player.sym`.  In our case, that file ends up
+containing:
+
+> ```
+OBX_SYMBOL RASTERMUSICTRACKER 3100
+OBX_SYMBOL RMTGLOBALVOLUMEFADE 3209
+```
+
+The `Makefile` then uses the `awk` tool to convert those symbols and
+addresses into a file that will be `.include`-ed by the _CC65_ wrapper
+around the RMT player, [`cc65/rmt.s`](src/3rdparty/ritmo/cc65/rmt.s):
+
+```
+awk '$1 == "OBX_SYMBOL" && $2 == "RASTERMUSICTRACKER" \
+     { print "RMT_PLAYER = $" $3 }' \
+     obj/player.sym \
+  > src/player.inc
+```
+
+```
+awk '$1 == "OBX_SYMBOL" && $2 == "RMTGLOBALVOLUMEFADE" \
+     { print "RMT_GLOBALVOLUMEFADE = $" $3 }' \
+     obj/player.sym \
+  >> src/player.inc
+```
+
+That results in a `player.inc` containing:
+
+> ```
+RMT_PLAYER = $3100
+RMT_GLOBALVOLUMEFADE = $3209
+```
+
+##### Build the _CC65_ wrapper around the RMT player
+
+Now that `player.inc` has been created, the C wrapper can be built:
+
+> ```
+ca65 -t atari -I src/ src/3rdparty/ritmo/cc65/rmt.s -o obj/rmt.o
+```
+
+##### Update the splash screen's linker configuration
+
+The `ld65` linker requires a [configuration file](https://cc65.github.io/doc/ld65.html#s5)
+that describes the memory layout, and assingment of 'segments' to memory areas.
+(Font and level data, which are "baked into the game" are described in the main game
+executable's config, [`atari.cfg`](src/atari.cfg).)
+
+Since the splash screen program will now have music data and a player routine,
+these things needs to be specified in its config:
+[`atari-splash.cfg`](src/atari-splash.cfg).
+
+I started with _RITMO_'s example config file for a simple RMT music player.
+Importantly, it includes the following entries to get the player object (see above)
+linked:
+
+> ```
+...
+MEMORY {
+  ...
+  TRAILER:    file = %O,               start = $0000, size = $0006;
+}
+SEGMENTS {
+  ...
+  AUTOSTRT:  load = TRAILER,    type = ro;
+}
+...
+```
+
+I then received amazing help from Gianluca to get things working correctly, in
+terms of where in memory to put things.  (The splash screen requires around
+10KB of memory into which the bitmap image and Player/Missle Graphics are
+currently loaded from disk -- they are not "baked in".  The splash program
+itself and the music player are each about 4KB.  This all needs to fit
+nicely within 48K, with _MyDOS_ resident.)
+
+##### Declare the song data segment
+
+Since the C code needs to know about the music data segment, declare
+it in [`segments-splash.s`](src/segments-splash.s):
+
+> ```
+...
+   ⇥    .export    ⇥    _rmt_module
+.import    ⇥    RMT_SONG_DATA
+_rmt_module = RMT_SONG_DATA
+```
+
+(As seen above, it's referenced in the C code as
+"`extern const unsigned char rmt_module[];`".  Note: tabs in that
+"`.s`" file are denoted in this document with spaces around a "⇥" symbol.)
+
+##### Link everything together into the splash executable
+
+First, build the splash screen, RMT player C wrapper, and music data
+into an executable (`.xex`).  This is very similar to what it looked
+like before music was added, and how I build other parts of the game:
+
+Compile the C source into assembly:
+
+> ```
+cc65 ... -t atari src/splash.c -o asm/splash.s
+```
+
+Assemble the assembly code into objects:
+ 
+> ```
+ca65 ... -t atari asm/splash.s -o obj/splash.o
+ca65 ... -t atari asm/segments-splash.s -o obj/segments-splash.o
+```
+
+Link the objects together into an executable:
+
+> ```
+ld65 ... \
+  -o obj/splash1.xex \
+  -C src/atari-splash.cfg \
+  obj/splash.o obj/segments-splash.o obj/rmt.o obj/tune.o atari.lib
+```
+
+The objects being linked above are:
+
+ * `splash.o` -- the main C code to the splash screen program, compiled and assembled
+ * `segments-splash.o` -- the splash screen's segments (see above),
+ * `rmt.o` -- the C wrapper around the RMT player, compiled and assembled
+ * `tune.o` -- the song, as exported to a `ca65`-style assembly language file, assembled
+
+Finally, concatenate the splash screen and the RMT player itself
+into the final executable, using a simple `cat` command:
+
+> ```
+cat obj/splash1.xex obj/player.obx > splash.xex
+```
+
+Note: This is my first foray into using a real music player in a
+project.  This is why I have (for now, at least) restricted it to the
+simple splash screen of this game.
+
+Within the Atari game development community, use of C seems
+much less common than straight assembly,
+[_MAD Pascal_](https://github.com/tebe6502/Mad-Pascal), or even
+[_FastBasic_](https://github.com/dmsc/fastbasic).
+
+This is why I have attempted to document above the steps taken to
+get it working -- both for others, as well as for my future self.
+
+I received a tremendous amount of support, including patches,
+from _RITMO_'s developer, [Gianluca Renzi](https://github.com/gianlucarenzi)),
+and for that I am extremely grateful.
 
 ## Builds
 
