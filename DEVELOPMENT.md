@@ -518,7 +518,7 @@ player and data into the splash screen executable:
 
 Simply assemble it:
 
-> ```
+```
 ca65 -t atari music/tune.asm -o obj/tune.o
 ```
 
@@ -545,7 +545,7 @@ the same way _MADS_ assembler does:
 
 The `Makefile` invokes it like so:
 
-> ```
+```
 OBX_SYMBOLS="RASTERMUSICTRACKER RMTGLOBALVOLUMEFADE" \
     src/3rdparty/ritmo/ca65/obx.sh \
         obj/player.obx \
@@ -571,7 +571,7 @@ captures the requested symbols (as specified by the `OBX_SYMBOLS` environment
 variable) into the file `player.sym`.  In our case, that file ends up
 containing:
 
-> ```
+```
 OBX_SYMBOL RASTERMUSICTRACKER 3100
 OBX_SYMBOL RMTGLOBALVOLUMEFADE 3209
 ```
@@ -596,7 +596,7 @@ awk '$1 == "OBX_SYMBOL" && $2 == "RMTGLOBALVOLUMEFADE" \
 
 That results in a `player.inc` containing:
 
-> ```
+```
 RMT_PLAYER = $3100
 RMT_GLOBALVOLUMEFADE = $3209
 ```
@@ -605,7 +605,7 @@ RMT_GLOBALVOLUMEFADE = $3209
 
 Now that `player.inc` has been created, the C wrapper can be built:
 
-> ```
+```
 ca65 -t atari -I src/ src/3rdparty/ritmo/cc65/rmt.s -o obj/rmt.o
 ```
 
@@ -624,7 +624,7 @@ I started with _RITMO_'s example config file for a simple RMT music player.
 Importantly, it includes the following entries to get the player object (see above)
 linked:
 
-> ```
+```
 ...
 MEMORY {
   ...
@@ -649,7 +649,7 @@ nicely within 48K, with _MyDOS_ resident.)
 Since the C code needs to know about the music data segment, declare
 it in [`segments-splash.s`](src/segments-splash.s):
 
-> ```
+```
 ...
    ⇥    .export    ⇥    _rmt_module
 .import    ⇥    RMT_SONG_DATA
@@ -668,20 +668,20 @@ like before music was added, and how I build other parts of the game:
 
 Compile the C source into assembly:
 
-> ```
+```
 cc65 ... -t atari src/splash.c -o asm/splash.s
 ```
 
 Assemble the assembly code into objects:
  
-> ```
+```
 ca65 ... -t atari asm/splash.s -o obj/splash.o
 ca65 ... -t atari asm/segments-splash.s -o obj/segments-splash.o
 ```
 
 Link the objects together into an executable:
 
-> ```
+```
 ld65 ... \
   -o obj/splash1.xex \
   -C src/atari-splash.cfg \
@@ -698,7 +698,7 @@ The objects being linked above are:
 Finally, concatenate the splash screen and the RMT player itself
 into the final executable, using a simple `cat` command:
 
-> ```
+```
 cat obj/splash1.xex obj/player.obx > splash.xex
 ```
 
