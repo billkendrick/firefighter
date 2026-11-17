@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 https://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-11 (2026-11-13) WIP:
+0.1-beta-11 (2026-11-17) WIP:
  * Splash:
    * Music on the splash screen
      + Raster Music Tracker (RMT) player
@@ -12,8 +12,8 @@ https://www.newbreedsoftware.com/firefighter/
        (https://github.com/gianlucarenzi/RITMO-Music-Tracker),
        based on Raster Music Tracker originally by
        Radek Štěrba (RIP) with updates from Vin Samuel & Peter Dell
-     + Music TBD
-       by TBD
+     + WIP -- Music "Firefighter Theme"
+       by Bill Kendrick
    * Fade-out effect when dismissing splash screen
    * Shows a "LOADING..." screen after splash dismissed & game starts loading
  * Documentation:

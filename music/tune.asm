@@ -16,7 +16,7 @@ FEAT_COMMAND6		= 0		;(0 times)
 FEAT_COMMAND7SETNOTE		= 0		;(0 times)
 FEAT_COMMAND7VOLUMEONLY		= 0		;(0 times)
 FEAT_PORTAMENTO		= 0		;(0 times)
-FEAT_FILTER		= 0		;(0 times)
+FEAT_FILTER		= 1		;(1 times)
 FEAT_FILTERG0L		= 0		;(0 times)
 FEAT_FILTERG1L		= 0		;(0 times)
 FEAT_FILTERG0R		= 0		;(0 times)
@@ -41,7 +41,7 @@ FEAT_EFFECTVIBRATO		= 0		;(0 times)
 FEAT_EFFECTFSHIFT		= 0		;(0 times)
 ; --------END--------
 ; RMT4 file exported as relocatable source code
-; Original size: $00d1 bytes @ $4000
+; Original size: $00fb bytes @ $4000
 
 .export RMT_SONG_DATA
 .proc RMT_SONG_DATA
@@ -60,11 +60,11 @@ __ptrTracksTblLo:
 __ptrTracksTblHi:
     .word __TracksTblHi            ; start + $001a
 __ptrSong:
-    .word __SongData               ; start + $00c9
+    .word __SongData               ; start + $00f3
 
 ; List of ptrs to instruments
 __InstrumentsTable:
-    .word   $0000		; Bass tone 1                     
+    .word __Instrument_0		; Filter 1                        
     .word __Instrument_1		; Snare drum                      
     .word __Instrument_2		; Hi-Hat closed                   
 
@@ -76,6 +76,8 @@ __TracksTblHi:
 
 ; Instrument data
 
+__Instrument_0:
+    .byte $0c,$0c,$0d,$0d,$00,$00,$40,$00,$00,$00,$00,$00,$00,$ff,$8a,$00
 __Instrument_1:
     .byte $0c,$0c,$3a,$3a,$00,$00,$00,$00,$00,$00,$00,$00,$00,$ff,$10,$07
     .byte $dd,$1a,$98,$cc,$1a,$a8,$bb,$1a,$b8,$22,$1a,$cf,$99,$18,$08,$88
@@ -95,7 +97,8 @@ __Track_01:
     .byte $3e,$0e,$c2,$07,$3e,$0f,$c2,$07,$3e,$0f,$c2,$07,$3e,$0f,$c2,$07
     .byte $7e
 __Track_02:
-    .byte $3e,$40
+    .byte $3e,$20,$c0,$03,$be,$c3,$03,$7e,$c2,$03,$7e,$c0,$03,$3e,$08,$c3
+    .byte $03,$be,$c7,$03,$7e,$c5,$03,$7e,$c3,$03,$3e,$08
 __Track_03:
     .byte $3e,$40
 

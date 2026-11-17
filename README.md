@@ -4,7 +4,7 @@
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
-Developed 2023-08-13 - 2026-11-12
+Developed 2023-08-13 - 2026-11-17
 
 ------------------------------------------------------------------------
 
@@ -270,6 +270,8 @@ Developed 2023-08-13 - 2026-11-12
 >
 > Splash screen fonts: "Echotopia" by Erik Kirtley
 > and "K.O. Activista" by deFharo (both SIL Open Font License).
+>
+> Splash screen music: "Firefighter Theme" by Bill Kendrick.
 >
 > Level 7 by Edward
 
