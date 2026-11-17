@@ -6,7 +6,7 @@ FEAT_SFX		= 0
 FEAT_GLOBALVOLUMEFADE	= 0		;RMTGLOBALVOLUMEFADE variable
 FEAT_NOSTARTINGSONGLINE	= 0
 FEAT_INSTRSPEED		= 1
-FEAT_CONSTANTSPEED		= 16		;(0 times)
+FEAT_CONSTANTSPEED		= 7		;(0 times)
 FEAT_COMMAND1		= 1		;(20 times)
 FEAT_COMMAND2		= 0		;(0 times)
 FEAT_COMMAND3		= 0		;(0 times)
@@ -16,7 +16,7 @@ FEAT_COMMAND6		= 0		;(0 times)
 FEAT_COMMAND7SETNOTE		= 0		;(0 times)
 FEAT_COMMAND7VOLUMEONLY		= 0		;(0 times)
 FEAT_PORTAMENTO		= 0		;(0 times)
-FEAT_FILTER		= 1		;(1 times)
+FEAT_FILTER		= 1		;(22 times)
 FEAT_FILTERG0L		= 0		;(0 times)
 FEAT_FILTERG1L		= 0		;(0 times)
 FEAT_FILTERG0R		= 0		;(0 times)
@@ -41,7 +41,7 @@ FEAT_EFFECTVIBRATO		= 0		;(0 times)
 FEAT_EFFECTFSHIFT		= 0		;(0 times)
 ; --------END--------
 ; RMT4 file exported as relocatable source code
-; Original size: $00fb bytes @ $4000
+; Original size: $01b9 bytes @ $4000
 
 .export RMT_SONG_DATA
 .proc RMT_SONG_DATA
@@ -49,29 +49,30 @@ __start:
     .byte "RMT4"
 __song_info:
     .byte $40            ; Track length = 64
-    .byte $10            ; Song speed
+    .byte $07            ; Song speed
     .byte $01            ; Player Frequency
     .byte $01            ; Format version
 ; ptrs to tables
 __ptrInstrumentTbl:
     .word __InstrumentsTable       ; start + $0010
 __ptrTracksTblLo:
-    .word __TracksTblLo            ; start + $0016
+    .word __TracksTblLo            ; start + $0018
 __ptrTracksTblHi:
-    .word __TracksTblHi            ; start + $001a
+    .word __TracksTblHi            ; start + $001d
 __ptrSong:
-    .word __SongData               ; start + $00f3
+    .word __SongData               ; start + $01a9
 
 ; List of ptrs to instruments
 __InstrumentsTable:
     .word __Instrument_0		; Filter 1                        
     .word __Instrument_1		; Snare drum                      
     .word __Instrument_2		; Hi-Hat closed                   
+    .word __Instrument_3		; Echo                            
 
 __TracksTblLo:
-    .byte <__Track_00,<__Track_01,<__Track_02,<__Track_03
+    .byte <__Track_00,<__Track_01,<__Track_02,<__Track_03,<__Track_04
 __TracksTblHi:
-    .byte >__Track_00,>__Track_01,>__Track_02,>__Track_03
+    .byte >__Track_00,>__Track_01,>__Track_02,>__Track_03,>__Track_04
 
 
 ; Instrument data
@@ -86,6 +87,12 @@ __Instrument_1:
 __Instrument_2:
     .byte $0c,$0c,$16,$16,$00,$00,$00,$00,$00,$00,$00,$00,$00,$ff,$18,$00
     .byte $88,$18,$01,$22,$1a,$02,$00,$10,$00
+__Instrument_3:
+    .byte $0c,$0c,$49,$0d,$00,$00,$ff,$00,$00,$00,$00,$00,$00,$55,$8c,$00
+    .byte $66,$8c,$00,$88,$8c,$00,$bb,$8c,$00,$dd,$8c,$00,$dd,$8a,$00,$ff
+    .byte $8a,$00,$bb,$8a,$00,$99,$8a,$00,$77,$8c,$00,$55,$8c,$00,$44,$8c
+    .byte $00,$33,$8c,$00,$33,$8c,$00,$44,$8c,$00,$44,$8c,$00,$55,$8c,$00
+    .byte $44,$8a,$00,$33,$8a,$00,$22,$8a,$00,$22,$8a,$00
 
 ; Track data
 __Track_00:
@@ -100,12 +107,22 @@ __Track_02:
     .byte $3e,$20,$c0,$03,$be,$c3,$03,$7e,$c2,$03,$7e,$c0,$03,$3e,$08,$c3
     .byte $03,$be,$c7,$03,$7e,$c5,$03,$7e,$c3,$03,$3e,$08
 __Track_03:
-    .byte $3e,$40
+    .byte $c0,$03,$be,$c3,$03,$7e,$c2,$03,$7e,$c0,$03,$3e,$08,$c3,$03,$be
+    .byte $c7,$03,$7e,$c5,$03,$7e,$c3,$03,$3e,$08,$c0,$03,$be,$c3,$03,$7e
+    .byte $c2,$03,$7e,$c0,$03,$3e,$08,$c3,$03,$be,$c7,$03,$7e,$c5,$03,$7e
+    .byte $c3,$03,$3e,$08
+__Track_04:
+    .byte $c0,$0f,$be,$c3,$0f,$7e,$c2,$0f,$7e,$c0,$0f,$3e,$08,$c3,$0f,$be
+    .byte $c7,$0f,$7e,$c5,$0f,$7e,$c3,$0f,$3e,$08,$c0,$0f,$be,$c3,$0f,$7e
+    .byte $c2,$0f,$7e,$c0,$0f,$3e,$08,$c3,$0f,$be,$c7,$0f,$7e,$c5,$0f,$7e
+    .byte $c3,$0f,$3e,$08
 
 ; Song data
 __SongData:
-__Line_00:  .byte $00,$01,$02,$03
-__Line_01:  .byte $fe,$00,<__Line_00,>__Line_00
+__Line_00:  .byte $00,$01,$02,$ff
+__Line_01:  .byte $00,$01,$03,$ff
+__Line_02:  .byte $00,$01,$04,$ff
+__Line_03:  .byte $fe,$01,<__Line_01,>__Line_01
 
 .endproc
 
