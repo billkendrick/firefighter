@@ -7,7 +7,7 @@ FEAT_GLOBALVOLUMEFADE	= 0		;RMTGLOBALVOLUMEFADE variable
 FEAT_NOSTARTINGSONGLINE	= 0
 FEAT_INSTRSPEED		= 1
 FEAT_CONSTANTSPEED		= 7		;(0 times)
-FEAT_COMMAND1		= 1		;(20 times)
+FEAT_COMMAND1		= 1		;(32 times)
 FEAT_COMMAND2		= 0		;(0 times)
 FEAT_COMMAND3		= 0		;(0 times)
 FEAT_COMMAND4		= 0		;(0 times)
@@ -41,7 +41,7 @@ FEAT_EFFECTVIBRATO		= 0		;(0 times)
 FEAT_EFFECTFSHIFT		= 0		;(0 times)
 ; --------END--------
 ; RMT4 file exported as relocatable source code
-; Original size: $01b9 bytes @ $4000
+; Original size: $0253 bytes @ $4000
 
 .export RMT_SONG_DATA
 .proc RMT_SONG_DATA
@@ -56,11 +56,11 @@ __song_info:
 __ptrInstrumentTbl:
     .word __InstrumentsTable       ; start + $0010
 __ptrTracksTblLo:
-    .word __TracksTblLo            ; start + $0018
+    .word __TracksTblLo            ; start + $001a
 __ptrTracksTblHi:
-    .word __TracksTblHi            ; start + $001d
+    .word __TracksTblHi            ; start + $0020
 __ptrSong:
-    .word __SongData               ; start + $01a9
+    .word __SongData               ; start + $023b
 
 ; List of ptrs to instruments
 __InstrumentsTable:
@@ -68,11 +68,12 @@ __InstrumentsTable:
     .word __Instrument_1		; Snare drum                      
     .word __Instrument_2		; Hi-Hat closed                   
     .word __Instrument_3		; Echo                            
+    .word __Instrument_4		; Hi-Hat open                     
 
 __TracksTblLo:
-    .byte <__Track_00,<__Track_01,<__Track_02,<__Track_03,<__Track_04
+    .byte <__Track_00,<__Track_01,<__Track_02,<__Track_03,<__Track_04,<__Track_05
 __TracksTblHi:
-    .byte >__Track_00,>__Track_01,>__Track_02,>__Track_03,>__Track_04
+    .byte >__Track_00,>__Track_01,>__Track_02,>__Track_03,>__Track_04,>__Track_05
 
 
 ; Instrument data
@@ -93,6 +94,11 @@ __Instrument_3:
     .byte $8a,$00,$bb,$8a,$00,$99,$8a,$00,$77,$8c,$00,$55,$8c,$00,$44,$8c
     .byte $00,$33,$8c,$00,$33,$8c,$00,$44,$8c,$00,$44,$8c,$00,$55,$8c,$00
     .byte $44,$8a,$00,$33,$8a,$00,$22,$8a,$00,$22,$8a,$00
+__Instrument_4:
+    .byte $0c,$0c,$2e,$2e,$00,$00,$00,$00,$00,$00,$00,$00,$00,$ff,$18,$02
+    .byte $bb,$18,$00,$88,$18,$01,$66,$10,$00,$55,$10,$00,$44,$10,$00,$33
+    .byte $10,$00,$22,$10,$00,$22,$10,$00,$11,$10,$00,$11,$10,$00,$00,$10
+    .byte $00
 
 ; Track data
 __Track_00:
@@ -108,21 +114,30 @@ __Track_02:
     .byte $03,$be,$c7,$03,$7e,$c5,$03,$7e,$c3,$03,$3e,$08
 __Track_03:
     .byte $c0,$03,$be,$c3,$03,$7e,$c2,$03,$7e,$c0,$03,$3e,$08,$c3,$03,$be
-    .byte $c7,$03,$7e,$c5,$03,$7e,$c3,$03,$3e,$08,$c0,$03,$be,$c3,$03,$7e
-    .byte $c2,$03,$7e,$c0,$03,$3e,$08,$c3,$03,$be,$c7,$03,$7e,$c5,$03,$7e
-    .byte $c3,$03,$3e,$08
-__Track_04:
-    .byte $c0,$0f,$be,$c3,$0f,$7e,$c2,$0f,$7e,$c0,$0f,$3e,$08,$c3,$0f,$be
-    .byte $c7,$0f,$7e,$c5,$0f,$7e,$c3,$0f,$3e,$08,$c0,$0f,$be,$c3,$0f,$7e
+    .byte $c7,$03,$7e,$c5,$03,$7e,$c3,$03,$3e,$08,$c0,$0f,$be,$c3,$0f,$7e
     .byte $c2,$0f,$7e,$c0,$0f,$3e,$08,$c3,$0f,$be,$c7,$0f,$7e,$c5,$0f,$7e
     .byte $c3,$0f,$3e,$08
+__Track_04:
+    .byte $c0,$0f,$be,$c3,$0f,$7e,$c2,$0f,$7e,$c0,$0f,$3e,$08,$c3,$0f,$be
+    .byte $c7,$0f,$7e,$c5,$0f,$7e,$c3,$0f,$3e,$08,$d8,$03,$be,$d3,$03,$7e
+    .byte $d1,$03,$7e,$d4,$03,$3e,$08,$cf,$03,$be,$d3,$03,$7e,$d1,$03,$7e
+    .byte $cc,$03,$3e,$08
+__Track_05:
+    .byte $c0,$13,$be,$c0,$13,$c0,$13,$c0,$13,$7e,$c0,$13,$7e,$c0,$13,$be
+    .byte $c0,$13,$c0,$13,$c0,$13,$7e,$c0,$13,$7e,$c0,$13,$be,$c0,$13,$c0
+    .byte $13,$c0,$13,$7e,$c0,$13,$7e,$c0,$13,$be,$c0,$13,$c0,$13,$c0,$13
+    .byte $7e,$c0,$13,$7e,$c0,$13,$be,$c0,$13,$c0,$13,$c0,$13,$7e,$c0,$13
+    .byte $7e,$c0,$13,$be,$c0,$13,$c0,$13,$c0,$13,$7e,$c0,$13,$7e,$c0,$13
+    .byte $be,$c0,$13,$c0,$13,$c0,$13,$7e,$c0,$13,$7e,$c0,$13
 
 ; Song data
 __SongData:
 __Line_00:  .byte $00,$01,$02,$ff
 __Line_01:  .byte $00,$01,$03,$ff
 __Line_02:  .byte $00,$01,$04,$ff
-__Line_03:  .byte $fe,$01,<__Line_01,>__Line_01
+__Line_03:  .byte $00,$01,$04,$05
+__Line_04:  .byte $00,$01,$03,$05
+__Line_05:  .byte $fe,$03,<__Line_03,>__Line_03
 
 .endproc
 

@@ -12,7 +12,7 @@ https://www.newbreedsoftware.com/firefighter/
        (https://github.com/gianlucarenzi/RITMO-Music-Tracker),
        based on Raster Music Tracker originally by
        Radek Štěrba (RIP) with updates from Vin Samuel & Peter Dell
-     + WIP -- Music "Firefighter Theme"
+     + Music "Firefighter Theme"
        by Bill Kendrick
    * Fade-out effect when dismissing splash screen
    * Shows a "LOADING..." screen after splash dismissed & game starts loading
