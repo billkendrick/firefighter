@@ -115,7 +115,8 @@ char * additional_levels[3] = {
      * CMD_HIGHSCORES show high score table (disk only)
 */
 char show_title(void) {
-  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk, plink;
+  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir;
+  unsigned char honk, plink, clock;
   unsigned int select_down, level_pos, hs_pos, select_down_wait;
   unsigned int levels_by_wait;
   unsigned char levels_by_idx;
@@ -308,7 +309,12 @@ char show_title(void) {
 
   /* Title screen main loop: */
   do {
-    OS.color0 = ((OS.rtclok[2] >> 2) & 0x0F) | 0x40;
+    clock = (OS.rtclok[2] >> 2);
+    if (clock & 0x10) {
+      OS.color0 = (clock & 0x0F) | 0x40;
+    } else {
+      OS.color0 = (0x0F - (clock & 0x0F)) | 0x40;
+    }
 
     /* Handle siren sound effect */
     siren_ctr1++;
