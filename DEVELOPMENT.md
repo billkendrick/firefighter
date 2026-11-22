@@ -7,7 +7,7 @@ game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 https://www.newbreedsoftware.com/firefighter/
 
-Developed 2023-08-13 - 2026-11-13
+Developed 2023-08-13 - 2026-11-22
 
 ------------------------------------------------------------------------
 
@@ -471,21 +471,23 @@ the game itself second (`FIREFITE.AR1`).
 _Raster Music Tracker_ (http://raster.atariportal.cz/rmt/rmt.htm)
 is a popular music tracker system for the Atari, originally created by
 Radek Sterba (RASTER/C.P.U.) between 2003 and his untimely death in 2011.
-Since then, others (e.g., VinsCool: https://github.com/VinsCool/RASTER-Music-Tracker
-and Gianluca GP Renzi: https://github.com/gianlucarenzi/RITMO-Music-Tracker/)
-have continued development.
+Since then, others (most notably Vin "VinsCool" Samuel:
+https://github.com/VinsCool/RASTER-Music-Tracker
+and Peter "JAC!" Dell: https://github.com/raster-atari-org/RASTER-Music-Tracker)
+continued with its development.
 
-_RITMO_ is a cross-platform, _Qt_-based fork, meaning I can use it with
-ease on my Linux development system.
+In 2026, Gianluca GP Renzi created _RITMO_, a cross-platform _Qt_-based fork:
+https://github.com/gianlucarenzi/RITMO-Music-Tracker.  This meant I could
+create music with (relative) ease on my Linux-desktop based development system.
 
-It offers a way of exporting an song module (`.rmt`) directly to
+_RITMO_ offers a way of exporting a song module (`.rmt`) directly to
 assembly language (`.asm`), which can be assembled into an object file and
 linked to an executable program.
 
 Starting with version 2.8, it can export code suitable for _CC65_'s `ca65` assembler.
 (It also supports _Atasm_ and _Xasm_ style -- including _MADS_ -- assemblers.)
 The _RITMO_ source code repository includes 6502 assembly code for an RMT playback
-routine that runs on the Atari, and _RITMO_'s manaul includes instructions on how
+routine that runs on the Atari, and _RITMO_'s manual includes instructions on how
 to build it and combine it with a program written in C, along with examples.
 
 #### Calling the player from C
@@ -536,7 +538,7 @@ this case, the [`Patch16` version](src/3rdparty/ritmo/ca65/Patch-16/).
 (For info on the different versions, see
 https://github.com/gianlucarenzi/RITMO-Music-Tracker/blob/master/asm/README.md)
 
-The `obx.sh` script creates Atari binary file using _CC65_'s tools, but built
+The `obx.sh` script creates an Atari binary file using _CC65_'s tools, but built
 the same way _MADS_ assembler does:
 
 > "assemble a ca65 source of asm/ca65 into an Atari binary file as MADS
@@ -617,7 +619,7 @@ that describes the memory layout, and assingment of 'segments' to memory areas.
 executable's config, [`atari.cfg`](src/atari.cfg).)
 
 Since the splash screen program will now have music data and a player routine,
-these things needs to be specified in its config:
+these things need to be specified in its config:
 [`atari-splash.cfg`](src/atari-splash.cfg).
 
 I started with _RITMO_'s example config file for a simple RMT music player.
@@ -666,7 +668,7 @@ First, build the splash screen, RMT player C wrapper, and music data
 into an executable (`.xex`).  This is very similar to what it looked
 like before music was added, and how I build other parts of the game:
 
-Compile the C source into assembly:
+Compile the splash screen's C source into assembly:
 
 ```
 cc65 ... -t atari src/splash.c -o asm/splash.s
@@ -678,6 +680,9 @@ Assemble the assembly code into objects:
 ca65 ... -t atari asm/splash.s -o obj/splash.o
 ca65 ... -t atari asm/segments-splash.s -o obj/segments-splash.o
 ```
+
+Note: Assembling the music data (into `obj/tune.o`) and the RMT player
+C wrapper (into `obj/rmt.o`) were shown above.
 
 Link the objects together into an executable:
 
@@ -692,7 +697,7 @@ The objects being linked above are:
 
  * `splash.o` -- the main C code to the splash screen program, compiled and assembled
  * `segments-splash.o` -- the splash screen's segments (see above),
- * `rmt.o` -- the C wrapper around the RMT player, compiled and assembled
+ * `rmt.o` -- the C wrapper around the RMT player, assembled
  * `tune.o` -- the song, as exported to a `ca65`-style assembly language file, assembled
 
 Finally, concatenate the splash screen and the RMT player itself
