@@ -7,3 +7,8 @@ https://www.newbreedsoftware.com/firefighter/
 2023-08-18 - 2026-11-22
 
  * More levels
+
+ * Level editor?
+
+ * Further graphics improvements: utilize ANTIC 4 multicolor 40x24 text mode,
+   rather than ANTIC 6 (GRAPHICS 1) single-color-per-character 20x24 text mode
