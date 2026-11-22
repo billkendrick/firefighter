@@ -29,7 +29,7 @@
   saving the single high score & name (along with settings)
   to a FujiNet AppKey.
 
-  2023-08-27 - 2026-10-11
+  2023-08-27 - 2026-11-22
 */
 
 #include <string.h>
@@ -55,7 +55,20 @@ extern unsigned char scr_mem[];
 unsigned long int high_score_table[10];
 char high_score_name_table[10][4];
 
-char * default_high_initials = "BJK" "KAY" "BOB" "HVN" "HRD" "WIL" "EDW" "MEL" "M.G" "DAV";
+char default_high_initials[30] =
+  /* Initials, who (why) */
+  "BJK" /* Me */ \
+  "GIA" /* Gianluca Renzi (RITMO & help using it) */ \
+  "EDW" /* Edward (levels) */ \
+  "RMT" /* Radek (Raster/CPU) Štěrba (Raster Music Tracker; RIP) */ \
+  "909" /* Thomas (tschak909) Cherryhomes (#FujiNet & keeping all retro alive) */ \
+  "VIN" /* Vin (VinsCool) Samuel (resurrecting RMT) */
+  "JAC" /* Peter (JAV!) Dell (RMT dev & keeping A8 alive) */
+  "KAY" /* Kay Savetz (greetz & keeping A8 alive) */ \
+  "BOB" /* Bob Woolley (1200XL updates back in the Ferg) */ \
+  "HVN" /* Karolj (Heaven / Desire & Taquart) Nadj (greetz & keeping A8 alive) */ \
+;
+
 unsigned char fade[16] = {
   0x20, 0x22, 0x24, 0x26, 0x28, 0x2A, 0x2C, 0x2E,
   0x4E, 0x4C, 0x4A, 0x48, 0x46, 0x44, 0x42, 0x40,
