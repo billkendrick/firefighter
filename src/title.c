@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2026-10-11
+  2023-08-13 - 2026-11-22
 */
 
 #include <atari.h>
@@ -115,7 +115,7 @@ char * additional_levels[3] = {
      * CMD_HIGHSCORES show high score table (disk only)
 */
 char show_title(void) {
-  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk;
+  unsigned char siren_ctr1, siren_ctr2, siren_pitch, siren_doppler, siren_doppler_dir, honk, plink;
   unsigned int select_down, level_pos, hs_pos, select_down_wait;
   unsigned int levels_by_wait;
   unsigned char levels_by_idx;
@@ -291,6 +291,7 @@ char show_title(void) {
   POKEY_WRITE.audctl = 0;
   POKEY_WRITE.skctl = 3;
 
+  plink = 0;
 
   /* Clear title screen loop input state */
   select_down = 0;
@@ -337,17 +338,14 @@ char show_title(void) {
       if (honk != 0) {
         POKEY_WRITE.audf2 = 10;
         POKEY_WRITE.audc2 = 0xCF - siren_doppler;
-        POKEY_WRITE.audf3 = 30;
+        POKEY_WRITE.audf3 = 50;
         POKEY_WRITE.audc3 = 0xCF - siren_doppler;
-        POKEY_WRITE.audf4 = 50;
-        POKEY_WRITE.audc4 = 0xCF - siren_doppler;
 
         if (siren_ctr1 == 0x00 || siren_ctr1 == 0x08)
           honk--;
       } else {
         POKEY_WRITE.audc2 = 0;
         POKEY_WRITE.audc3 = 0;
-        POKEY_WRITE.audc4 = 0;
 
         if (OS.stick0 != 15 || OS.stick1 != 15) {
           OS.atract = 0;
@@ -372,6 +370,7 @@ char show_title(void) {
 
         draw_number(level, 2, scr_mem + level_pos);
         select_down = 64;
+        plink = 255;
       } else {
         /* Holding Select down: */
         if (select_down_wait < 1536) {
@@ -403,6 +402,7 @@ char show_title(void) {
         main_stick = !main_stick; /* (choices are 0 & 1) */
         show_controls();
         option_down = 1;
+        plink = 255;
       }
     } else {
       option_down = 0;
@@ -434,6 +434,15 @@ char show_title(void) {
       }
       bzero(scr_mem + LINE_BY_2, 20);
       draw_text(additional_levels[levels_by_idx], scr_mem + LINE_BY_2 + 10 - (strlen(additional_levels[levels_by_idx]) >> 1));
+    }
+
+    /* Play menu control "plink" sound */
+    if (plink > 0) {
+      POKEY_WRITE.audf4 = plink;
+      POKEY_WRITE.audc4 = 0xAF;
+      plink--;
+    } else {
+      POKEY_WRITE.audc4 = 0;
     }
   } while (OS.strig0 == 1 && OS.strig1 == 1 && CONSOL_START(GTIA_READ.consol) == 0 && cmd == CMD_PLAY);
 

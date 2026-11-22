@@ -19,6 +19,8 @@ https://www.newbreedsoftware.com/firefighter/
  * Documentation:
    * Technical/Design Docs improved & extended somewhat
    * Documented how music was added to splash in DEVELOPMENT docs
+ * Title:
+   * Sound effect feedback when changing options (starting level & controls)
  * Help screen / README:
    * README / Help screen clean-up
    * Display "Loading..." message while loading a screenful of help text

@@ -4,7 +4,7 @@
 
 A twin-stick firefighting action game for the Atari 8-bit.
 
-Developed 2023-08-13 - 2026-11-17
+Developed 2023-08-13 - 2026-11-22
 
 ------------------------------------------------------------------------
 
