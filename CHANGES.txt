@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 https://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-11 (2026-11-17) WIP:
+0.1-beta-11 (2026-11-22) WIP:
  * Splash:
    * Music on the splash screen
      + Raster Music Tracker (RMT) player
@@ -18,8 +18,10 @@ https://www.newbreedsoftware.com/firefighter/
    * Shows a "LOADING..." screen after splash dismissed & game starts loading
  * Documentation:
    * Technical/Design Docs improved & extended somewhat
-   * README / Help screen clean-up
    * Documented how music was added to splash in DEVELOPMENT docs
+ * Help screen / README:
+   * README / Help screen clean-up
+   * Display "Loading..." message while loading a screenful of help text
  * High score table:
    * Added color gradient effect
  * Under the hood:

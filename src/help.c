@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-22 - 2026-11-12
+  2023-08-22 - 2026-11-22
 */
 
 #include <atari.h>
@@ -28,6 +28,7 @@ extern unsigned char scr_mem[];
 extern unsigned char * dlist;
 
 /* Local function prototypes: */
+void show_loading(void);
 void show_help_controls(unsigned char first_page, unsigned char last_page);
 unsigned char ciov(void);
 unsigned char xio_open_read(char * filespec);
@@ -85,9 +86,6 @@ void show_help(void) {
 
   OS.sdmctl = (DMACTL_PLAYFIELD_NORMAL | DMACTL_DMA_FETCH);
 
-  /* Show control instructions (the first time) */
-  show_help_controls(1, 0);
-
   /* Open the help text file for read */
   cur_page = 0;
   err = xio_open_read("D:README.TXT");
@@ -103,6 +101,7 @@ void show_help(void) {
     ptrs[cur_page * 3 + 2] = ptr[2];
 
     /* Display a screenful (page) of text */
+    show_loading();
     y = 0;
     eof = 0;
 
@@ -269,6 +268,17 @@ unsigned char ciov(void) {
   return (PEEK(0x6ff));
 }
 
+/* Show "Loading" message at the bottom of the screen
+   (while another page of help text is getting loaded).
+*/
+
+void show_loading(void) {
+  unsigned char * scr_ptr = scr_mem + (LINES * 40);
+
+  bzero(scr_ptr, 40);
+  bzero(scr_ptr + 42, 38);
+  draw_text("Loading...", scr_ptr + 15);
+}
 
 /* Show help screen controls at the bottom of the screen.
    @param unsigned char first_page true, if we're on the first page
