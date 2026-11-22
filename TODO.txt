@@ -12,3 +12,5 @@ https://www.newbreedsoftware.com/firefighter/
 
  * Further graphics improvements: utilize ANTIC 4 multicolor 40x24 text mode,
    rather than ANTIC 6 (GRAPHICS 1) single-color-per-character 20x24 text mode
+
+ * Delete `obj/splash1.xex` during `make clean` :^|
