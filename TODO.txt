@@ -4,7 +4,7 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 https://www.newbreedsoftware.com/firefighter/
 
-2023-08-18 - 2026-11-22
+2023-08-18 - 2026-11-23
 
  * More levels
 
@@ -14,3 +14,8 @@ https://www.newbreedsoftware.com/firefighter/
    rather than ANTIC 6 (GRAPHICS 1) single-color-per-character 20x24 text mode
 
  * Delete `obj/splash1.xex` during `make clean` :^|
+
+ * Consider Sega Genesis two-button controls, a la Atari Lynx "Robotron: 2084"?
+   https://atariage.com/manual_html_page.php?SoftwareID=2448
+   (h/t Chris Chiesa for discussing twinstick accessibility)
+
