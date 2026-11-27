@@ -351,6 +351,6 @@ data/silh.dat:	img-src/silh.pbm tools/pbm2pmg.php
 
 # Font:
 # -----
-fonts/fireshap.fnt: fonts/firefite-hirez-font.pbm fonts/firetext.fnt tools/shape_pbm_to_fnt.php
-	tools/shape_pbm_to_fnt.php fonts/firefite-hirez-font.pbm fonts/fireshap.fnt fonts/firetext.fnt
+fonts/fireshap.fnt: fonts/firefite-hirez-multicolor-font.ppm tools/shape_ppm_to_fnt.php
+	tools/shape_ppm_to_fnt.php fonts/firefite-hirez-multicolor-font.ppm fonts/fireshap.fnt
 
