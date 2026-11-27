@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2026-11-22
+  2023-08-13 - 2026-11-27
 */
 
 #include <atari.h>
@@ -33,16 +33,20 @@ extern char high_score_name[4];
 
 void show_controls(void);
 
-#define LINE_BY_1 60
-#define LINE_BY_2 (LINE_BY_1 + 20)
-#define LINE_HELP_1 (LINE_BY_2 + 20)
-#define LINE_HELP_2 (LINE_HELP_1 + 60)
-#define LINE_HELP_3 (LINE_HELP_2 + 60)
-#define LINE_CONTROLS (LINE_HELP_3 + 60)
-#define LINE_START (LINE_CONTROLS + 120)
-#define LINE_LEVEL (LINE_START + 40)
-#define LINE_HIGH (LINE_LEVEL + 40)
-#define LINE_VERSION (LINE_HIGH + 40)
+/* Where in screen memory (`src_mem`) different parts of the
+   display are stored */
+/* "NBS Presents" -- GRAPHICS 0 (40 bytes) */
+/* "FIREFIGHTER!" -- GRAPHICS 2 (20 bytes) */
+#define LINE_BY_1 60 /* "Bill Kendrick..." GRAPHICS 1 (20 bytes) */
+#define LINE_BY_2 (LINE_BY_1 + 20) /* "[add'l credits]" GRAPHICS 1 (20 bytes) */
+#define LINE_HELP_1 (LINE_BY_2 + 20) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 1 (20 bytes) (= 60 bytes) */
+#define LINE_HELP_2 (LINE_HELP_1 + 60) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 1 (20 bytes) (= 60 bytes) */
+#define LINE_HELP_3 (LINE_HELP_2 + 60) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 1 (20 bytes) (= 60 bytes) */
+#define LINE_CONTROLS (LINE_HELP_3 + 60) /* "USE...JOYSTICK TO MOVE..." 3 x GRAPHICS 0 (40 bytes) (= 120 bytes) */
+#define LINE_START (LINE_CONTROLS + 120) /* "START/FIRE: BEGIN..." GRAPHICS 0 (40 bytes) */
+#define LINE_LEVEL (LINE_START + 40) /* "SELECT: STARTING LEVEL..." GRAPHICS 0 (40 bytes) */
+#define LINE_HIGH (LINE_LEVEL + 40) /* "HIGH SCORE..." GRAPHICS 0 (40 bytes) */
+#define LINE_VERSION (LINE_HIGH + 40) /* VERSIION:..." GRAPHICS 0 (40 bytes) */
 
 /* Title screen display list */
 void title_dlist = {
