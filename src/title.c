@@ -31,6 +31,8 @@ extern char main_stick;
 extern unsigned long int high_score;
 extern char high_score_name[4];
 
+#define draw_item(pos,c) POKE(scr_mem + pos, c); POKE(scr_mem + pos + 1, c + 1);
+
 void show_controls(void);
 
 /* Where in screen memory (`src_mem`) different parts of the
@@ -39,10 +41,10 @@ void show_controls(void);
 /* "FIREFIGHTER!" -- GRAPHICS 2 (20 bytes) */
 #define LINE_BY_1 60 /* "Bill Kendrick..." GRAPHICS 1 (20 bytes) */
 #define LINE_BY_2 (LINE_BY_1 + 20) /* "[add'l credits]" GRAPHICS 1 (20 bytes) */
-#define LINE_HELP_1 (LINE_BY_2 + 20) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 1 (20 bytes) (= 60 bytes) */
-#define LINE_HELP_2 (LINE_HELP_1 + 60) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 1 (20 bytes) (= 60 bytes) */
-#define LINE_HELP_3 (LINE_HELP_2 + 60) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 1 (20 bytes) (= 60 bytes) */
-#define LINE_CONTROLS (LINE_HELP_3 + 60) /* "USE...JOYSTICK TO MOVE..." 3 x GRAPHICS 0 (40 bytes) (= 120 bytes) */
+#define LINE_HELP_1 (LINE_BY_2 + 20) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 12 (40 bytes) (= 80 bytes) */
+#define LINE_HELP_2 (LINE_HELP_1 + 80) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 12 (40 bytes) (= 80 bytes) */
+#define LINE_HELP_3 (LINE_HELP_2 + 80) /* [text + graphics] GRAPHICS 0 (40 bytes) & GRAPHICS 12 (40 bytes) (= 80 bytes) */
+#define LINE_CONTROLS (LINE_HELP_3 + 80) /* "USE...JOYSTICK TO MOVE..." 3 x GRAPHICS 0 (40 bytes) (= 120 bytes) */
 #define LINE_START (LINE_CONTROLS + 120) /* "START/FIRE: BEGIN..." GRAPHICS 0 (40 bytes) */
 #define LINE_LEVEL (LINE_START + 40) /* "SELECT: STARTING LEVEL..." GRAPHICS 0 (40 bytes) */
 #define LINE_HIGH (LINE_LEVEL + 40) /* "HIGH SCORE..." GRAPHICS 0 (40 bytes) */
@@ -65,23 +67,23 @@ void title_dlist = {
 
   DL_GRAPHICS0, // Item Row 1 Desc
   DL_DLI(DL_BLK2),
-  DL_DLI(DL_GRAPHICS1), // Item Row 1 Images
-  DL_LMS(DL_GRAPHICS1),
-  (scr_mem + LINE_HELP_1 + 40),
+  DL_DLI(DL_GRAPHICS12), // Item Row 1 Images
+  DL_LMS(DL_GRAPHICS12),
+  (scr_mem + LINE_HELP_1 + 40), // repeat row
   DL_BLK6,
 
   DL_GRAPHICS0, // Item Row 2 Desc
   DL_DLI(DL_BLK2),
-  DL_DLI(DL_GRAPHICS1), // Item Row 2 Images
-  DL_LMS(DL_GRAPHICS1),
-  (scr_mem + LINE_HELP_2 + 40),
+  DL_DLI(DL_GRAPHICS12), // Item Row 2 Images
+  DL_LMS(DL_GRAPHICS12),
+  (scr_mem + LINE_HELP_2 + 40), // repeat row
   DL_BLK6,
 
   DL_GRAPHICS0, // Item Row 3 Desc
   DL_DLI(DL_BLK2),
-  DL_DLI(DL_GRAPHICS1), // Item Row 3 Images
-  DL_LMS(DL_GRAPHICS1),
-  (scr_mem + LINE_HELP_3 + 40),
+  DL_DLI(DL_GRAPHICS12), // Item Row 3 Images
+  DL_LMS(DL_GRAPHICS12),
+  (scr_mem + LINE_HELP_3 + 40), // repeat row
   DL_BLK6,
 
   DL_BLK2,
@@ -185,59 +187,58 @@ char show_title(void) {
   /* Help section 1 */
   draw_text("LEAD TO EXIT. PUT OUT FIRE. WALL. PIPES.", scr_mem + LINE_HELP_1 + 0);
 
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 0, CIVILIAN);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 1, CIVILIAN);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 2, FIREFIGHTER_RIGHT);
+  draw_item(LINE_HELP_1 + 40 + 0, CIVILIAN);
+  draw_item(LINE_HELP_1 + 40 + 2, CIVILIAN);
+  draw_item(LINE_HELP_1 + 40 + 4, FIREFIGHTER_RIGHT);
 
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 3, EXIT1);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 4, EXIT2);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 5, DOOR);
+  draw_item(LINE_HELP_1 + 40 + 6, EXIT1);
+  draw_item(LINE_HELP_1 + 40 + 8, EXIT2);
+  draw_item(LINE_HELP_1 + 40 + 10, DOOR);
 
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 7, FIRE_LG);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 8, FIRE_MD);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 9, FIRE_SM);
+  draw_item(LINE_HELP_1 + 40 + 14, FIRE_LG);
+  draw_item(LINE_HELP_1 + 40 + 16, FIRE_MD);
+  draw_item(LINE_HELP_1 + 40 + 18, FIRE_SM);
 
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 10, 'e' + 64);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 11, 'g' + 64);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 12, FIREFIGHTER_LEFT);
+  draw_item(LINE_HELP_1 + 40 + 20, 'e' + 64); /* spray left far */
+  draw_item(LINE_HELP_1 + 40 + 22, 'g' + 64); /* spray left far */
+  draw_item(LINE_HELP_1 + 40 + 24, FIREFIGHTER_LEFT);
 
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 14, WALL);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 15, WALL);
+  draw_item(LINE_HELP_1 + 40 + 28, WALL);
+  draw_item(LINE_HELP_1 + 40 + 30, WALL);
 
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 17, PIPE_DOWN_RIGHT);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 18, PIPE_LEFT_RIGHT);
-  POKE(scr_mem + (LINE_HELP_1 + 40) + 19, PIPE_UP_LEFT);
+  draw_item(LINE_HELP_1 + 40 + 34, PIPE_DOWN_RIGHT);
+  draw_item(LINE_HELP_1 + 40 + 36, PIPE_LEFT_RIGHT);
+  draw_item(LINE_HELP_1 + 40 + 38, PIPE_UP_LEFT);
 
   /* Help section 2 */
   draw_text("PUSH CRATES&OIL. AX BREAKS CRATES&PIPES.", scr_mem + LINE_HELP_2 + 0);
 
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 2, FIREFIGHTER_RIGHT);
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 3, CRATE);
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 6, OIL);
+  draw_item(LINE_HELP_2 + 40 + 4, FIREFIGHTER_RIGHT);
+  draw_item(LINE_HELP_2 + 40 + 6, CRATE);
+  draw_item(LINE_HELP_2 + 40 + 12, OIL);
 
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 9, AX);
+  draw_item(LINE_HELP_2 + 40 + 18, AX);
 
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 14, CRATE_BROKEN);
+  draw_item(LINE_HELP_2 + 40 + 28, CRATE_BROKEN);
 
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 17, GASLEAK_LEFT);
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 18, PIPE_BROKEN_UP_DOWN);
-  POKE(scr_mem + (LINE_HELP_2 + 40) + 19, GASLEAK_RIGHT);
-
+  draw_item(LINE_HELP_2 + 40 + 34, GASLEAK_LEFT);
+  draw_item(LINE_HELP_2 + 40 + 36, PIPE_BROKEN_UP_DOWN);
+  draw_item(LINE_HELP_2 + 40 + 38, GASLEAK_RIGHT);
 
   /* Help section 3 */
   draw_text("TURN VALVE. OIL&LEAKS EXPLODE! PUSH EXIT", scr_mem + LINE_HELP_3 + 0);
 
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 1, PIPE_LEFT_RIGHT);
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 2, VALVE_OPEN);
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 3, PIPE_LEFT_RIGHT);
+  draw_item(LINE_HELP_3 + 40 + 2, PIPE_LEFT_RIGHT);
+  draw_item(LINE_HELP_3 + 40 + 4, VALVE_OPEN);
+  draw_item(LINE_HELP_3 + 40 + 6, PIPE_LEFT_RIGHT);
 
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 7, FIRE_LG);
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 8, FIRE_LG);
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 9, OIL);
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 10, FIRE_LG);
+  draw_item(LINE_HELP_3 + 40 + 14, FIRE_LG);
+  draw_item(LINE_HELP_3 + 40 + 16, FIRE_LG);
+  draw_item(LINE_HELP_3 + 40 + 18, OIL);
+  draw_item(LINE_HELP_3 + 40 + 20, FIRE_LG);
 
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 16, FIREFIGHTER_RIGHT);
-  POKE(scr_mem + (LINE_HELP_3 + 40) + 17, DOOR);
+  draw_item(LINE_HELP_3 + 40 + 32, FIREFIGHTER_RIGHT);
+  draw_item(LINE_HELP_3 + 40 + 34, DOOR);
 
   /* Control instructions */
   show_controls();

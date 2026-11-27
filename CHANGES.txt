@@ -4,7 +4,13 @@ Firefighting game for the Atari 8-bit
 Bill Kendrick <bill@newbreedsoftware.com>
 https://www.newbreedsoftware.com/firefighter/
 
-0.1-beta-11 (2026-11-22) WIP:
+0.2-beta-1 (2026-11-27) WIP:
+ * Graphics:
+   * WIP - Multicolor graphics
+ * Documentation:
+   * TODO - Document how multicolor graphics work
+
+0.1-beta-11 (2026-11-22):
  * Splash:
    * Music on the splash screen
      + Raster Music Tracker (RMT) player
