@@ -199,8 +199,8 @@ char show_title(void) {
   draw_item(LINE_HELP_1 + 40 + 16, FIRE_MD);
   draw_item(LINE_HELP_1 + 40 + 18, FIRE_SM);
 
-  draw_item(LINE_HELP_1 + 40 + 20, 'e' + 64); /* spray left far */
-  draw_item(LINE_HELP_1 + 40 + 22, 'g' + 64); /* spray left far */
+  draw_item(LINE_HELP_1 + 40 + 20, WATER_W - 4);
+  draw_item(LINE_HELP_1 + 40 + 22, WATER_W);
   draw_item(LINE_HELP_1 + 40 + 24, FIREFIGHTER_LEFT);
 
   draw_item(LINE_HELP_1 + 40 + 28, WALL);

@@ -265,22 +265,13 @@ void start_game(void) {
     }
 
     /* Draw the player */
-    set_shape(ply_x, ply_y, FIREFIGHTER_LEFT + ply_dir);
+    set_shape(ply_x, ply_y, FIREFIGHTER_LEFT + (ply_dir * 2));
 
     /* Cellular automata the screen */
     cellular_automata();
 
 
     /* Spray water based on Joystick 2 input */
-
-#define WATER_N  (35 + 128)
-#define WATER_NW (60 + 128)
-#define WATER_W  (39 + 128)
-#define WATER_SW (52 + 128)
-#define WATER_S  (40 + 128)
-#define WATER_SE (48 + 128)
-#define WATER_E  (44 + 128)
-#define WATER_NE (56 + 128)
 
     /* (Alternatively, left stick + trigger to spray) */
     if (main_stick == STICK_LEFT) {
@@ -298,58 +289,58 @@ void start_game(void) {
     if (stick == 7) {
       /* Right (East) */
       if (spray(ply_x + 1, ply_y,   WATER_E)) {
-        spray(ply_x + 2, ply_y - 1, WATER_E + 1);
-        spray(ply_x + 2, ply_y,     WATER_E + 2);
-        spray(ply_x + 2, ply_y + 1, WATER_E + 3);
+        spray(ply_x + 2, ply_y - 1, WATER_E + 2);
+        spray(ply_x + 2, ply_y,     WATER_E + 4);
+        spray(ply_x + 2, ply_y + 1, WATER_E + 6);
       }
     } else if (stick == 11) {
       /* Left (West) */
       if (spray(ply_x - 1, ply_y,     WATER_W)) {
-        spray(ply_x - 2, ply_y - 1, WATER_W - 3);
-        spray(ply_x - 2, ply_y,     WATER_W - 2);
-        spray(ply_x - 2, ply_y + 1, WATER_W - 1);
+        spray(ply_x - 2, ply_y - 1, WATER_W - 6);
+        spray(ply_x - 2, ply_y,     WATER_W - 4);
+        spray(ply_x - 2, ply_y + 1, WATER_W - 2);
       }
     } else if (stick == 13) {
       /* Down (South) */
       if (spray(ply_x    , ply_y + 1, WATER_S)) {
-        spray(ply_x - 1, ply_y + 2, WATER_S + 1);
-        spray(ply_x    , ply_y + 2, WATER_S + 2);
-        spray(ply_x + 1, ply_y + 2, WATER_S + 3);
+        spray(ply_x - 1, ply_y + 2, WATER_S + 2);
+        spray(ply_x    , ply_y + 2, WATER_S + 4);
+        spray(ply_x + 1, ply_y + 2, WATER_S + 6);
       }
     } else if (stick == 14) {
       /* Up (North) */
       if (spray(ply_x    , ply_y - 1, WATER_N)) {
-        spray(ply_x - 1, ply_y - 2, WATER_N - 3);
-        spray(ply_x    , ply_y - 2, WATER_N - 2);
-        spray(ply_x + 1, ply_y - 2, WATER_N - 1);
+        spray(ply_x - 1, ply_y - 2, WATER_N - 6);
+        spray(ply_x    , ply_y - 2, WATER_N - 4);
+        spray(ply_x + 1, ply_y - 2, WATER_N - 2);
       }
     } else if (stick == 5) {
       /* Down + Right (Southeast) */
       if (spray(ply_x + 1, ply_y + 1, WATER_SE)) {
-        spray(ply_x + 2, ply_y + 1, WATER_SE + 1);
-        spray(ply_x + 1, ply_y + 2, WATER_SE + 2);
-        spray(ply_x + 2, ply_y + 2, WATER_SE + 3);
+        spray(ply_x + 2, ply_y + 1, WATER_SE + 2);
+        spray(ply_x + 1, ply_y + 2, WATER_SE + 4);
+        spray(ply_x + 2, ply_y + 2, WATER_SE + 6);
       }
     } else if (stick == 9) {
       /* Down + Left (Southwest) */
-      if (spray(ply_x - 1, ply_y + 1, WATER_SW + 1)) {
+      if (spray(ply_x - 1, ply_y + 1, WATER_SW + 2)) {
         spray(ply_x - 2, ply_y + 1, WATER_SW);
-        spray(ply_x - 2, ply_y + 2, WATER_SW + 2);
-        spray(ply_x - 1, ply_y + 2, WATER_SW + 3);
+        spray(ply_x - 2, ply_y + 2, WATER_SW + 4);
+        spray(ply_x - 1, ply_y + 2, WATER_SW + 6);
       }
     } else if (stick == 6) {
       /* Up + Right (Northeast) */
-      if (spray(ply_x + 1, ply_y - 1, WATER_NE + 2)) {
+      if (spray(ply_x + 1, ply_y - 1, WATER_NE + 4)) {
         spray(ply_x + 1, ply_y - 2, WATER_NE);
-        spray(ply_x + 2, ply_y - 2, WATER_NE + 1);
-        spray(ply_x + 2, ply_y - 1, WATER_NE + 3);
+        spray(ply_x + 2, ply_y - 2, WATER_NE + 2);
+        spray(ply_x + 2, ply_y - 1, WATER_NE + 6);
       }
     } else if (stick == 10) {
       /* Up + Left (Northwest) */
-      if (spray(ply_x - 1, ply_y - 1, WATER_NW + 3)) {
+      if (spray(ply_x - 1, ply_y - 1, WATER_NW + 6)) {
         spray(ply_x - 2, ply_y - 2, WATER_NW);
-        spray(ply_x - 1, ply_y - 2, WATER_NW + 1);
-        spray(ply_x - 2, ply_y - 1, WATER_NW + 2);
+        spray(ply_x - 1, ply_y - 2, WATER_NW + 2);
+        spray(ply_x - 2, ply_y - 1, WATER_NW + 4);
       }
     }
 
@@ -629,7 +620,7 @@ void draw_level(void) {
   level_data_ptr += (levels_data[0] * 4) + 1;
 
   /* Clear screen; draw score */
-  bzero(scr_mem + 60, LEVEL_SPAN);
+  bzero(scr_mem + 60, LEVEL_SPAN * 2);
 
   draw_text("LEVEL:-- SCORE:------ BONUS:------ ^:-", scr_mem + 20 + 1);
   draw_score();
@@ -701,30 +692,36 @@ void cellular_automata(void) {
       shape = shape_at(x, y);
       rand = POKEY_READ.random;
 
-      if (shape == FIRE_SM && rand < 16) {
-        /* Grow small fire to medium */
-        set_shape(x, y, FIRE_MD);
+      if (shape == FIRE_SM) {
         any_fire++;
-      } else if (shape == FIRE_MD && rand < 16) {
-        /* Grow medium fire to large */
-        set_shape(x, y, FIRE_LG);
+        if (rand < 16) {
+          /* Grow small fire to medium */
+          set_shape(x, y, FIRE_MD);
+        }
+      } else if (shape == FIRE_MD) {
         any_fire++;
-      } else if (shape == FIRE_LG && rand < 32) {
-        /* Large fire tries to spread */
-        dir = POKEY_READ.random % 8;
-        if (valid_dir(x, y, dir)) {
-          nx = x + dir_x[dir];
-          ny = y + dir_y[dir];
-          shape2 = shape_at(nx, ny);
-          ignited_shape = flammable(shape2);
-          if (ignited_shape == FIRE_XLG) {
-            explode(nx, ny);
-          } else if (ignited_shape != FIRE_INFLAM) {
-            set_shape(nx, ny, ignited_shape);
+        if (rand < 16) {
+          /* Grow medium fire to large */
+          set_shape(x, y, FIRE_LG);
+        }
+      } else if (shape == FIRE_LG) {
+        any_fire++;
+        if (rand < 32) {
+          /* Large fire tries to spread */
+          dir = POKEY_READ.random % 8;
+          if (valid_dir(x, y, dir)) {
+            nx = x + dir_x[dir];
+            ny = y + dir_y[dir];
+            shape2 = shape_at(nx, ny);
+            ignited_shape = flammable(shape2);
+            if (ignited_shape == FIRE_XLG) {
+              explode(nx, ny);
+            } else if (ignited_shape != FIRE_INFLAM) {
+              set_shape(nx, ny, ignited_shape);
+            }
           }
         }
-        any_fire++;
-      } else if (shape >= 32 + 128 && shape < 64 + 128) {
+      } else if (shape >= 64 && shape <= 128) {
         /* Erase water */
         set_shape(x, y, BLANK);
       } else if (shape == CIVILIAN) {
@@ -824,33 +821,6 @@ void broken_pipe(signed char x, signed char y, char shape) {
     }
   }
 }
-
-/*
-  Given an input direction (4 cardinal directions), return
-  a 0-7 direction value (used to follow pipe corners)
-
-    0
-  3   1
-    2
-
-  7 0 1
-  6   2
-  5 4 3
-*/
-
-#define NA 0
-
-char pipe_corner[16] = {
-  /* Down+Right */
-  2, NA, NA, 4,
-  /* Down+Left */
-  6, 4, NA, NA,
-  /* Up+Left */
-  NA, 0, 6, NA,
-  /* Up+Right */
-  NA, NA, 2, 0,
-};
-
 
 /**
  * Create an explosion of fire at the given position

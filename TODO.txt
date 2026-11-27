@@ -6,6 +6,13 @@ https://www.newbreedsoftware.com/firefighter/
 
 2023-08-18 - 2026-11-27
 
+ * Multicolor update fixes:
+   + Display GRAPHICS 0 text properly on title
+   + Display GRAPHICS 0 text properly top of game
+   + Proper colors on title
+   + Player can walk through fire
+   + Possibly other fire &/or water bugs?
+
  * More levels
 
  * Level editor?
