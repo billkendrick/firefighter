@@ -5,7 +5,7 @@
   Bill Kendrick <bill@newbreedsoftware.com>
   https://www.newbreedsoftware.com/firefighter/
 
-  2023-08-13 - 2026-10-11
+  2023-08-13 - 2026-11-27
 */
 
 #include <atari.h>
@@ -64,25 +64,25 @@ void dli1(void) {
   asm("sta %w", (unsigned)&ANTIC.chbase);
 
   /* - color gradient (1st row) */
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
 
@@ -123,25 +123,25 @@ void dli2(void) {
   asm("sta %w", (unsigned)&ANTIC.chbase);
 
   /* - color gradient (1st row) */
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
   asm("sta %w", (unsigned)&ANTIC.wsync);
   asm("sta %w", (unsigned)&ANTIC.wsync);
 
-  asm("stx %w", (unsigned)&GTIA_WRITE.colpf0);
+  asm("stx %w", (unsigned)&GTIA_WRITE.colpf3);
   asm("inx");
   asm("inx");
 

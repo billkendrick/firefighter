@@ -7,7 +7,7 @@ firefighting action game for the Atari 8-bit.
 By Bill Kendrick <bill@newbreedsoftware.com>  
 https://www.newbreedsoftware.com/firefighter/
 
-Documented 2023-09-25 - 2026-10-12
+Documented 2023-09-25 - 2026-11-27
 
 ------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ used by this game.  Please see the [Development Docs](../DEVELOPMENT.md)
 for additional details.
 
 Originally, the game used just two character sets, with a few shapes
-that different to provide two frames of animation (fire, water spray,
+that differed to provide two frames of animation (fire, water spray,
 gas leaks, the exit sign, and workers).
 
 -![Screenshot of the font from 2024-01-18](screenshots/firetext-20250118.png)  
@@ -30,7 +30,16 @@ created that generates four full fonts based on the text font, and a bitmap
 graphic.
 
 -![Screenshot of the high-resolution tile graphics from 2024-01-18](screenshots/firefite-hirez-font-20250118.png)  
-High resolution (8x16) tile graphics now used in the game.
+High resolution (8x16) tile graphics now used in subsequent versions of the game.
+
+## WORK IN PROGRESS
+Finally, a set of multicolor tiles were created that allow for both
+higher resolution shapes (8x16 pixels), and multiple colors per tile (4
+colors, rather than just 2).  This doubled the amount of space required
+to display a 20x11 map of tiles (to 40x11=440).
+
+-![Screenshot of the high-resolution multicolor tile graphics from 2026-11-27](screenshots/firefite-hirez-multicolor-font-20261127.png)  
+High resolution (8x16) mulitcolor tile graphics now used in the game.
 
 The numerals, punctuation, and uppercase characters are meant to
 evoke the letters seen on the side of a firetruck in the US.
@@ -41,7 +50,7 @@ of text on the title screen and status bar in-game.  Four special
 characters are amongst them:
 
 * `@` -- ✠ Maltese Cross (firefighter badge); used in the title
-* `]` -- ax; used in game to indicate you've collected the ax
+* `]` -- 🪓 ax; used in game to indicate you've collected the ax
 * `^` -- 🔥 fire; used in game to represent how many workers have perished
 * `_` -- ↵ carriage return; used when entering high score initials
 
