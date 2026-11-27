@@ -4,11 +4,11 @@
 # Bill Kendrick <bill@newbreedsoftware.com>
 # https://www.newbreedsoftware.com/firefighter/
 #
-# 2023-08-13 - 2026-11-13
+# 2023-08-13 - 2026-11-27
 
 ## Version number:
 ## (Note: Any alphabetic chars should be uppercase!)
-VERSION=0.1-BETA11
+VERSION=0.2-BETA1
 
 ## Run "tools/release.sh" to generate a release ZIP file
 ## (it will be named based on VERSION above,
@@ -72,6 +72,7 @@ clean-intermediate:
 	-rm obj/*.o
 	-rm obj/*.obx
 	-rm obj/player.sym
+	-rm obj/splash1.xex
 	-rm src/player.inc
 	-rm asm/*.s
 	# -rm firefite.map
