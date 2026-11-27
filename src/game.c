@@ -38,18 +38,20 @@ extern char main_stick;
 signed char dir_x[8] = {  0,  1, 1, 1, 0, -1, -1, -1 };
 signed char dir_y[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 
-char scr_row_ptr[LEVEL_H] = {
+/* Multiples of 2 because each tile is 2 characters
+   (ANTIC 4 / GRAPHICS 12 modelines) */
+unsigned int scr_row_ptr[LEVEL_H] = {
   LEVEL_W * 0,
-  LEVEL_W * 1,
   LEVEL_W * 2,
-  LEVEL_W * 3,
   LEVEL_W * 4,
-  LEVEL_W * 5,
   LEVEL_W * 6,
-  LEVEL_W * 7,
   LEVEL_W * 8,
-  LEVEL_W * 9,
   LEVEL_W * 10,
+  LEVEL_W * 12,
+  LEVEL_W * 14,
+  LEVEL_W * 16,
+  LEVEL_W * 18,
+  LEVEL_W * 20,
 };
 
 /* Reasons that civilian count goes down */
@@ -60,8 +62,8 @@ char scr_row_ptr[LEVEL_H] = {
 void start_level(void);
 void draw_score(void);
 void setup_game_screen(void);
-#define shape_at(x, y) (PEEK(scr_mem + 60 + scr_row_ptr[y] + (x)))
-#define set_shape(x, y, s) POKE(scr_mem + 60 + scr_row_ptr[y] + (x), (s))
+#define shape_at(x, y) (PEEK(scr_mem + 60 + scr_row_ptr[y] + (x << 1)))
+#define set_shape(x, y, s) POKE(scr_mem + 60 + scr_row_ptr[y] + (x << 1), (s)); POKE(scr_mem + 60 + scr_row_ptr[y] + ((x << 1) + 1), (s + 1))
 #define obstacle(s) ((s) != 0 && (s) != AX)
 void draw_level(void);
 void cellular_automata(void);
@@ -151,7 +153,7 @@ void start_level(void) {
   open_valves = 0;
   civilians_remaining = 0;
   for (i = 0; i < LEVEL_SPAN; i++) {
-    c = PEEK(scr_mem + 60 + i);
+    c = PEEK(scr_mem + 60 + (i << 1));
     if (c == CIVILIAN) {
       civilians_remaining++;
     } else if (c == VALVE_OPEN) {
@@ -179,6 +181,7 @@ void start_game(void) {
 
   start_level();
 
+  /* --- MAIN GAME LOOP --- */
   do {
     old_rtclok = OS.rtclok[2];
 
@@ -403,9 +406,9 @@ void start_game(void) {
     while (OS.rtclok[2] == old_rtclok) { }
     old_rtclok = OS.rtclok[2];
     while (OS.rtclok[2] == old_rtclok) { }
-    old_rtclok = OS.rtclok[2];
-    while (OS.rtclok[2] == old_rtclok) { }
 
+
+    /* Prevent anti-screen-burn-in ("attract mode") from activating */
     OS.atract = 0;
 
 
@@ -502,7 +505,7 @@ void start_game(void) {
  * tip shape near the player, and three other shapes
  * beyond that; we'll avoid drawing those other three
  * if the first part failed to draw, to avoid being
- * able to spray through solid objects!i
+ * able to spray through solid objects!)
  *
  * @param unsigned char x - X position to [attempt to] draw
  * @param unsigned char y - Y position to [attempt to] draw
@@ -566,11 +569,11 @@ void setup_game_screen(void) {
   scr_adr = (int) scr_mem + 60;
   idx = 9;
   for (i = 0; i < 11; i++) {
-    dlist[idx++] = DL_DLI(DL_GRAPHICS1);
-    dlist[idx++] = DL_DLI(DL_LMS(DL_GRAPHICS1));
+    dlist[idx++] = DL_DLI(DL_GRAPHICS12);
+    dlist[idx++] = DL_DLI(DL_LMS(DL_GRAPHICS12));
     dlist[idx++] = scr_adr & 0xFF;
     dlist[idx++] = scr_adr >> 8;
-    scr_adr += 20;
+    scr_adr += 40;
   }
 
   dlist[idx++] = DL_JVB;
@@ -652,12 +655,20 @@ void draw_level(void) {
 
   do {
     s = levels_data[level_data_ptr++];
+
+    /* First three bits tell us how many times to repeat
+       (000 = 1 time, 001 = 2 times, 010 = 3 times, etc.) */
     cnt = ((s & 0b11100000) >> 5) + 1;
+
+    /* Remaining 5 bits tell us which tile to use, which
+       correspond to different screen data bytes */
     c = level_data_to_screen[s & 0b00011111];
+
     for (i = 0; i < cnt; i++) {
       POKE(scr_mem + 60 + (scr_ptr++), c);
+      POKE(scr_mem + 60 + (scr_ptr++), c + 1);
     }
-  } while (scr_ptr < LEVEL_W * LEVEL_H);
+  } while (scr_ptr < LEVEL_W * LEVEL_H * 2);
 }
 
 /* Draws the level/score/bonus in the status bar */
@@ -1018,7 +1029,7 @@ void level_end_bonus(void) {
   /* Check whether any fire or gas leaks remained */
   any_fire = 0;
   for (i = 0; i < LEVEL_SPAN && !any_fire; i++) {
-    c = PEEK(scr_mem + 60 + i);
+    c = PEEK(scr_mem + 60 + (i << 1));
     if (c == FIRE_SM || c == FIRE_MD || c == FIRE_LG ||
         c == GASLEAK_RIGHT || c == GASLEAK_LEFT ||
         c == GASLEAK_UP || c == GASLEAK_DOWN) {
